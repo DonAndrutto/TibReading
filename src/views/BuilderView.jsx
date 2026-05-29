@@ -100,7 +100,7 @@ export default function BuilderView() {
         </div>
       </div>
 
-      <div className="build-detail">
+      <div className={'build-detail c-' + active.color}>
         <div className="detail-l">
           <div className="dl-kicker mono">position {sel + 1} of {N}</div>
           <div className="dl-label">{active.label}</div>

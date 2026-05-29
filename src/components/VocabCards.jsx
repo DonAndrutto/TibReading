@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { TIBETAN_DATA as D } from '../data.js';
 
-export default function LetterWords() {
-  const words = D.letterWords;
-  const [open, setOpen] = useState(true);
+// Collapsible vocabulary deck — tap-to-reveal flashcards plus a meaning quiz —
+// over any list of { g, r, m } words. Shared by AlphabetView (single-letter
+// words) and VowelsView (consonant + vowel words).
+export default function VocabCards({ words, title, lead, defaultOpen = true }) {
+  const [open, setOpen] = useState(defaultOpen);
   const [mode, setMode] = useState('study');
 
   // tap-to-reveal — flashcard, mirrors the Read (07) section
@@ -45,18 +46,14 @@ export default function LetterWords() {
       <button className="lw-head" onClick={() => setOpen(o => !o)} aria-expanded={open}>
         <span className="lw-head-text">
           <span className="lw-kicker mono">vocabulary · {words.length} words</span>
-          <span className="lw-title">Words that are a single letter</span>
+          <span className="lw-title">{title}</span>
         </span>
         <span className={'lw-chevron' + (open ? ' open' : '')}>⌄</span>
       </button>
 
       {open && (
         <div className="lw-body">
-          <p className="lw-lead">
-            A handful of consonants are complete words on their own — just the bare
-            letter and its inherent <em>-a</em>, with no vowel mark, subscript or
-            superscript. Flip a card to reveal its meaning, then test yourself.
-          </p>
+          <p className="lw-lead">{lead}</p>
 
           <div className="lw-tabs filter-row">
             <button className={'chip' + (mode === 'study' ? ' on' : '')} onClick={() => setMode('study')}>Tap to reveal</button>

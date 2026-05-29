@@ -54,6 +54,39 @@ export const TIBETAN_DATA = {
     { c: "ལ", v: "ོ", out: "ལོ", r: "lo",  gloss: "year / age" }
   ],
 
+  // One consonant carrying one vowel mark — no subscript, superscript or affix —
+  // that is a complete word on its own.
+  vowelWords: [
+    { g: "ཀོ", r: "ko",   m: "leather" },
+    { g: "ཁེ", r: "khe",  m: "profit, advantage" },
+    { g: "ཁོ", r: "kho",  m: "he, him" },
+    { g: "ངོ", r: "ngo",  m: "face" },
+    { g: "ཆུ", r: "chu",  m: "water" },
+    { g: "ཇོ", r: "jo",   m: "lord, master" },
+    { g: "ཉི", r: "nyi",  m: "sun" },
+    { g: "ཐོ", r: "tho",  m: "list, register" },
+    { g: "དེ", r: "de",   m: "that" },
+    { g: "དུ", r: "du",   m: "smoke" },
+    { g: "ནུ", r: "nu",   m: "breast" },
+    { g: "ཕོ", r: "pho",  m: "male" },
+    { g: "བུ", r: "bu",   m: "son, boy" },
+    { g: "མི", r: "mi",   m: "man, person, human" },
+    { g: "མུ", r: "mu",   m: "boundary, edge" },
+    { g: "མེ", r: "me",   m: "fire" },
+    { g: "མོ", r: "mo",   m: "female, divination" },
+    { g: "ཚེ", r: "tshe", m: "life, lifespan" },
+    { g: "ཞི", r: "zhi",  m: "peace" },
+    { g: "ཟོ", r: "zo",   m: "eat (imperative)" },
+    { g: "རི", r: "ri",   m: "mountain" },
+    { g: "རུ", r: "ru",   m: "horn, division" },
+    { g: "རེ", r: "re",   m: "each, to hope" },
+    { g: "ལི", r: "li",   m: "bronze, bell-metal" },
+    { g: "ལོ", r: "lo",   m: "year" },
+    { g: "ཤི", r: "shi",  m: "to die" },
+    { g: "སུ", r: "su",   m: "who" },
+    { g: "སོ", r: "so",   m: "tooth" }
+  ],
+
   // Consonants that form a meaningful word on their own — a bare root letter
   // with its inherent -a, no vowel mark, no sub/superscripts, no affixes.
   letterWords: [

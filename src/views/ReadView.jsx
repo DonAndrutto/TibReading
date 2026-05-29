@@ -71,7 +71,7 @@ export default function ReadView() {
             <div className={'flashcard' + (revealed ? ' is-revealed' : '')} onClick={() => setRevealed(r => !r)}>
               <div className="card-face card-front">
                 <div className="card-num mono">{String(i + 1).padStart(2, '0')} / {D.practiceWords.length}</div>
-                <div className="card-ti">{word.w}་</div>
+                <div className="card-ti">{word.w}<span className="tsek">་</span></div>
                 <div className="card-hint mono">tap to reveal</div>
               </div>
               <div className="card-face card-back">
@@ -94,7 +94,7 @@ export default function ReadView() {
               <button key={k}
                 className={'list-card' + (k === i ? ' on' : '')}
                 onClick={() => { setI(k); setRevealed(false); }}>
-                <div className="lc-ti">{w.w}་</div>
+                <div className="lc-ti">{w.w}<span className="tsek">་</span></div>
                 <div className="lc-r mono">{w.r}</div>
                 <div className="lc-m">{w.m}</div>
               </button>
@@ -123,7 +123,7 @@ export default function ReadView() {
 
           <div className="quiz-prompt">
             <div className="quiz-kicker mono">read this word</div>
-            <div className="quiz-ti">{quizWord.w}་</div>
+            <div key={quizWord.w} className="quiz-ti glyph-anim">{quizWord.w}<span className="tsek">་</span></div>
             <div className="quiz-hint mono">pick the matching romanization &amp; meaning</div>
           </div>
 

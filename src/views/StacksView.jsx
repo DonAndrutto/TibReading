@@ -42,7 +42,7 @@ export default function StacksView() {
           <div className="stack-detail">
             <div className="stack-hero">
               <div className="hero-label">{kind === 'sub' ? 'subscript' : 'superscript'}</div>
-              <div className="hero-glyph">{item.glyph}</div>
+              <div key={kind + item.name} className="hero-glyph glyph-anim">{item.glyph}</div>
               <div className="hero-name">{item.name}</div>
             </div>
             <p className="stack-desc">{item.desc}</p>

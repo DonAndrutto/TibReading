@@ -86,7 +86,7 @@ export default function AlphabetView() {
         <aside className="detail">
           <div className="detail-num">No. {String(c.n).padStart(2, '0')} / 30</div>
           <div className="detail-glyph-wrap">
-            <div className="detail-glyph">{c.g}</div>
+            <div key={c.g} className="detail-glyph glyph-anim">{c.g}</div>
             <PaperTest aspirated={c.t === 'high asp.'} />
           </div>
           <div className="dl">
@@ -101,7 +101,7 @@ export default function AlphabetView() {
 
           <div className="detail-form">
             <div className="form-line">
-              <span className="form-big">{c.g}་</span>
+              <span className="form-big">{c.g}<span className="tsek">་</span></span>
               <span className="form-small">+ vowel = syllable</span>
             </div>
             <div className="form-line">

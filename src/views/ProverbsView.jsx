@@ -56,12 +56,14 @@ export default function ProverbsView() {
                   <button key={si}
                     className={'pr-syl' + (isActive ? ' on' : '') + (reveal ? ' reveal' : '')}
                     onClick={() => setActive({ line: li, syl: si })}>
-                    <span className="pr-syl-ti">{s.t}</span>
+                    <span className="pr-syl-glyph">
+                      <span className="pr-syl-ti">{s.t}</span>
+                      {si < line.syl.length - 1 && <span className="pr-sep tsek">་</span>}
+                      {si === line.syl.length - 1 && <span className="pr-sep she">།</span>}
+                    </span>
                     {mode === 'annotated' && (
                       <span className="pr-syl-r mono">{reveal ? s.r : ''}</span>
                     )}
-                    {si < line.syl.length - 1 && <span className="pr-tsek ti">་</span>}
-                    {si === line.syl.length - 1 && <span className="pr-shé ti">།</span>}
                   </button>
                 );
               })}
@@ -78,7 +80,7 @@ export default function ProverbsView() {
         <aside className="pr-detail">
           <div className="pr-detail-head">
             <div className="pr-detail-kicker mono">syllable {active.syl + 1} · line {active.line + 1}</div>
-            <div className="pr-detail-ti">{cur.t}་</div>
+            <div key={active.line + '-' + active.syl} className="pr-detail-ti glyph-anim">{cur.t}<span className="tsek">་</span></div>
           </div>
           <div className="pr-detail-body">
             <div className="dl">

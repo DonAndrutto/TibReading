@@ -14,7 +14,7 @@ npm run build     # production build
 npm run preview   # serve the production build locally
 ```
 
-There is no test runner, linter, or type-checker configured.
+**There is no test runner, linter, or type-checker.** The only way to verify a change is to run `npm run dev` and exercise the affected view in the browser. Always do this before pushing. For content-only edits to `src/data.js`, the Vite build itself (run by CI) will catch syntax errors, so a quick `npm run build` is sufficient instead of a full dev-server check.
 
 ## Architecture
 
@@ -71,6 +71,15 @@ Class `.ti` or `font-family: var(--ti)` must be applied anywhere Tibetan Unicode
 Tone colors are used consistently: `--tone-high` (dark ink) for high-tone consonants, `--tone-asp` (maroon) for aspirated, `--tone-low` (teal) for low-tone.
 
 The app shell is a CSS grid: `280px sidebar | 1fr main`. There is no responsive/mobile breakpoint currently implemented.
+
+## Deployment
+
+The app is deployed as a **single self-contained HTML file** to GitHub Pages at `https://donandrutto.github.io/TibReading/`.
+
+- `vite-plugin-singlefile` inlines all compiled JS and CSS into `dist/index.html` at build time (~226 kB / 66 kB gzip). Google Fonts load from CDN and are not inlined.
+- `.github/workflows/deploy.yml` runs `npm ci && npm run build` and deploys `dist/` to GitHub Pages on every push to `main`, and can also be triggered manually from the Actions tab (Actions → Deploy to GitHub Pages → Run workflow).
+- `dist/` is gitignored — CI builds it fresh on each deploy.
+- After any push to `main`, the live site updates within ~1 minute.
 
 ## Key Interactions
 

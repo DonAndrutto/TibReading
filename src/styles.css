@@ -211,24 +211,31 @@ body {
 .lead em { color: var(--maroon); font-style: italic; }
 
 .filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+/* Chips read as buttons: a filled pill on a subtle background, with a clear
+   hover lift and a strong selected state, so it's obvious they're selectable. */
 .chip {
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  background: transparent;
+  background: var(--paper-deep);
   border: 1px solid var(--paper-edge);
   border-radius: 999px;
   padding: 7px 14px;
   cursor: pointer;
   transition: all .15s;
 }
-.chip:hover { border-color: var(--ink-mute); color: var(--ink); }
+.chip:hover {
+  border-color: var(--ink-mute);
+  color: var(--ink);
+  background: var(--paper);
+}
 .chip.on {
   background: var(--ink);
   color: var(--paper);
   border-color: var(--ink);
+  box-shadow: 0 1px 0 rgba(42,26,15,.12);
 }
 
 .mono { font-family: var(--mono); }
@@ -462,60 +469,7 @@ body {
 .lw-lead em { color: var(--maroon); font-style: italic; }
 .lw-tabs { margin-bottom: 18px; }
 
-.lw-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 10px;
-}
-.lw-card {
-  background: var(--paper-deep);
-  border: 1px solid var(--paper-edge);
-  border-radius: 2px;
-  padding: 18px 16px 16px;
-  cursor: pointer;
-  text-align: center;
-  font-family: var(--serif);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  transition: background .15s, border-color .15s, transform .15s;
-}
-.lw-card:hover { background: var(--paper); border-color: var(--ink-mute); transform: translateY(-1px); }
-.lw-card.open  { border-color: var(--maroon); }
-.lw-card-ti {
-  font-family: var(--ti);
-  font-size: 46px;
-  line-height: 1.05;
-  color: var(--maroon);
-  min-height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.lw-card-r {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: .04em;
-  color: var(--ink-soft);
-}
-.lw-card-m {
-  font-size: 14px;
-  color: var(--ink);
-  line-height: 1.4;
-  /* reserve room so revealing the meaning doesn't reflow the grid */
-  min-height: 2.8em;
-  display: flex;
-  align-items: center;
-  transition: color .2s;
-}
-.lw-card-m.hidden {
-  color: var(--ink-mute);
-  font-style: italic;
-  letter-spacing: .04em;
-  opacity: .7;
-}
-
+/* Study mode reuses the Read (07) flashcard + list styles. */
 .lw-quiz {
   display: flex;
   flex-direction: column;
@@ -606,11 +560,14 @@ body {
 }
 .pick-r  { font-family: var(--mono); font-size: 10px; color: var(--ink-mute); }
 .pick.big { padding: 16px 6px; min-height: 92px; }
-.pick.big .pick-ti { font-size: 38px; min-height: 46px; }
+.pick.big .pick-ti { font-size: 38px; min-height: 54px; }
 .pick.big .pick-r  { font-size: 12px; margin-top: 4px; }
 .pick-name { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
 .pick-inherent { font-family: var(--serif); font-style: italic; color: var(--ink); }
-.vow-ti { letter-spacing: -.5em; padding-right: .3em; }
+/* The vowel mark composes onto the dotted circle (◌) natively; no negative
+   tracking hack. Extra line-height gives the above/below marks room so they
+   sit on the circle instead of being clipped. */
+.vow-ti { line-height: 1.4; }
 
 .vowel-ref { margin-bottom: 44px; }
 .vowel-ref h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; margin: 0 0 16px; letter-spacing: -.2px; }
@@ -622,7 +579,20 @@ body {
   border-radius: 2px;
   position: relative;
 }
-.ref-glyph { font-family: var(--ti); font-size: 64px; color: var(--maroon); line-height: 1; margin-bottom: 10px; }
+/* Centre the ka+mark in a tall slot with headroom above and below so gigu/
+   drengbu/naro (above) and shabkyu (below) stack on the letter without being
+   clipped by the line box, and so all four cards align. */
+.ref-glyph {
+  font-family: var(--ti);
+  font-size: 64px;
+  color: var(--maroon);
+  line-height: 1.25;
+  min-height: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
 .ref-name  { font-size: 22px; color: var(--ink); }
 .ref-namer { font-size: 11px; letter-spacing: .08em; color: var(--ink-mute); text-transform: uppercase; margin: 2px 0 10px; }
 .ref-hint  { font-size: 13.5px; color: var(--ink-soft); font-style: italic; line-height: 1.45; }
@@ -789,7 +759,37 @@ body {
   font-size: 12px;
   color: var(--ink-mute);
 }
-.trace-label { letter-spacing: .08em; text-transform: uppercase; font-size: 11px; }
+.trace-label { letter-spacing: .08em; text-transform: uppercase; font-size: 11px; color: var(--ink-mute); }
+
+/* Toolbar directly beneath the drawable screen */
+.trace-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.trace-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+.trace-tool-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.trace-brush {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 180px;
+  min-width: 160px;
+}
+.trace-brush input[type=range] { flex: 1; accent-color: var(--maroon); }
+.trace-tools .btn { flex: 0 0 auto; }
+.trace-tools .toggle { flex: 0 0 auto; }
 
 .trace-panel {
   background: var(--paper-deep);
@@ -814,9 +814,6 @@ body {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 4px;
-  max-height: 280px;
-  overflow-y: auto;
-  padding-right: 4px;
 }
 .letter-pill {
   background: var(--paper);
@@ -1036,21 +1033,36 @@ body {
   font-family: var(--serif);
   min-height: 170px;
 }
-.track-cell.placed { opacity: 1; }
-.track-cell:hover { transform: translateY(-1px); border-color: var(--ink-mute); }
+/* Each of the seven positions carries its own colour so the anatomy of the
+   syllable is legible at a glance — harmonised muted tones, not loud ones.
+   Defined generically so the detail panel below can reuse the same --c. */
+.c-prefix { --c: #5B6B7A; }   /* slate   */
+.c-super  { --c: #2F5D62; }   /* teal    */
+.c-root   { --c: #7A1F1F; }   /* maroon  */
+.c-sub    { --c: #9C6B12; }   /* amber   */
+.c-vowel  { --c: #6E3B5C; }   /* plum    */
+.c-suffix { --c: #5C6B2F; }   /* olive   */
+.c-post   { --c: #8A5A2B; }   /* brown   */
+
+.track-cell {
+  border-top: 2px solid transparent;
+}
+.track-cell.placed { opacity: 1; border-top-color: var(--c, var(--maroon)); }
+.track-cell:hover { transform: translateY(-1px); border-color: var(--ink-mute); border-top-color: var(--c, var(--maroon)); }
 .track-cell.sel {
-  border-color: var(--maroon);
+  border-color: var(--c, var(--maroon));
+  border-top-color: var(--c, var(--maroon));
   background: var(--paper);
-  box-shadow: inset 0 -2px 0 var(--maroon);
+  box-shadow: inset 0 -2px 0 var(--c, var(--maroon));
   opacity: 1;
 }
-.track-cell.silent .track-glyph { color: var(--ink-mute); }
+.track-cell.silent .track-glyph { opacity: .72; }
 .track-cell .track-pos { font-size: 10px; letter-spacing: .1em; color: var(--ink-mute); }
 .track-cell .track-glyph {
   font-family: var(--ti);
   font-size: 44px;
   line-height: 1;
-  color: var(--maroon);
+  color: var(--c, var(--maroon));
   margin: 4px 0 2px;
 }
 .track-cell .track-label { font-size: 12.5px; font-weight: 500; color: var(--ink); letter-spacing: -.1px; }
@@ -1068,6 +1080,7 @@ body {
 }
 .silent-pill { color: var(--ink-mute); background: transparent; }
 .sound-pill  { color: var(--paper); background: var(--maroon); border-color: var(--maroon); letter-spacing: .04em; text-transform: lowercase; font-size: 11px; }
+.track-cell .sound-pill { background: var(--c, var(--maroon)); border-color: var(--c, var(--maroon)); }
 
 /* Detail */
 .build-detail {
@@ -1080,13 +1093,13 @@ body {
   padding: 28px;
 }
 .detail-l { border-right: 1px solid var(--paper-edge); padding-right: 28px; }
-.dl-kicker { font-size: 10.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--maroon); }
+.dl-kicker { font-size: 10.5px; letter-spacing: .15em; text-transform: uppercase; color: var(--c, var(--maroon)); }
 .dl-label  { font-family: var(--serif); font-size: 28px; letter-spacing: -.3px; margin: 4px 0 4px; }
 .dl-names  { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; font-size: 14px; color: var(--ink-soft); }
 .dl-names .ti  { font-size: 18px; color: var(--ink); }
 .dl-names .mono { font-size: 12px; color: var(--ink-mute); letter-spacing: .04em; }
 .dl-gloss { font-style: italic; color: var(--ink-mute); }
-.dl-glyph { font-family: var(--ti); font-size: 110px; line-height: 1; color: var(--maroon); margin: 18px 0 6px; }
+.dl-glyph { font-family: var(--ti); font-size: 110px; line-height: 1; color: var(--c, var(--maroon)); margin: 18px 0 6px; }
 .dl-family { font-size: 11px; letter-spacing: .08em; color: var(--ink-mute); text-transform: uppercase; }
 .dl-state  {
   margin-top: 16px;
@@ -1097,7 +1110,7 @@ body {
   max-width: 100%;
 }
 .dl-state.is-silent  { color: var(--ink-mute); border: 1px dashed var(--paper-edge); }
-.dl-state.is-sounded { color: var(--paper); background: var(--maroon); }
+.dl-state.is-sounded { color: var(--paper); background: var(--c, var(--maroon)); }
 
 .detail-r .role {
   font-size: 16px;
@@ -1253,6 +1266,27 @@ body {
 }
 
 /* ────────────────── RULES VIEW ────────────────── */
+.rules-filter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-bottom: 22px;
+}
+.filter-label {
+  font-size: 10.5px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+/* Rules quiz prompts are multi-syllable spellings, not single glyphs — keep
+   them smaller with normal tracking so they never overflow the card. */
+.rules .quiz-ti {
+  font-size: 88px;
+  letter-spacing: 0;
+  line-height: 1.15;
+  word-break: keep-all;
+}
 .rules-layout {
   display: grid;
   grid-template-columns: 320px 1fr;
@@ -1483,7 +1517,14 @@ body {
   font-size: 38px;
   line-height: 1;
 }
-.pr-sep { margin-left: 1px; }
+/* The tshag (tsek ་) and shé । are part of the text, not faint punctuation,
+   so render them at full size in the same maroon as the script. */
+.pr-sep {
+  margin-left: 2px;
+  font-size: 1em;
+  color: var(--maroon);
+}
+.pr-line.clean .pr-sep { margin-left: 3px; }
 .pr-syl-r {
   font-size: 10px;
   letter-spacing: .04em;

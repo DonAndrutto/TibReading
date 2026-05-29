@@ -6,11 +6,12 @@ export default function LetterWords() {
   const [open, setOpen] = useState(true);
   const [mode, setMode] = useState('study');
 
-  // tap-to-reveal
-  const [revealed, setRevealed]   = useState({});
-  const [revealAll, setRevealAll] = useState(false);
-  const toggle = (i) => setRevealed(r => ({ ...r, [i]: !r[i] }));
-  const resetStudy = () => { setRevealed({}); setRevealAll(false); };
+  // tap-to-reveal — flashcard, mirrors the Read (07) section
+  const [fi, setFi] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const w = words[fi];
+  const prevFlash = () => { setFlipped(false); setFi(i => (i + words.length - 1) % words.length); };
+  const nextFlash = () => { setFlipped(false); setFi(i => (i + 1) % words.length); };
 
   // quiz
   const [qIdx, setQIdx]     = useState(0);
@@ -20,7 +21,7 @@ export default function LetterWords() {
   const quiz = words[qIdx];
 
   const options = useMemo(() => {
-    const pool = words.filter(w => w.r !== quiz.r);
+    const pool = words.filter(x => x.r !== quiz.r);
     const distractors = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
     return [...distractors, quiz].sort(() => Math.random() - 0.5);
   }, [qIdx]);
@@ -54,33 +55,48 @@ export default function LetterWords() {
           <p className="lw-lead">
             A handful of consonants are complete words on their own — just the bare
             letter and its inherent <em>-a</em>, with no vowel mark, subscript or
-            superscript. Tap a card to reveal its meaning, then test yourself.
+            superscript. Flip a card to reveal its meaning, then test yourself.
           </p>
 
           <div className="lw-tabs filter-row">
             <button className={'chip' + (mode === 'study' ? ' on' : '')} onClick={() => setMode('study')}>Tap to reveal</button>
             <button className={'chip' + (mode === 'quiz'  ? ' on' : '')} onClick={() => setMode('quiz')}>Quiz</button>
-            {mode === 'study' && (
-              <>
-                <button className="chip" onClick={() => setRevealAll(true)}>Reveal all</button>
-                <button className="chip" onClick={resetStudy}>Hide all</button>
-              </>
-            )}
           </div>
 
           {mode === 'study' && (
-            <div className="lw-grid">
-              {words.map((w, i) => {
-                const show = revealAll || !!revealed[i];
-                return (
-                  <button key={w.g} className={'lw-card' + (show ? ' open' : '')} onClick={() => toggle(i)}>
-                    <span className="lw-card-ti">{w.g}<span className="tsek">་</span></span>
-                    <span className="lw-card-r mono">{w.r}</span>
-                    <span className={'lw-card-m' + (show ? '' : ' hidden')}>{show ? w.m : 'tap to reveal'}</span>
+            <>
+              <div className="read-stage">
+                <div className={'flashcard' + (flipped ? ' is-revealed' : '')} onClick={() => setFlipped(f => !f)}>
+                  <div className="card-face card-front">
+                    <div className="card-num mono">{String(fi + 1).padStart(2, '0')} / {words.length}</div>
+                    <div className="card-ti">{w.g}<span className="tsek">་</span></div>
+                    <div className="card-hint mono">tap to reveal</div>
+                  </div>
+                  <div className="card-face card-back">
+                    <div className="card-r mono">{w.r}</div>
+                    <div className="card-m">{w.m}</div>
+                  </div>
+                </div>
+
+                <div className="read-nav">
+                  <button className="btn" onClick={prevFlash}>← prev</button>
+                  <button className="btn primary" onClick={() => setFlipped(f => !f)}>{flipped ? 'Hide' : 'Reveal'}</button>
+                  <button className="btn" onClick={nextFlash}>next →</button>
+                </div>
+              </div>
+
+              <div className="read-list">
+                {words.map((x, k) => (
+                  <button key={x.g}
+                    className={'list-card' + (k === fi ? ' on' : '')}
+                    onClick={() => { setFi(k); setFlipped(false); }}>
+                    <div className="lc-ti">{x.g}<span className="tsek">་</span></div>
+                    <div className="lc-r mono">{x.r}</div>
+                    <div className="lc-m">{x.m}</div>
                   </button>
-                );
-              })}
-            </div>
+                ))}
+              </div>
+            </>
           )}
 
           {mode === 'quiz' && (

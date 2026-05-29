@@ -37,7 +37,8 @@ src/
     VowelsView     # interactive consonant + vowel combiner
     StacksView     # sub/superscript stacks browser (tabbed: subscripts / superscripts)
     BuilderView    # step-by-step syllable assembler (animated) for བསྒྲུབས་
-    RulesView      # filterable spelling-to-sound rules with tap-to-reveal examples
+    RulesView      # spelling-to-sound rules: Browse (category filter + tap-to-reveal
+                   # examples) and Quiz (read-aloud multiple choice) modes
     TraceView      # canvas drawing pad for letter tracing with ghost-guide toggle
     ReadView       # flashcard + multiple-choice quiz over practiceWords
     ProverbsView   # syllable-by-syllable annotated proverbs/prayers

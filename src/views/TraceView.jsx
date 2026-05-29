@@ -7,7 +7,7 @@ const toneLabel = (t) =>
 export default function TraceView() {
   const [idx, setIdx] = useState(0);
   const [showGuide, setShowGuide] = useState(true);
-  const [stroke, setStroke] = useState(8);
+  const [stroke, setStroke] = useState(14);
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
   const lastRef = useRef({ x: 0, y: 0 });
@@ -95,8 +95,25 @@ export default function TraceView() {
               onMouseDown={start} onMouseMove={move} onMouseUp={end} onMouseLeave={end}
               onTouchStart={start} onTouchMove={move} onTouchEnd={end} />
           </div>
-          <div className="trace-meta">
+
+          {/* Controls sit directly beneath the drawable screen */}
+          <div className="trace-toolbar">
             <div className="trace-label mono">No. {String(c.n).padStart(2, '0')} · {c.r} · {toneLabel(c.t)}</div>
+            <div className="trace-tools">
+              <button className={'toggle' + (showGuide ? ' on' : '')}
+                onClick={() => setShowGuide(s => !s)}
+                title="Ghost guide" aria-label="Toggle ghost guide">
+                <span className="knob" />
+              </button>
+              <span className="trace-tool-label">Ghost</span>
+              <label className="trace-brush">
+                <span className="trace-tool-label">Brush</span>
+                <input type="range" min="2" max="20" value={stroke} onChange={(e) => setStroke(+e.target.value)} />
+                <span className="mono small">{stroke}px</span>
+              </label>
+              <button className="btn" onClick={clear}>Clear paper</button>
+              <button className="btn primary" onClick={() => setIdx((idx + 1) % 30)}>Next letter →</button>
+            </div>
           </div>
         </div>
 
@@ -113,23 +130,6 @@ export default function TraceView() {
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="panel-section controls">
-            <div className="panel-title">Tools</div>
-            <label className="ctl">
-              <span>Ghost guide</span>
-              <button className={'toggle' + (showGuide ? ' on' : '')} onClick={() => setShowGuide(s => !s)}>
-                <span className="knob" />
-              </button>
-            </label>
-            <label className="ctl">
-              <span>Brush</span>
-              <input type="range" min="2" max="20" value={stroke} onChange={(e) => setStroke(+e.target.value)} />
-              <span className="mono small">{stroke}px</span>
-            </label>
-            <button className="btn primary" onClick={clear}>Clear paper</button>
-            <button className="btn" onClick={() => setIdx((idx + 1) % 30)}>Next letter →</button>
           </div>
 
           <div className="panel-section tips">

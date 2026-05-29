@@ -54,6 +54,30 @@ export const TIBETAN_DATA = {
     { c: "ལ", v: "ོ", out: "ལོ", r: "lo",  gloss: "year / age" }
   ],
 
+  // Consonants that form a meaningful word on their own — a bare root letter
+  // with its inherent -a, no vowel mark, no sub/superscripts, no affixes.
+  letterWords: [
+    { g: "ཁ", r: "kha",  m: "mouth, surface, snow" },
+    { g: "ང", r: "nga",  m: "I, me" },
+    { g: "ཆ", r: "cha",  m: "part, pair, fraction" },
+    { g: "ཇ", r: "ja",   m: "tea" },
+    { g: "ཉ", r: "nya",  m: "fish" },
+    { g: "ཐ", r: "tha",  m: "end, edge" },
+    { g: "ད", r: "da",   m: "now" },
+    { g: "ན", r: "na",   m: "illness, to be sick, if" },
+    { g: "ཕ", r: "pha",  m: "father, beyond" },
+    { g: "བ", r: "ba",   m: "cow" },
+    { g: "མ", r: "ma",   m: "mother, negative particle (not)" },
+    { g: "ཚ", r: "tsha", m: "hot, heat, salt" },
+    { g: "ཝ", r: "wa",   m: "fox" },
+    { g: "ཟ", r: "za",   m: "to eat" },
+    { g: "ཡ", r: "ya",   m: "up, upper" },
+    { g: "ར", r: "ra",   m: "goat, enclosure" },
+    { g: "ལ", r: "la",   m: "mountain pass, to/at (locative particle)" },
+    { g: "ཤ", r: "sha",  m: "meat, flesh" },
+    { g: "ས", r: "sa",   m: "earth, ground, soil" }
+  ],
+
   subscripts: [
     {
       name: "yatak", mark: "ྱ", glyph: "ྱ",

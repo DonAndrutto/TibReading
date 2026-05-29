@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 import PaperTest from '../components/PaperTest.jsx';
+import LetterWords from '../components/LetterWords.jsx';
 
 const toneColor = (t) => {
   if (t === 'high') return 'var(--tone-high)';
@@ -119,6 +120,8 @@ export default function AlphabetView() {
           <div className="detail-kbd mono">use ← → ↑ ↓ to navigate</div>
         </aside>
       </div>
+
+      <LetterWords />
     </div>
   );
 }

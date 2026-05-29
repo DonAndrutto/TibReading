@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 import PaperTest from '../components/PaperTest.jsx';
-import LetterWords from '../components/LetterWords.jsx';
+import VocabCards from '../components/VocabCards.jsx';
 
 const toneColor = (t) => {
   if (t === 'high') return 'var(--tone-high)';
@@ -121,7 +121,17 @@ export default function AlphabetView() {
         </aside>
       </div>
 
-      <LetterWords />
+      <VocabCards
+        words={D.letterWords}
+        title="Words that are a single letter"
+        lead={
+          <>
+            A handful of consonants are complete words on their own — just the bare
+            letter and its inherent <em>-a</em>, with no vowel mark, subscript or
+            superscript. Flip a card to reveal its meaning, then test yourself.
+          </>
+        }
+      />
     </div>
   );
 }

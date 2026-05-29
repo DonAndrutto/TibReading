@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import VocabCards from '../components/VocabCards.jsx';
 
 export default function VowelsView() {
   const [cIdx, setCIdx] = useState(0);
@@ -95,6 +96,18 @@ export default function VowelsView() {
           ))}
         </div>
       </div>
+
+      <VocabCards
+        words={D.vowelWords}
+        title="Words from one consonant + one vowel"
+        lead={
+          <>
+            Once a single consonant takes a single vowel mark it can already be a
+            whole word — no subscript, superscript or suffix needed. Flip a card to
+            reveal its meaning, then test yourself.
+          </>
+        }
+      />
     </div>
   );
 }

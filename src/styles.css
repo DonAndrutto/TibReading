@@ -408,6 +408,121 @@ body {
   text-align: center;
 }
 
+/* ──────────── ALPHABET · single-letter words ──────────── */
+.letter-words {
+  margin-top: 52px;
+  border-top: 1px solid var(--paper-edge);
+  padding-top: 30px;
+}
+.lw-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+.lw-head-text { display: flex; flex-direction: column; gap: 4px; }
+.lw-kicker {
+  font-size: 11px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+.lw-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: -.3px;
+  line-height: 1.1;
+}
+.lw-chevron {
+  font-size: 26px;
+  line-height: 1;
+  color: var(--ink-mute);
+  transition: transform .25s, color .15s;
+  flex-shrink: 0;
+}
+.lw-chevron.open { transform: rotate(180deg); }
+.lw-head:hover .lw-chevron { color: var(--ink); }
+
+.lw-body { margin-top: 18px; }
+.lw-lead {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 64ch;
+  margin: 0 0 20px;
+}
+.lw-lead em { color: var(--maroon); font-style: italic; }
+.lw-tabs { margin-bottom: 18px; }
+
+.lw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+.lw-card {
+  background: var(--paper-deep);
+  border: 1px solid var(--paper-edge);
+  border-radius: 2px;
+  padding: 18px 16px 16px;
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--serif);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: background .15s, border-color .15s, transform .15s;
+}
+.lw-card:hover { background: var(--paper); border-color: var(--ink-mute); transform: translateY(-1px); }
+.lw-card.open  { border-color: var(--maroon); }
+.lw-card-ti {
+  font-family: var(--ti);
+  font-size: 46px;
+  line-height: 1.05;
+  color: var(--maroon);
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lw-card-r {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  color: var(--ink-soft);
+}
+.lw-card-m {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.4;
+  /* reserve room so revealing the meaning doesn't reflow the grid */
+  min-height: 2.8em;
+  display: flex;
+  align-items: center;
+  transition: color .2s;
+}
+.lw-card-m.hidden {
+  color: var(--ink-mute);
+  font-style: italic;
+  letter-spacing: .04em;
+  opacity: .7;
+}
+
+.lw-quiz {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 640px;
+}
+
 /* ────────────────── VOWELS ────────────────── */
 .combiner {
   display: grid;

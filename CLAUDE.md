@@ -30,8 +30,10 @@ src/
   components/
     Sidebar.jsx    # nav with hardcoded item list, receives tab + setTab props
     PaperTest.jsx  # animated SVG widget showing aspirated vs. unaspirated airflow
+    LetterWords.jsx # expandable single-letter-word section in AlphabetView (tap-to-reveal + quiz)
   views/
-    AlphabetView   # 30-consonant grid with detail panel; keyboard arrow navigation
+    AlphabetView   # 30-consonant grid with detail panel; keyboard arrow navigation;
+                   # ends with the <LetterWords> single-letter vocabulary section
     VowelsView     # interactive consonant + vowel combiner
     StacksView     # sub/superscript stacks browser (tabbed: subscripts / superscripts)
     BuilderView    # step-by-step syllable assembler (animated) for བསྒྲུབས་
@@ -50,6 +52,7 @@ src/
 - **subscript/superscript group**: `{ name, mark, glyph, desc, stacks: [{ s, r, gloss? }] }`
 - **rule**: `{ id, title, tag, desc, examples: [{ spell, reads, gloss?, suf? }] }`
 - **practiceWord**: `{ w, r, m }` — Tibetan word, romanization, meaning
+- **letterWord**: `{ g, r, m }` — single consonant that is itself a word: glyph, romanization, meaning
 - **proverb line syllable**: `{ t, r, g, note? }` — Tibetan glyph, reading, gloss, optional rule note
 - **builderWord.parts**: 7 positions describing the anatomy of a syllable — each part has `{ id, label, tib, rom, glyph, add, color, silent, sound, role, family }`
 

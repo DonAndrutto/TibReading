@@ -109,7 +109,7 @@ export default function BuilderView() {
             <span className="mono">· {active.rom}</span>
             {active.gloss && <span className="dl-gloss">{active.gloss}</span>}
           </div>
-          <div className="dl-glyph">{active.ghostGlyph || active.glyph}</div>
+          <div key={sel} className="dl-glyph glyph-anim">{active.ghostGlyph || active.glyph}</div>
           <div className="dl-family mono">{active.family}</div>
           <div className={'dl-state ' + (active.silent ? 'is-silent' : 'is-sounded')}>
             {active.silent ? 'Silent in pronunciation' : `Contributes the sound "${active.sound}"`}

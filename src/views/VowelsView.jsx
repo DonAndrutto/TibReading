@@ -27,7 +27,7 @@ export default function VowelsView() {
       <div className="combiner">
         <div className="combine-stage">
           <div className="stage-label">syllable</div>
-          <div className="stage-glyph">{out}་</div>
+          <div key={out} className="stage-glyph glyph-anim">{out}<span className="tsek">་</span></div>
           <div className="stage-roman mono">{rOut}</div>
         </div>
 
@@ -88,7 +88,7 @@ export default function VowelsView() {
               setCIdx(D.consonants.findIndex(cn => cn.g === e.c));
               setVIdx(D.vowels.findIndex(vv => vv.mark === e.v));
             }}>
-              <div className="word-ti">{e.out}་</div>
+              <div className="word-ti">{e.out}<span className="tsek">་</span></div>
               <div className="word-r mono">{e.r}</div>
               <div className="word-gloss">{e.gloss}</div>
             </div>

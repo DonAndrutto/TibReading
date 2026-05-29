@@ -235,6 +235,31 @@ body {
 .ti   { font-family: var(--ti); }
 .small { font-size: 11.5px; }
 
+/* Tibetan letters hang from a top "head line"; super/subscripts and the
+   u/i/e/o marks add height around it. The marks that *join* syllables —
+   the tsek ་ and the shé । — are punctuation, not letters, so render them
+   in muted ink at a slightly smaller size everywhere. This keeps the script
+   the visual focus and stops a full-size dot from throwing centred glyphs
+   off-axis. */
+.tsek, .she {
+  font-family: var(--ti);
+  color: var(--ink-mute);
+  font-size: .82em;
+  font-weight: 400;
+}
+
+/* Smooth swap for the large display glyphs that change as you navigate.
+   The element is re-mounted via a React key so the animation re-fires on
+   each change instead of snapping. */
+@keyframes glyph-in {
+  from { opacity: 0; transform: translateY(.05em) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+.glyph-anim { animation: glyph-in .26s cubic-bezier(.7, 0, .3, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .glyph-anim { animation: none; }
+}
+
 /* ────────────────── ALPHABET ────────────────── */
 .alpha-layout {
   display: grid;
@@ -295,8 +320,11 @@ body {
   font-size: 60px;
   line-height: 1;
   color: var(--maroon);
-  margin: 6px 0 2px;
+  margin: 0;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cell-r {
   font-family: var(--mono);
@@ -409,9 +437,13 @@ body {
   font-size: 200px;
   line-height: 1;
   color: var(--maroon);
-  margin: 38px 0 28px;
-  display: block;
-  transform: translateY(.18em);
+  margin: 32px 0;
+  /* Fixed, centred slot so the glyph holds its position whether the vowel
+     sits above (i/e/o) or below (u) the consonant — no vertical jump. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.5em;
 }
 .stage-roman {
   font-size: 22px;
@@ -447,10 +479,19 @@ body {
 .pick.on { background: var(--ink); border-color: var(--ink); }
 .pick.on .pick-ti, .pick.on .pick-name { color: var(--paper); }
 .pick.on .pick-r { color: var(--gold-soft); }
-.pick-ti { font-family: var(--ti); font-size: 22px; color: var(--maroon); line-height: 1; }
+.pick-ti {
+  font-family: var(--ti);
+  font-size: 22px;
+  color: var(--maroon);
+  line-height: 1;
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .pick-r  { font-family: var(--mono); font-size: 10px; color: var(--ink-mute); }
 .pick.big { padding: 16px 6px; min-height: 92px; }
-.pick.big .pick-ti { font-size: 38px; }
+.pick.big .pick-ti { font-size: 38px; min-height: 46px; }
 .pick.big .pick-r  { font-size: 12px; margin-top: 4px; }
 .pick-name { font-family: var(--serif); font-style: italic; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
 .pick-inherent { font-family: var(--serif); font-style: italic; color: var(--ink); }
@@ -491,7 +532,16 @@ body {
   transition: all .15s;
 }
 .word-card:hover { background: var(--paper); border-color: var(--ink-mute); transform: translateY(-1px); }
-.word-ti { font-family: var(--ti); font-size: 36px; color: var(--maroon); line-height: 1; }
+.word-ti {
+  font-family: var(--ti);
+  font-size: 36px;
+  color: var(--maroon);
+  line-height: 1.05;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .word-r  { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin: 6px 0 4px; letter-spacing: .04em; }
 .word-gloss { font-style: italic; color: var(--ink-mute); font-size: 13px; }
 
@@ -554,7 +604,16 @@ body {
   justify-content: center;
   gap: 6px;
 }
-.sc-ti { font-family: var(--ti); font-size: 56px; color: var(--maroon); line-height: 1; }
+.sc-ti {
+  font-family: var(--ti);
+  font-size: 56px;
+  color: var(--maroon);
+  line-height: 1.05;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .sc-r  { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); letter-spacing: .04em; }
 .sc-gloss { font-style: italic; color: var(--ink-mute); font-size: 12.5px; }
 
@@ -775,7 +834,16 @@ body {
 .list-card.on .lc-ti { color: var(--paper); }
 .list-card.on .lc-r { color: var(--gold-soft); }
 .list-card.on .lc-m { color: var(--paper); }
-.lc-ti { font-family: var(--ti); font-size: 40px; color: var(--maroon); line-height: 1; }
+.lc-ti {
+  font-family: var(--ti);
+  font-size: 40px;
+  color: var(--maroon);
+  line-height: 1.05;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .lc-r  { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin: 6px 0 4px; letter-spacing: .04em; }
 .lc-m  { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-mute); }
 
@@ -1258,9 +1326,9 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 6px 4px;
+  gap: 10px 0;
   font-size: 38px;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--maroon);
   margin-bottom: 14px;
 }
@@ -1268,17 +1336,16 @@ body {
   background: transparent;
   border: 1px solid transparent;
   border-radius: 4px;
-  padding: 4px 6px;
+  padding: 4px 4px 6px;
   cursor: pointer;
   font-family: var(--ti);
   color: var(--maroon);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
   line-height: 1;
-  transition: all .15s;
-  position: relative;
+  transition: background .15s, border-color .15s;
 }
 .pr-syl:hover {
   background: var(--paper);
@@ -1289,30 +1356,29 @@ body {
   border-color: var(--maroon);
   box-shadow: inset 0 -2px 0 var(--maroon);
 }
+/* Glyph + its trailing tsek/shé share one baseline-aligned row, so the
+   punctuation sits beside the letter instead of floating near the reading. */
+.pr-syl-glyph {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
 .pr-syl-ti {
   font-family: var(--ti);
   font-size: 38px;
   line-height: 1;
 }
+.pr-sep { margin-left: 1px; }
 .pr-syl-r {
   font-size: 10px;
   letter-spacing: .04em;
   color: var(--ink-soft);
-  min-height: 12px;
+  min-height: 12px;        /* reserved so revealing a reading never reflows the line */
   font-family: var(--mono);
   opacity: 0;
   transition: opacity .2s;
 }
 .pr-syl.reveal .pr-syl-r { opacity: 1; }
-.pr-tsek, .pr-shé {
-  position: absolute;
-  right: -8px;
-  bottom: 8px;
-  font-family: var(--ti);
-  font-size: 32px;
-  color: var(--ink-mute);
-  pointer-events: none;
-}
 .pr-line.clean .pr-syl { gap: 0; }
 .pr-line.clean .pr-syl-r { display: none; }
 .pr-line.clean { font-size: 44px; }
@@ -1364,6 +1430,7 @@ body {
   line-height: 1;
   color: var(--paper);
 }
+.pr-detail-ti .tsek { color: var(--gold-soft); }
 .pr-detail .dl { padding: 0; border: none; grid-template-columns: 100px 1fr; }
 .pr-detail .dl dt { color: var(--gold-soft); }
 .pr-detail .dl dd { color: var(--paper); }

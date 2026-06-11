@@ -101,7 +101,7 @@ export default function VocabCards({ words, title, lead, defaultOpen = true }) {
               <div className="quiz-scoreboard">
                 <div className="qs-block"><div className="qs-num">{score.right}</div><div className="qs-label mono">correct</div></div>
                 <div className="qs-block"><div className="qs-num">{score.wrong}</div><div className="qs-label mono">missed</div></div>
-                <div className="qs-block"><div className="qs-num">{streak}</div><div className="qs-label mono">streak</div></div>
+                <div className="qs-block"><div className={'qs-num' + (streak >= 3 ? ' hot' : '')}>{streak}</div><div className="qs-label mono">{streak >= 3 ? 'streak ✦' : 'streak'}</div></div>
                 <button className="btn qs-reset" onClick={resetQuiz}>↺ Reset</button>
               </div>
 

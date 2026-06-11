@@ -18,7 +18,28 @@
   --serif: "EB Garamond", "Cormorant Garamond", Georgia, serif;
   --ti:    "Noto Serif Tibetan", "Noto Sans Tibetan", "Microsoft Himalaya", "Jomolhari", serif;
   --mono:  "JetBrains Mono", "Iosevka", ui-monospace, monospace;
+
+  /* Shared elevation for raised panels and cards — warm ink, very diffuse,
+     so depth reads as paper layers rather than a UI drop shadow. */
+  --shadow-soft:  0 1px 0 rgba(122,31,31,.04), 0 14px 34px -26px rgba(42,26,15,.35);
+  --shadow-hover: 0 1px 0 rgba(122,31,31,.05), 0 10px 24px -14px rgba(42,26,15,.3);
 }
+
+::selection { background: var(--maroon); color: var(--paper); }
+
+/* One consistent, visible keyboard-focus ring everywhere (the views are
+   almost entirely buttons). Mouse clicks don't trigger it. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Scrollbars in palette colours instead of the browser's grey. */
+* { scrollbar-width: thin; scrollbar-color: var(--gold-soft) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--gold-soft); border-radius: 999px; }
+*::-webkit-scrollbar-track { background: transparent; }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
@@ -99,15 +120,19 @@ body {
   cursor: pointer;
   text-align: left;
   color: var(--ink-soft);
-  transition: background .15s, color .15s;
+  transition: background .15s, color .15s, transform .15s, box-shadow .15s;
   border-left: 2px solid transparent;
 }
-.nav-item:hover { background: rgba(122,31,31,.05); color: var(--ink); }
+.nav-item:hover { background: rgba(122,31,31,.05); color: var(--ink); transform: translateX(3px); }
+.nav-item .nav-ti { transition: transform .2s cubic-bezier(.25,.8,.35,1); }
+.nav-item:hover .nav-ti { transform: scale(1.12); }
 .nav-item.is-active {
   background: var(--paper);
   border-left: 2px solid var(--maroon);
   color: var(--ink);
+  box-shadow: var(--shadow-hover);
 }
+.nav-item.is-active .nav-ti { transform: scale(1.08); }
 .nav-num {
   font-family: var(--mono);
   font-size: 10px;
@@ -157,6 +182,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Each view mounts fresh when the tab changes, so this entrance plays on
+   every navigation — a quiet rise, like turning a page. */
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.view { animation: view-in .4s cubic-bezier(.25, .8, .35, 1) both; }
+
 .view-head {
   display: flex;
   flex-wrap: wrap;
@@ -165,7 +198,17 @@ body {
   gap: 24px;
   margin-bottom: 28px;
   padding-bottom: 18px;
-  border-bottom: 1px solid var(--paper-edge);
+  position: relative;
+}
+/* Ornamental rule under each view header: maroon fading through gold into
+   the paper, in place of a flat hairline. */
+.view-head::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--maroon) 0%, var(--gold-soft) 34%, var(--paper-edge) 70%, transparent 100%);
+  border-radius: 1px;
 }
 .kicker {
   font-family: var(--mono);
@@ -237,10 +280,25 @@ body {
   border-color: var(--ink);
   box-shadow: 0 1px 0 rgba(42,26,15,.12);
 }
+.chip:active { transform: scale(.96); }
 
 .mono { font-family: var(--mono); }
 .ti   { font-family: var(--ti); }
 .small { font-size: 11.5px; }
+
+/* The big framed panels float just above the page as a second paper layer. */
+.detail, .combine-stage, .stack-detail, .trace-panel, .trace-frame,
+.quiz-prompt, .quiz-scoreboard, .rules-detail, .pr-line-block,
+.build-stage, .build-detail, .pr-detail {
+  box-shadow: var(--shadow-soft);
+}
+
+/* Card-like tappables share a hover lift + shadow for consistent feedback. */
+.word-card:hover, .list-card:hover, .rd-card:hover, .pr-tab:hover,
+.pick:hover, .stack-row:hover, .rule-row:hover, .letter-pill:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
 
 /* Tibetan letters hang from a top "head line"; super/subscripts and the
    u/i/e/o marks add height around it. The marks that *join* syllables —
@@ -264,7 +322,8 @@ body {
 }
 .glyph-anim { animation: glyph-in .26s cubic-bezier(.7, 0, .3, 1); }
 @media (prefers-reduced-motion: reduce) {
-  .glyph-anim { animation: none; }
+  .glyph-anim, .view, .alpha-grid .row,
+  .quiz-opt.right, .quiz-opt.wrong, .qs-num.hot { animation: none; }
 }
 
 /* ────────────────── ALPHABET ────────────────── */
@@ -305,8 +364,21 @@ body {
 .cell:hover {
   background: var(--paper);
   border-color: var(--ink-mute);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
 }
+.cell:hover .cell-ti { transform: scale(1.06); }
+.cell .cell-ti { transition: transform .18s ease; }
+
+/* Rows of the consonant grid rise in one after another on mount. */
+.alpha-grid .row { animation: view-in .45s cubic-bezier(.25,.8,.35,1) both; }
+.alpha-grid .row:nth-child(2) { animation-delay: .04s; }
+.alpha-grid .row:nth-child(3) { animation-delay: .08s; }
+.alpha-grid .row:nth-child(4) { animation-delay: .12s; }
+.alpha-grid .row:nth-child(5) { animation-delay: .16s; }
+.alpha-grid .row:nth-child(6) { animation-delay: .2s;  }
+.alpha-grid .row:nth-child(7) { animation-delay: .24s; }
+.alpha-grid .row:nth-child(8) { animation-delay: .28s; }
 .cell.is-sel {
   background: var(--ink);
   border-color: var(--ink);
@@ -650,6 +722,7 @@ body {
   border-radius: 2px;
   cursor: pointer;
   text-align: left;
+  transition: all .15s;
 }
 .stack-row:hover { background: var(--paper); }
 .stack-row.on   { background: var(--ink); border-color: var(--ink); color: var(--paper); }
@@ -825,6 +898,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  transition: all .15s;
 }
 .letter-pill:hover { border-color: var(--ink-mute); }
 .letter-pill.on { background: var(--ink); border-color: var(--ink); }
@@ -900,6 +974,9 @@ body {
   cursor: pointer;
   perspective: 1500px;
 }
+.flashcard:hover .card-face {
+  box-shadow: 0 1px 0 rgba(122,31,31,.05), 0 26px 50px -28px rgba(42,26,15,.45);
+}
 .card-face {
   position: absolute;
   inset: 0;
@@ -912,7 +989,7 @@ body {
   justify-content: center;
   padding: 32px;
   backface-visibility: hidden;
-  transition: transform .6s cubic-bezier(.7, 0, .3, 1);
+  transition: transform .6s cubic-bezier(.7, 0, .3, 1), box-shadow .25s ease;
   box-shadow: 0 1px 0 rgba(122,31,31,.04), 0 18px 40px -28px rgba(42,26,15,.35);
 }
 .card-back { transform: rotateY(180deg); }
@@ -1692,9 +1769,29 @@ body {
   transform: translateY(-1px);
 }
 .quiz-opt:disabled { cursor: default; }
-.quiz-opt.right { border-color: var(--teal); background: rgba(47,93,98,.08); }
-.quiz-opt.wrong { border-color: var(--maroon); background: rgba(122,31,31,.08); }
+.quiz-opt.right { border-color: var(--teal); background: rgba(47,93,98,.08); animation: opt-pop .35s cubic-bezier(.25,.8,.35,1); }
+.quiz-opt.wrong { border-color: var(--maroon); background: rgba(122,31,31,.08); animation: opt-shake .4s ease; }
 .quiz-opt.dim { opacity: .45; }
+
+/* Answer feedback: the correct card swells briefly, a miss shudders. */
+@keyframes opt-pop {
+  0%  { transform: scale(1); }
+  45% { transform: scale(1.025); }
+  100%{ transform: scale(1); }
+}
+@keyframes opt-shake {
+  10%, 90%      { transform: translateX(-1px); }
+  20%, 80%      { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60%      { transform: translateX(3px); }
+}
+
+/* Three or more right in a row: the streak counter catches fire in gold. */
+.qs-num.hot {
+  color: var(--gold);
+  text-shadow: 0 0 14px rgba(184,134,11,.4);
+  animation: opt-pop .35s cubic-bezier(.25,.8,.35,1);
+}
 .qo-r { font-size: 18px; color: var(--ink); letter-spacing: .04em; }
 .qo-m { font-style: italic; color: var(--ink-soft); font-size: 14px; }
 .qo-tag {
@@ -1724,3 +1821,21 @@ body {
   .detail-glyph-wrap { grid-template-columns: 1fr; justify-items: center; gap: 12px; }
   .detail-glyph-wrap .detail-glyph { font-size: 140px; }
 }
+
+/* ────────────────── Press feedback ──────────────────
+   Every tappable surface gives slightly under the finger. Declared last so
+   :active wins over the per-component :hover transforms above. */
+.btn:active,
+.cell:active,
+.pick:active,
+.word-card:active,
+.list-card:active,
+.rd-card:active,
+.pr-tab:active,
+.pr-syl:active,
+.letter-pill:active,
+.stack-row:active,
+.rule-row:active,
+.track-cell:active,
+.quiz-opt:active:not(:disabled) { transform: translateY(0) scale(.985); box-shadow: none; }
+.nav-item:active { transform: translateX(3px) scale(.985); }

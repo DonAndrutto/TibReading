@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar.jsx';
 import AlphabetView from './views/AlphabetView.jsx';
 import VowelsView from './views/VowelsView.jsx';
@@ -11,6 +11,7 @@ import ProverbsView from './views/ProverbsView.jsx';
 
 export default function App() {
   const [tab, setTab] = useState('alphabet');
+  useEffect(() => { window.scrollTo(0, 0); }, [tab]);
   return (
     <div className="app" data-screen-label={'00 ' + tab}>
       <Sidebar tab={tab} setTab={setTab} />

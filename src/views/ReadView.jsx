@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 
 export default function ReadView() {
@@ -7,8 +7,26 @@ export default function ReadView() {
   const [revealed, setRevealed] = useState(false);
   const word = D.practiceWords[i];
 
-  const next = () => { setRevealed(false); setI((i + 1) % D.practiceWords.length); };
-  const prev = () => { setRevealed(false); setI((i + D.practiceWords.length - 1) % D.practiceWords.length); };
+  const next = () => { setRevealed(false); setI(x => (x + 1) % D.practiceWords.length); };
+  const prev = () => { setRevealed(false); setI(x => (x + D.practiceWords.length - 1) % D.practiceWords.length); };
+
+  // Flashcards work from the keyboard too: ← → to move, space/enter to flip.
+  // Skip enter/space when a button has focus so it doesn't double-fire.
+  useEffect(() => {
+    if (mode !== 'flash') return;
+    const onKey = (e) => {
+      const tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight') next();
+      else if (e.key === 'ArrowLeft') prev();
+      else if ((e.key === ' ' || e.key === 'Enter') && tag !== 'BUTTON') {
+        e.preventDefault();
+        setRevealed(r => !r);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mode]);
 
   const [qIdx, setQIdx] = useState(0);
   const [score, setScore] = useState({ right: 0, wrong: 0 });
@@ -72,7 +90,7 @@ export default function ReadView() {
               <div className="card-face card-front">
                 <div className="card-num mono">{String(i + 1).padStart(2, '0')} / {D.practiceWords.length}</div>
                 <div className="card-ti">{word.w}<span className="tsek">་</span></div>
-                <div className="card-hint mono">tap to reveal</div>
+                <div className="card-hint mono">tap or press space to reveal · ← → to move</div>
               </div>
               <div className="card-face card-back">
                 <div className="card-r mono">{word.r}</div>
@@ -115,8 +133,8 @@ export default function ReadView() {
               <div className="qs-label mono">missed</div>
             </div>
             <div className="qs-block">
-              <div className="qs-num">{streak}</div>
-              <div className="qs-label mono">streak</div>
+              <div className={'qs-num' + (streak >= 3 ? ' hot' : '')}>{streak}</div>
+              <div className="qs-label mono">{streak >= 3 ? 'streak ✦' : 'streak'}</div>
             </div>
             <button className="btn qs-reset" onClick={resetQuiz}>↺ Reset</button>
           </div>

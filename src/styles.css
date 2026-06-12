@@ -1822,6 +1822,324 @@ body {
   .detail-glyph-wrap .detail-glyph { font-size: 140px; }
 }
 
+/* ────────────────── INTRO VIEW ────────────────── */
+.intro-section {
+  margin-top: 48px;
+  padding-top: 30px;
+  border-top: 1px solid var(--paper-edge);
+}
+.intro-sec-kicker {
+  font-size: 11px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  margin-bottom: 6px;
+}
+.intro-sec-kicker .ti { font-size: 14px; text-transform: none; letter-spacing: 0; }
+.intro-sec-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 30px;
+  letter-spacing: -.4px;
+  line-height: 1.15;
+  margin: 0;
+}
+.intro-sec-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-mute);
+  margin: 4px 0 18px;
+}
+.intro-prose p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 72ch;
+  margin: 0 0 14px;
+}
+.intro-prose p:last-child { margin-bottom: 0; }
+.intro-sub-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: -.2px;
+  margin: 28px 0 10px;
+}
+
+.intro-arch-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 22px 0 6px;
+}
+.intro-card {
+  background: var(--paper-deep);
+  border: 1px solid var(--paper-edge);
+  border-radius: 2px;
+  padding: 24px;
+}
+.intro-card-kicker {
+  font-size: 10.5px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 6px;
+}
+.intro-card-kicker .ti { font-size: 14px; letter-spacing: 0; color: var(--maroon); }
+.intro-card-ti {
+  font-family: var(--ti);
+  font-size: 30px;
+  color: var(--maroon);
+  line-height: 1.5;
+}
+.intro-card h3, .sum-card h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: -.2px;
+  margin: 4px 0 10px;
+}
+.intro-card p, .sum-card p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+.intro-card p:last-child { margin-bottom: 0; }
+
+.invented-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.invented-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: 2px;
+  padding: 8px 12px;
+  min-width: 52px;
+}
+.invented-pill .ti { font-size: 26px; color: var(--maroon); line-height: 1.2; }
+.invented-pill .mono { font-size: 10px; color: var(--ink-mute); }
+.invented-note {
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 10px;
+}
+
+.intro-marks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.intro-mark {
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: 2px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.intro-mark-ti { font-family: var(--ti); font-size: 30px; line-height: 1.4; color: var(--maroon); }
+.intro-mark-name { font-size: 13px; color: var(--ink); margin-top: 2px; }
+.intro-mark-name .mono { font-size: 10.5px; color: var(--ink-soft); }
+.intro-mark-pos {
+  font-size: 9.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 3px;
+}
+
+/* The five modifier positions reuse the builder's per-position colours
+   (.c-super, .c-sub, …) so the anatomy reads the same across views. */
+.intro-pos-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 18px 0;
+}
+.intro-pos {
+  background: var(--paper-deep);
+  border: 1px solid var(--paper-edge);
+  border-top: 2px solid var(--c, var(--maroon));
+  border-radius: 2px;
+  padding: 14px 12px;
+}
+.intro-pos-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+.intro-pos-ti { font-family: var(--ti); font-size: 17px; color: var(--c, var(--maroon)); margin-top: 2px; }
+.intro-pos-wylie { font-size: 10px; color: var(--ink-mute); letter-spacing: .06em; }
+.intro-pos-desc {
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  margin-top: 6px;
+}
+
+/* Foundational texts: the Sum cu pa card is a button that unrolls the root
+   text in verse beneath the grid. */
+.sumtag-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 22px;
+}
+.sum-card {
+  background: var(--paper-deep);
+  border: 1px solid var(--paper-edge);
+  border-radius: 2px;
+  padding: 24px;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--serif);
+  color: var(--ink);
+  transition: all .18s ease;
+}
+.sum-card:hover {
+  background: var(--paper);
+  border-color: var(--ink-mute);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+.sum-card.open {
+  background: var(--paper);
+  border-color: var(--maroon);
+  box-shadow: inset 0 -2px 0 var(--maroon);
+}
+.sum-card-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--paper-edge);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+.sum-card-foot .lw-chevron { font-size: 18px; margin-left: auto; color: var(--maroon); }
+
+.sum-scroll {
+  margin-top: 16px;
+  background: var(--paper-deep);
+  border: 1px solid var(--paper-edge);
+  border-radius: 2px;
+  padding: 36px 40px 28px;
+  box-shadow: var(--shadow-soft);
+  animation: view-in .4s cubic-bezier(.25, .8, .35, 1) both;
+}
+.sum-head {
+  text-align: center;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--paper-edge);
+}
+.sum-head-ti {
+  font-family: var(--ti);
+  font-size: 26px;
+  line-height: 2;
+  color: var(--maroon);
+  max-width: 36ch;
+  margin: 0 auto;
+}
+.sum-head-en {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  line-height: 1.55;
+  margin-top: 14px;
+}
+.sum-head-author {
+  font-size: 10.5px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 10px;
+}
+.sum-toolbar { justify-content: center; margin: 18px 0 4px; }
+
+.sum-verse {
+  padding: 22px 0;
+  border-bottom: 1px dashed var(--paper-edge);
+}
+.sum-verse:last-child { border-bottom: none; padding-bottom: 6px; }
+.sum-verse-label {
+  font-size: 10px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.sum-verse-num { color: var(--ink-mute); }
+.sum-verse-ti {
+  font-family: var(--ti);
+  font-size: 24px;
+  line-height: 2.05;
+  color: var(--maroon);
+  max-width: 62ch;
+}
+.sum-verse-en { margin-top: 10px; }
+/* Hanging indent keeps each rhyme line readable when it wraps. */
+.sum-line {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 68ch;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+
+/* Pedagogy: then & now, side by side. */
+.peda-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+.peda-col {
+  background: var(--paper-deep);
+  border: 1px solid var(--paper-edge);
+  border-radius: 2px;
+  padding: 24px;
+}
+.peda-col h3 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: -.2px;
+  margin: 0 0 6px;
+}
+.peda-note {
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-mute);
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+.peda-item {
+  padding: 14px 0 2px;
+  border-top: 1px dashed var(--paper-edge);
+  margin-top: 12px;
+}
+.peda-name { font-size: 15.5px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.peda-desc { font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+
+@media (max-width: 1100px) {
+  .intro-pos-list { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .intro-arch-grid, .sumtag-grid, .peda-grid { grid-template-columns: 1fr; }
+  .intro-pos-list { grid-template-columns: repeat(2, 1fr); }
+  .intro-marks { grid-template-columns: repeat(2, 1fr); }
+  .sum-scroll { padding: 24px 20px; }
+}
+
 /* ────────────────── Press feedback ──────────────────
    Every tappable surface gives slightly under the finger. Declared last so
    :active wins over the per-component :hover transforms above. */
@@ -1834,6 +2152,7 @@ body {
 .pr-tab:active,
 .pr-syl:active,
 .letter-pill:active,
+.sum-card:active,
 .stack-row:active,
 .rule-row:active,
 .track-cell:active,

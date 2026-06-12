@@ -1,5 +1,6 @@
 export default function Sidebar({ tab, setTab }) {
   const items = [
+    { id: 'intro',    label: 'Intro',     sub: 'history of the script', ti: 'ཨ'   },
     { id: 'alphabet', label: 'Alphabet',  sub: '30 consonants',         ti: 'ཀ'   },
     { id: 'vowels',   label: 'Vowels',    sub: '4 marks · combiner',    ti: 'ི'   },
     { id: 'stacks',   label: 'Stacks',    sub: 'sub- & superscripts',   ti: 'རྒྱ' },

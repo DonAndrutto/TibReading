@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar.jsx';
+import IntroView from './views/IntroView.jsx';
 import AlphabetView from './views/AlphabetView.jsx';
 import VowelsView from './views/VowelsView.jsx';
 import StacksView from './views/StacksView.jsx';
@@ -10,12 +11,13 @@ import ReadView from './views/ReadView.jsx';
 import ProverbsView from './views/ProverbsView.jsx';
 
 export default function App() {
-  const [tab, setTab] = useState('alphabet');
+  const [tab, setTab] = useState('intro');
   useEffect(() => { window.scrollTo(0, 0); }, [tab]);
   return (
     <div className="app" data-screen-label={'00 ' + tab}>
       <Sidebar tab={tab} setTab={setTab} />
       <main className="main">
+        {tab === 'intro'    && <IntroView />}
         {tab === 'alphabet' && <AlphabetView />}
         {tab === 'vowels'   && <VowelsView />}
         {tab === 'stacks'   && <StacksView />}

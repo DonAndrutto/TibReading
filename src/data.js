@@ -589,6 +589,436 @@ export const TIBETAN_DATA = {
     }
   ],
 
+  // History & origins of the script, plus the Sum cu pa root text in verse —
+  // shown on the Intro view.
+  intro: {
+    lead: "Before the letters, the story. How a 7th-century minister built an alphabet for Tibet, the architecture he gave it, the two treatises that fixed its grammar — and how Tibetans have learned to read it ever since.",
+
+    genesis: {
+      kicker: "7th century · the empire of Songtsen Gampo",
+      title: "The Genesis of the Tibetan Script",
+      subtitle: "Thonmi Sambhota and the 7th Century",
+      paras: [
+        "The development of the Tibetan writing system is historically pinpointed to the 7th century during the reign of King Songtsen Gampo, the founder of the Tibetan Empire. Recognizing the administrative and cultural limitations of an oral society — particularly for diplomacy, taxation, and the translation of newly arriving Buddhist texts — the king sought a formal written language.",
+        "According to traditional historiography, Songtsen Gampo dispatched a group of young scholars to India to study linguistics and script. Among them, only Thonmi Sambhota survived the perilous journey across the Himalayas and the intense Indian heat. Studying under Indian masters like Devavidyasimha (often referred to in Tibetan as Lipi-kara, the script-maker), Thonmi Sambhota mastered Sanskrit phonology and various Indic scripts.",
+        "Upon returning to Tibet, he did not simply copy an Indian alphabet; he engineered a completely new writing system tailored to the unique phonetic demands of the Tibetan language, primarily basing it on the Late Brahmi or Gupta scripts of North India."
+      ]
+    },
+
+    architecture: {
+      kicker: "an engineered abugida",
+      title: "The Architecture of the Script",
+      subtitle: "Consonants and Vowels",
+      lead: "The genius of the Tibetan script lies in its highly structured, syllabic framework. Thonmi Sambhota designed an abugida — a segmental writing system where consonant-vowel sequences are written as units.",
+      consonants: {
+        title: "The 30 Consonants",
+        tib: "གསལ་བྱེད",
+        wylie: "gsal byed",
+        desc: "He identified 30 base consonants required for the Tibetan language. Because Tibetan possessed sounds that did not exist in Sanskrit, he invented six new characters: ca, cha, ja, zha, za, and 'a (the a-chung). The consonants are organized systematically by point of articulation (velar, palatal, dental, labial) and aspiration.",
+        invented: [
+          { g: "ཅ", r: "ca"  },
+          { g: "ཆ", r: "cha" },
+          { g: "ཇ", r: "ja"  },
+          { g: "ཞ", r: "zha" },
+          { g: "ཟ", r: "za"  },
+          { g: "འ", r: "'a"  }
+        ],
+        inventedNote: "the six letters invented for sounds Sanskrit lacked"
+      },
+      vowels: {
+        title: "The 4 Vowel Marks",
+        tib: "དབྱངས",
+        wylie: "dbyangs",
+        desc: "Like Sanskrit, every base consonant carries an inherent “a” sound. To change this vowel, one of four diacritical marks is added to the base letter:",
+        marks: [
+          { name: "Gi-gu",     sound: "i", pos: "above", mark: "ི" },
+          { name: "Zhabs-kyu", sound: "u", pos: "below", mark: "ུ" },
+          { name: "'Greng-bu", sound: "e", pos: "above", mark: "ེ" },
+          { name: "Na-ro",     sound: "o", pos: "above", mark: "ོ" }
+        ]
+      },
+      spelling: {
+        title: "Two-Dimensional Spelling",
+        intro: "Unlike the linear left-to-right flow of the Latin alphabet, Tibetan is built around a “root letter” (ming gzhi). This root letter can be modified by:",
+        positions: [
+          { id: "super",  name: "Superscripts",  tib: "མགོ་ཅན",    wylie: "mgo can",   desc: "Letters stacked above." },
+          { id: "sub",    name: "Subscripts",    tib: "འདོགས་ཅན",  wylie: "'dogs can", desc: "Letters appended below." },
+          { id: "prefix", name: "Prefixes",      tib: "སྔོན་འཇུག",  wylie: "sngon 'jug", desc: "Letters placed before the root." },
+          { id: "suffix", name: "Suffixes",      tib: "རྗེས་འཇུག",  wylie: "rjes 'jug",  desc: "Letters placed after the root." },
+          { id: "post",   name: "Post-suffixes", tib: "ཡང་འཇུག",   wylie: "yang 'jug",  desc: "A second suffix." }
+        ],
+        outro: "This creates complex, stacked syllable blocks. While the pronunciation of modern Central Tibetan has drifted significantly from the 7th-century orthography (rendering many prefixes and suffixes silent, though they alter the tone and vowel sound), the spelling has remained rigidly conservative."
+      }
+    },
+
+    texts: {
+      kicker: "the sumtag · སུམ་རྟགས",
+      title: "The Foundational Texts",
+      subtitle: "Sum cu pa and Rtags kyi 'jug pa",
+      lead: "To establish the rules of this new literary language, Thonmi Sambhota is credited with authoring several treatises, of which two survived and became the bedrock of Tibetan grammatical study. Collectively, they are often referred to as Sumtag (Sum rtags).",
+      sumchupaCard: {
+        wylie: "Sum cu pa",
+        tib: "སུམ་ཅུ་པ",
+        en: "The Thirty Verses",
+        desc: "This text primarily addresses the morphology of the language. It outlines the 30 consonants and the vowel signs, and most importantly, it details the usage of Tibetan grammatical particles (phrad). It explains how case markers (ergative, genitive, locative, etc.) are applied depending on the final letter of the preceding syllable."
+      },
+      tagjugCard: {
+        wylie: "Rtags kyi 'jug pa",
+        tib: "རྟགས་ཀྱི་འཇུག་པ",
+        en: "The Application of Gender Signs",
+        desc: "This is a more complex phonetic and phonological treatise. It categorizes the letters — specifically the prefixes and suffixes — into “genders” (masculine, feminine, neuter, very feminine, and barren). These categorizations have nothing to do with biological gender; instead, they represent phonetic properties such as strength, aspiration, and voicing. The text dictates the complex rules of which prefixes can precede which root letters, and how suffixes alter the pronunciation and grammatical function of a word (e.g., forming verbs or nominalizing)."
+      }
+    },
+
+    pedagogy: {
+      kicker: "then & now",
+      title: "Pedagogy",
+      subtitle: "Historical vs. Modern Learning",
+      historical: {
+        title: "Historical Learning Methods",
+        note: "Historically, literacy was primarily the domain of monasteries and the aristocracy.",
+        items: [
+          {
+            name: "The Jang-shing (Practice Board)",
+            desc: "Paper was expensive. Novices learned to write using a wooden board dusted with chalk powder or fine sand. They would write with a bamboo stylus, wipe it clean, and start again."
+          },
+          {
+            name: "Chanted Spelling (Jor-log)",
+            desc: "Tibetan is learned through a highly rhythmic, chanted spelling system. A student does not just read a word; they recite its entire structural assembly. For example, to read the word bsgrubs (accomplished), a student chants: ba-o sa-ga-tag ga-ra-ta dra-zhabs-kyu dru-ba-sa drub."
+          },
+          {
+            name: "Rote Memorization",
+            desc: "Students were required to memorize the Sumtag texts in their entirety before they were taught the meaning of the verses. Grammar was internalized audibly and rhythmically before it was understood intellectually."
+          }
+        ]
+      },
+      modern: {
+        title: "Modern Learning Methods",
+        note: "The script has fully transitioned into the present — but not everything old was replaced.",
+        items: [
+          {
+            name: "Standardization and Whiteboards",
+            desc: "The sbyang shing has been largely replaced by whiteboards, notebooks, and digital tools."
+          },
+          {
+            name: "The Persistence of Sbyor klog",
+            desc: "Despite modernization, the traditional chanted spelling method remains the primary way Tibetans learn to read. It is highly effective for internalizing the complex two-dimensional spelling rules."
+          },
+          {
+            name: "Integrated Language Acquisition",
+            desc: "Modern curricula, especially for non-native speakers or in secular Tibetan schools, integrate grammar with vocabulary and conversational practice immediately, rather than forcing years of rote memorization of the Sum rtags before translation begins."
+          },
+          {
+            name: "Digital Accessibility",
+            desc: "The script has fully transitioned into the digital age. Keyboards, automated phonetic translators, and digital manuscript repositories allow students to analyze root letters and suffixes instantly, bypassing the need to manually compute the “gender” rules of Rtags kyi 'jug pa for basic reading."
+          }
+        ]
+      }
+    },
+
+    // The Essence of the Thirty Verses (Sum cu pa'i snying po) by Yangchen
+    // Drubpey Dorje — root text with a rhymed English translation, verse by
+    // verse. First entry is the homage, last the colophon; the body verses
+    // in between are numbered when rendered.
+    sumchupa: {
+      titleTib: "༄།། སུམ་ཅུ་པའི་སྙིང་པོ་ལེགས་བཤད་ལྗོན་པའི་དབང་པོ་ཞེས་བྱ་བ་བཞུགས་སོ། །དབྱངས་ཅན་གྲུབ་པའི་རྡོ་རྗེས་མཛད།།",
+      titleEn: [
+        "The Essence of the Thirty, beautifully displayed,",
+        "The Lordly Tree of Eloquence, herein is laid."
+      ],
+      author: "Composed by Yangchen Drubpey Dorje",
+      verses: [
+        {
+          label: "Homage",
+          tib: "༄།། ན་མོ་གུ་རུ་མཉྫུ་གྷོ་ཥཱ་ཡ། །བླ་མ་མཆོག་དང་དབྱེར་མེད་པའི། །འཇམ་དཔལ་དབྱངས་ལ་གུས་བཏུད་ནས། །ཐོན་མིའི་ལེགས་བཤད་སུམ་ཅུ་པའི། །སྙིང་པོ་མདོར་བསྡུས་བཤད་པར་བྱ། །",
+          en: [
+            "Namo Guru Mañjughoṣāya! To the supreme Guru, who is never set apart",
+            "From Manjushri's gentle voice, I bow with all my heart.",
+            "Of Thonmi's Thirty Verses, eloquent and bold,",
+            "The essence now, concisely, I shall to you unfold."
+          ]
+        },
+        {
+          label: "Vowels, consonants & the ten suffixes",
+          tib: "དབྱངས་ཀྱི་བྱ་བ་གསལ་པོ་རུ། །བྱེད་པ་ཨི་ཨུ་ཨེ་ཨོ་བཞི། །གསལ་བྱེད་ཀ་སོགས་སུམ་ཅུ་ཡིན། །ག་ང་ད་ན་བ་མ་འ། །ར་ལ་ས་རྣམས་རྗེས་འཇུག་བཅུ། །",
+          en: [
+            "The vowels, which make the consonants distinct and true,",
+            "Are exactly four in number: I, E, O, and U.",
+            "The consonants, from Ka to 'A, as thirty are defined;",
+            "Ten serve as suffix letters that trail along behind:",
+            "Ga, Nga, Da, Na, Ba, Ma, and 'A are in this crew,",
+            "And Ra, La, Sa — these ten complete the word for you."
+          ]
+        },
+        {
+          label: "The two secondary suffixes",
+          tib: "ད་དང་ས་གཉིས་ཡང་འཇུག་སྟེ། །ད་ནི་ན་ར་ལ་གསུམ་དང་། །ས་ནི་ག་ང་བ་མར་འཐོབ། །",
+          en: [
+            "As secondary suffixes, just Da and Sa appear:",
+            "Da follows Na, Ra, La — a rule distinctly clear;",
+            "While Sa takes Ga, Nga, Ba, or Ma to bring up the rear."
+          ]
+        },
+        {
+          label: "The five prefixes",
+          tib: "ག་ད་བ་མ་འ་སྔོན་འཇུག །",
+          en: [
+            "Ga, Da, Ba, Ma, and 'A as prefixes are placed,",
+            "Five letters by which the beginnings of words are graced."
+          ]
+        },
+        {
+          label: "Terminating particles",
+          tib: "གོ་ངོ་དོ་ནོ་བོ་མོ་འོ། །རོ་ལོ་སོ་ཏོ་སླར་བསྡུ་སྟེ། །རྫོགས་ཚིག་ཟླ་སྡུད་ཅེས་ཀྱང་བྱ། །དྲག་ཡོད་ཏོ་དང་མཐའ་མེད་འོ། །གཞན་རྣམས་མིང་མཐའི་རྗེས་མཐུན་སྦྱར། །",
+          en: [
+            "Go, Ngo, Do, No, Bo, Mo, 'O,",
+            "Ro, Lo, So, To — serve to stop the sentence flow.",
+            "We call them “terminators” or the “gathering of friends.”",
+            "Use 'To' for strong-closed sounds; 'O' where an open vowel ends;",
+            "The rest will match the suffix on which the word depends."
+          ]
+        },
+        {
+          label: "The seven la-don particles",
+          tib: "སུ་ར་རུ་དུ་ན་ལ་ཏུ། །ལ་དོན་རྣམ་པ་བདུན་ཡིན་ཏེ། །རྣམ་དབྱེ་གཉིས་བཞི་བདུན་པ་དང་། །དེ་ཉིད་ཚེ་སྐབས་རྣམས་ལ་འཇུག །",
+          en: [
+            "Su, Ra, Ru, Du, Na, La, Tu — these seven-fold remain",
+            "The particles of “La-intent,” whose functions we explain:",
+            "The second, fourth, and seventh cases they assign,",
+            "Along with “thatness,” time, and occasions they define."
+          ]
+        },
+        {
+          label: "Joining the la-don",
+          tib: "ས་སུ་ག་བ་དྲག་མཐར་ཏུ། །ང་ད་ན་མ་ར་ལ་དུ། །འ་དང་མཐའ་མེད་ར་དང་རུ། །",
+          en: [
+            "For Sa use 'Su'; for Ga, Ba, and strong closures, 'Tu' is placed;",
+            "Nga, Da, Na, Ma, Ra, La are with the suffix 'Du' embraced;",
+            "While 'A and open vowels with 'Ra' or 'Ru' are graced."
+          ]
+        },
+        {
+          label: "The genitive & the agentive",
+          tib: "གི་ཀྱི་གྱི་འི་ཡི་ལྔ་པོ། །རྣམ་དབྱེ་དྲུག་པ་འབྲེལ་སྒྲ་དང་། །དེ་རྣམས་ས་མཐའ་ཅན་ལྔ་ནི། །རྣམ་དབྱེ་གསུམ་པ་བྱེད་སྒྲ་སྟེ། །",
+          en: [
+            "Gi, Kyi, Gyi, 'I, and Yi — this group of five supplies",
+            "The sixth case, where the ownership or the connection lies;",
+            "But if the letter Sa to these same five is bound,",
+            "They form the third case, acting as the “agent's sound.”"
+          ]
+        },
+        {
+          label: "Joining the genitive",
+          tib: "སྦྱོར་ཚུལ་ན་མ་ར་ལ་གྱི། །ད་བ་ས་ཀྱི་ག་ང་གི །འ་དང་མཐའ་མེད་འི་དང་ཡི། །",
+          en: [
+            "The rules for joining: Na, Ma, Ra, and La take 'Gyi';",
+            "Da, Ba, and Sa take 'Kyi' as their proper company;",
+            "Ga and Nga take 'Gi'; and where 'A or no suffix lies,",
+            "The particle 'I or 'Yi will naturally arise."
+          ]
+        },
+        {
+          label: "Ornament & inclusion — kyang, yang, 'ang",
+          tib: "ཀྱང་ཡང་འང་གསུམ་རྒྱན་སྡུད་དེ། །ག་ད་བ་ས་དྲག་མཐར་ཀྱང་། །ང་ན་མ་ར་ལ་མཐར་ཡང་། །འ་དང་མཐའ་མེད་འང་དང་ཡང་། །",
+          en: [
+            "Kyang, Yang, and 'Ang are ornaments, or gather words in bound:",
+            "Ga, Da, Ba, Sa, and strong endings take 'Kyang' to close the sound;",
+            "Nga, Na, Ma, Ra, and La find 'Yang' a fitting friend;",
+            "While 'Ang and 'Yang take 'A or open vowels at the end."
+          ]
+        },
+        {
+          label: "Continuatives — te, de, ste",
+          tib: "ཏེ་དེ་སྟེ་གསུམ་ལྷག་བཅས་ཏེ། །ན་ར་ལ་ས་དྲག་མཐར་ཏེ། །ད་དེ་ག་ང་བ་མ་འ། །མཐའ་མེད་རྣམས་ལ་ས་སྟེ་འཐོབ། །",
+          en: [
+            "Te, De, Ste are “continuatives” — more is left to state:",
+            "Na, Ra, La, Sa, and strong closures take 'Te' to conjugate;",
+            "To Da goes 'De'; for Ga, Nga, Ba, Ma, 'A, and those",
+            "With open vowel sounds, the suffix 'Ste' arose."
+          ]
+        },
+        {
+          label: "Question & alternation — gam … tam",
+          tib: "གམ་ངམ་དམ་ནམ་བམ་མམ་འམ། །རམ་ལམ་སམ་ཏམ་འབྱེད་སྡུད་དེ། །སྦྱོར་ཚུལ་སླར་བསྡུའི་སྐབས་དང་མཚུངས།།",
+          en: [
+            "Gam, Ngam, Dam, Nam, Bam, Mam, 'Am,",
+            "And Ram, Lam, Sam, Tam — these questioning words we see.",
+            "Their rules of joining mirror those of the decree",
+            "Matching the “terminators” quite identically."
+          ]
+        },
+        {
+          label: "Filling the metre & the floating tsek",
+          tib: "ར་རུ་འི་ཡི་འང་ཡང་རྣམས། །རྐང་པ་མི་སྐོང་སྐོང་བའི་ཁྱད། །འོ་འུ་འམ་གྱི་གོང་དུ་ཚེག །མེད་དང་ཡོད་པའང་དེ་བཞིན་ཡིན། །",
+          en: [
+            "Ra, Ru, 'I, Yi, 'Ang, and Yang — these particles compete",
+            "Depending on if they must make a metered line complete.",
+            "Before 'O, 'U, and 'Am, the tsek, that tiny space,",
+            "May similarly be absent or be present in its place."
+          ]
+        },
+        {
+          label: "Source particles — nas, las",
+          tib: "ནས་ལས་འབྱུང་ཁུངས་དགར་སྡུད་དེ། །འབྱུང་ཁུངས་དངོས་ལ་གང་སྦྱར་འཐུས། །རིགས་མཐུན་དགར་ནས་མི་མཐུན་ལས། །སྡུད་ལ་ནས་སྒྲ་ཁོ་ན་འཇུག །",
+          en: [
+            "'Nas' and 'Las' denote a source, isolate, or aggregate.",
+            "For literal origins, either word is adequate.",
+            "To isolate like things, use 'Nas'; unalike, 'Las' applies;",
+            "But for gathering things together, 'Nas' alone is wise."
+          ]
+        },
+        {
+          label: "Vocatives — kye, kwa-ye",
+          tib: "ཀྱེ་དང་ཀྭ་ཡེ་བོད་སྒྲ་སྟེ། །ཕལ་ཆེར་མིང་གི་ཐོག་མར་སྦྱོར། །",
+          en: [
+            "'Kye!' and 'Kwa-ye!' are vocatives, a sudden calling sound,",
+            "And mostly at the very start of titles they are found."
+          ]
+        },
+        {
+          label: "The isolating ni",
+          tib: "ནི་ནི་དགར་དང་བརྣན་པའི་སྒྲ། །",
+          en: [
+            "'Ni' serves to isolate a theme, or emphasize a thought."
+          ]
+        },
+        {
+          label: "The five uses of dang",
+          tib: "དང་ནི་སྡུད་འབྱེད་རྒྱུ་མཚན་དང་། །ཚེ་སྐབས་གདམས་ངག་ལྔ་ལ་འཇུག །",
+          en: [
+            "'Dang' serves for five: to gather, sever, or for reasons sought,",
+            "For timing and occasions, or instructions to be taught."
+          ]
+        },
+        {
+          label: "The pointing de",
+          tib: "མིང་གི་ཐོག་མའི་དེ་སྒྲ་ནི། །ཐ་སྙད་འདས་མ་ཐག་པ་དང་། །རྣམ་གྲངས་གཞན་ཅན་གཉིས་ལ་འཇུག །",
+          en: [
+            "The 'De' that starts a noun points backward to review",
+            "To what was just discussed, or points to topics quite anew."
+          ]
+        },
+        {
+          label: "General terms — ci, ji, su, gang",
+          tib: "ཅི་ཇི་སུ་གང་སྤྱི་སྒྲ་སྟེ། །ཞིག་སྟེ་སླད་འདྲ་ཕྱིར་ལ་ཅི། །སྙེད་སྲིད་ལྟར་བཞིན་སྐད་ལ་ཇི། །སུ་ནི་གང་ཟག་གང་ཀུན་ལའོ། །",
+          en: [
+            "Ci, Ji, Su, Gang are general terms, interrogatives defined:",
+            "With zhig, ste, slad, 'dra, phyir, the letter 'Ci' is signed;",
+            "With snyed, srid, ltar, bzhin, skad, the letter 'Ji' is assigned;",
+            "'Su' is for the person; 'Gang' for all you find."
+          ]
+        },
+        {
+          label: "The owner's particles — pa, ba, ma",
+          tib: "ན་རོ་ཡོད་མེད་པ་བ་མ། །བདག་པོའི་སྒྲ་སྟེ་ག་ད་ན། །བ་མ་ས་དང་དྲག་མཐར་པ། །ང་འ་ར་ལ་མཐའ་མེད་ལ། །བདག་སྒྲ་ཡར་གྱུར་བ་དང་ནི། །ཆ་ལ་པ་ཉིད་སྦྱོར་བ་ལེགས། །མིང་མཐའི་པ་བའང་ཕལ་ཆེར་འདྲ། །མ་ནི་ངེས་མེད་སྐབས་དང་སྦྱར།།",
+          en: [
+            "Pa, Ba, and Ma, with or without the vowel 'O' to bear,",
+            "Serve as the “owner's particle”. To Ga, Da, Na, with care,",
+            "Ba, Ma, Sa, and strong-closed sounds take 'Pa' by strict designs;",
+            "For Nga, 'A, Ra, La, and open vowels, 'Ba' aligns.",
+            "For fractional parts, the 'Pa' itself is strictly best applied;",
+            "A noun's own 'Pa' or 'Ba' suffix acts as a similar guide.",
+            "'Ma' joins the word when what's to come is yet unverified."
+          ]
+        },
+        {
+          label: "Negation — ma, mi, min, med",
+          tib: "མ་མི་མིན་མེད་དགག་སྒྲ་སྟེ། །མ་མི་ཐོག་མ་མིན་མེད་མཇུག །མ་ནི་བར་གྱི་གསལ་བྱེད་ལའང་། །",
+          en: [
+            "Ma, Mi, Min, Med — these four words will negate:",
+            "Ma and Mi begin the phrase; Min and Med conclude the state;",
+            "And 'Ma' between two syllables will also designate."
+          ]
+        },
+        {
+          label: "Conjunctives — the zhing set",
+          tib: "ཚིག་ཕྲད་ཞིང་སོགས་ང་ན་མ། །འ་དང་ར་ལ་མཐའ་མེད་མཐར། །ཞིང་ཞེས་ཞེ་འོ་ཞེ་ན་ཞིག །",
+          en: [
+            "For conjunctive links like 'Zhing': after Nga, Na, Ma,",
+            "'A, Ra, La, or open syllables, these particles are the star:",
+            "'Zhing, zhes, zhe'o, zhe na, zhig' — how elegant they are."
+          ]
+        },
+        {
+          label: "Conjunctives — the cing set",
+          tib: "ག་ད་བ་དང་ད་དྲག་མཐར། །ཅིང་ཅེས་ཅེ་འོ་ཅེ་ན་ཅིག །",
+          en: [
+            "For Ga, Da, Ba, or closures that are strong, a different set will ring:",
+            "'Cing, ces, ce'o, ce na, cig' must clearly sing."
+          ]
+        },
+        {
+          label: "Conjunctives — the shing set",
+          tib: "ས་མཐར་དམིགས་བསལ་ཞེས་མ་གཏོགས། །ཤིང་ཤིག་ཤེའོ་ཤེ་ན་འཐོབ། །",
+          en: [
+            "When 'Sa' concludes, except for 'zhes', an S-sound it awakes:",
+            "'Shing, shig, she'o, she na' is the pattern that it takes."
+          ]
+        },
+        {
+          label: "A caution on look-alikes",
+          tib: "འོན་ཀྱང་ཁ་ཅིག་ལྷན་ཅིག་སོགས། །མིང་གི་ཆ་དང་མ་ནོར་གཅེས། །",
+          en: [
+            "Yet be alert! With words like 'lhan cig' you are shown",
+            "Intrinsic parts of nouns; don't mix them for a rule alone."
+          ]
+        },
+        {
+          label: "Writing the final 'a",
+          tib: "རྐྱང་པ་འཕུལ་ལ་འ་མཐའ་དགོས། །གུག་ཀྱེད་བརྩེགས་འདོགས་ཅན་ལ་སྤང་། །",
+          en: [
+            "A prefixed single letter takes a final 'A by rule;",
+            "But subjoined, stacked, or vowel signs employ a different tool:",
+            "You drop the 'A entirely, according to the school."
+          ]
+        },
+        {
+          label: "The single stroke — chig-shad",
+          tib: "ལྷུག་པའི་དོན་མང་མིང་མཚམས་དང་། །དོན་འབྲིང་འབྱེད་དང་དོན་ཉུང་རྫོགས། །ཚིགས་བཅད་ག་མཐར་ཆིག་ཤད་བྱ།།",
+          en: [
+            "For prose comprising lists, or middling clauses to equate,",
+            "For short completed thoughts, or verse in 'Ga' concluding straight,",
+            "A single stroke, the chig-shad, you must delineate."
+          ]
+        },
+        {
+          label: "The double stroke — nyi-shad",
+          tib: "རྫོགས་ཚིག་མཐའ་ཅན་ལྷུག་པ་དང་། །ཚིགས་བཅད་རྐང་མཐར་ཉིས་ཤད་འཐོབ། །",
+          en: [
+            "Where prose concludes with terminal words, or where verse lines abate,",
+            "A double stroke, the nyi-shad, is the appropriate state."
+          ]
+        },
+        {
+          label: "The fourfold stroke — zhi-shad",
+          tib: "དོན་ཚན་ཆེན་མོ་རྫོགས་པ་དང་། །ལེའུའི་མཚམས་སུ་བཞི་ཤད་དགོས། །",
+          en: [
+            "When major textual sections close, or chapters terminate,",
+            "A fourfold stroke, the zhi-shad, will those boundaries separate."
+          ]
+        },
+        {
+          label: "The tsek before the shad",
+          tib: "ང་ཡིག་མ་གཏོགས་ཡིག་ཤད་དབར། །ཚེག་མེད་དེ་སོགས་ཞིབ་ཏུ་འབད། །",
+          en: [
+            "Save for the letter 'Nga', between the letter and the stroke",
+            "No tsek should stand. Thus, master all the rules this text bespoke."
+          ]
+        },
+        {
+          label: "Colophon",
+          tib: "ཚིག་གི་ལོ་མས་མ་བསྒྲིབས་ཤིང་། །དོན་གྱི་འབྲས་བུ་གཡུར་ཟ་བའི། །ལེགས་བཤད་ལྗོན་པའི་དབང་པོ་འདི། །དབྱངས་ཅན་གྲུབ་པའི་རྡོ་རྗེས་སྤེལ།།",
+          en: [
+            "Unshadowed by the leaves of words, but rather, heavy-weighed",
+            "With fruits of genuine meaning elegantly displayed,",
+            "This Lordly Tree of Eloquence, a grammar perfectly made,",
+            "By Yangchen Drubpey Dorje is before you laid."
+          ]
+        }
+      ]
+    }
+  },
+
   builderWord: {
     word: "བསྒྲུབས",
     pron: "drup",

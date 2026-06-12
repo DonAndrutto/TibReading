@@ -23,7 +23,8 @@ The app is a pure client-side React SPA. There is no router — navigation is a 
 ```
 src/
   data.js          # single source of truth — all Tibetan content (consonants, vowels,
-                   # subscripts/superscripts, rules, practice words, proverbs, builder word)
+                   # subscripts/superscripts, rules, practice words, proverbs, builder word,
+                   # intro history sections + Sum cu pa root text in verse)
   App.jsx          # root — holds tab state, renders <Sidebar> + the active view
   main.jsx         # ReactDOM.createRoot entry point
   styles.css       # all styles (single flat file, organized by view with comments)
@@ -34,6 +35,9 @@ src/
                    # { g, r, m } word list; takes words/title/lead props. Used by both
                    # AlphabetView (single-letter words) and VowelsView (consonant + vowel words)
   views/
+    IntroView      # history of the script (Thonmi Sambhota, script architecture,
+                   # foundational texts, pedagogy); the Sum cu pa card expands into the
+                   # full root text with rhymed English translation (default landing tab)
     AlphabetView   # 30-consonant grid with detail panel; keyboard arrow navigation;
                    # ends with a <VocabCards> single-letter vocabulary section
     VowelsView     # interactive consonant + vowel combiner; ends with a <VocabCards>
@@ -59,6 +63,7 @@ src/
 - **letterWord** / **vowelWord**: `{ g, r, m }` — glyph, romanization, meaning. `letterWords` are bare single consonants that are words; `vowelWords` are a consonant + a single vowel that is a word. Both feed the shared `<VocabCards>` deck.
 - **proverb line syllable**: `{ t, r, g, note? }` — Tibetan glyph, reading, gloss, optional rule note
 - **builderWord.parts**: 7 positions describing the anatomy of a syllable — each part has `{ id, label, tib, rom, glyph, add, color, silent, sound, role, family }`
+- **intro**: prose sections for the Intro view (`genesis`, `architecture`, `texts`, `pedagogy`) plus **intro.sumchupa** — the Sum cu pa root text: `{ titleTib, titleEn, author, verses: [{ label, tib, en: [lines] }] }`; first verse is the homage, last the colophon, body verses are numbered at render time
 
 ## Styling Conventions
 

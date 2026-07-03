@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 import VocabCards from '../components/VocabCards.jsx';
 
-export default function VowelsView() {
-  const [cIdx, setCIdx] = useState(0);
+export default function VowelsView({ go, initial }) {
+  const [cIdx, setCIdx] = useState(initial?.letter ?? 0);
   const [vIdx, setVIdx] = useState(-1);
   const c = D.consonants[cIdx];
   const v = vIdx === -1 ? null : D.vowels[vIdx];
@@ -30,6 +30,10 @@ export default function VowelsView() {
           <div className="stage-label">syllable</div>
           <div key={out} className="stage-glyph glyph-anim">{out}<span className="tsek">་</span></div>
           <div className="stage-roman mono">{rOut}</div>
+          <div className="xlinks center">
+            <button className="chip" onClick={() => go('alphabet', { letter: cIdx })}>About <span className="ti">{c.g}</span> →</button>
+            <button className="chip" onClick={() => go('trace', { letter: cIdx })}>✎ Trace <span className="ti">{c.g}</span></button>
+          </div>
         </div>
 
         <div className="picker">
@@ -85,14 +89,15 @@ export default function VowelsView() {
         <div className="strip-title">Words formed from a consonant + a single vowel</div>
         <div className="strip-row">
           {D.vowelExamples.filter(e => e.gloss).map((e, i) => (
-            <div key={i} className="word-card" onClick={() => {
-              setCIdx(D.consonants.findIndex(cn => cn.g === e.c));
+            <button key={i} className="word-card" onClick={() => {
+              const ci = D.consonants.findIndex(cn => cn.g === e.c);
+              if (ci !== -1) setCIdx(ci);
               setVIdx(D.vowels.findIndex(vv => vv.mark === e.v));
             }}>
               <div className="word-ti">{e.out}<span className="tsek">་</span></div>
               <div className="word-r mono">{e.r}</div>
               <div className="word-gloss">{e.gloss}</div>
-            </div>
+            </button>
           ))}
         </div>
       </div>

@@ -25,6 +25,7 @@ export default function Sidebar({ tab, setTab }) {
         {items.map((it, i) => (
           <button key={it.id}
             className={'nav-item' + (tab === it.id ? ' is-active' : '')}
+            aria-current={tab === it.id ? 'page' : undefined}
             onClick={() => setTab(it.id)}>
             <div className="nav-num">{String(i + 1).padStart(2, '0')}</div>
             <div className="nav-ti">{it.ti}</div>

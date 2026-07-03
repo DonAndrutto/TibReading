@@ -18,15 +18,16 @@ npm run preview   # serve the production build locally
 
 ## Architecture
 
-The app is a pure client-side React SPA. There is no router — navigation is a single `tab` state string in `App.jsx`, toggled via the `Sidebar`. Each tab value maps to one view component rendered conditionally.
+The app is a pure client-side React SPA. There is no router — navigation is a single `nav` state (`{ tab, payload }`) in `App.jsx`, changed via `go(tab, payload)`. The `Sidebar` calls `go` with no payload; views receive `go` to render cross-section links (e.g. Alphabet → "Trace this letter"), and Alphabet/Vowels/Trace accept an `initial` payload (`{ letter: index }`) to open on a specific consonant. Each tab value maps to one view component rendered conditionally, wrapped in an `ErrorBoundary` keyed by tab so a view crash never takes down the sidebar.
 
 ```
 src/
   data.js          # single source of truth — all Tibetan content (consonants, vowels,
                    # subscripts/superscripts, rules, practice words, proverbs, builder word,
                    # intro history sections + Sum cu pa root text in verse)
-  App.jsx          # root — holds tab state, renders <Sidebar> + the active view
+  App.jsx          # root — holds nav state + go(), ErrorBoundary, renders <Sidebar> + the active view
   main.jsx         # ReactDOM.createRoot entry point
+  utils.js         # tiny shared helpers (Fisher–Yates shuffle used by all quiz option builders)
   styles.css       # all styles (single flat file, organized by view with comments)
   components/
     Sidebar.jsx    # nav with hardcoded item list, receives tab + setTab props

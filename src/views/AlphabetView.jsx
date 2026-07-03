@@ -12,17 +12,20 @@ const toneColor = (t) => {
 const toneLabel = (t) =>
   t === 'high asp.' ? 'High · aspirated' : t === 'high' ? 'High' : 'Low';
 
-export default function AlphabetView() {
-  const [sel, setSel] = useState(0);
+export default function AlphabetView({ go, initial }) {
+  const [sel, setSel] = useState(initial?.letter ?? 0);
   const [highlight, setHighlight] = useState('all');
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'ArrowRight') setSel(s => (s + 1) % 30);
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+      if (e.key === 'ArrowRight')      setSel(s => (s + 1) % 30);
       else if (e.key === 'ArrowLeft')  setSel(s => (s + 29) % 30);
       else if (e.key === 'ArrowDown')  setSel(s => Math.min(29, s + 4));
       else if (e.key === 'ArrowUp')    setSel(s => Math.max(0,  s - 4));
+      else return;
+      e.preventDefault(); // handled arrows must not also scroll the page
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -118,6 +121,11 @@ export default function AlphabetView() {
             <button onClick={() => setSel((sel + 1)  % 30)}>next →</button>
           </div>
           <div className="detail-kbd mono">use ← → ↑ ↓ to navigate</div>
+
+          <div className="xlinks">
+            <button className="chip" onClick={() => go('trace', { letter: sel })}>✎ Trace <span className="ti">{c.g}</span></button>
+            <button className="chip" onClick={() => go('vowels', { letter: sel })}>Add a vowel to <span className="ti">{c.g}</span> →</button>
+          </div>
         </aside>
       </div>
 

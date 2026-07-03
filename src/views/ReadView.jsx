@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import { shuffle } from '../utils.js';
 
 export default function ReadView() {
   const [mode, setMode] = useState('flash');
@@ -15,8 +16,9 @@ export default function ReadView() {
   useEffect(() => {
     if (mode !== 'flash') return;
     const onKey = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return; // e.g. Alt+← is browser back
       const tag = e.target.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
       if (e.key === 'ArrowRight') next();
       else if (e.key === 'ArrowLeft') prev();
       else if ((e.key === ' ' || e.key === 'Enter') && tag !== 'BUTTON') {
@@ -37,8 +39,8 @@ export default function ReadView() {
   const options = useMemo(() => {
     const correct = quizWord;
     const pool = D.practiceWords.filter(w => w.r !== correct.r);
-    const distractors = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
-    return [...distractors, correct].sort(() => Math.random() - 0.5);
+    const distractors = shuffle(pool).slice(0, 3);
+    return shuffle([...distractors, correct]);
   }, [qIdx]);
 
   const pickOption = (opt, k) => {

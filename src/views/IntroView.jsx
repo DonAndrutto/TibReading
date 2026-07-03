@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 
-export default function IntroView() {
+export default function IntroView({ go }) {
   const I = D.intro;
   const [sumOpen, setSumOpen] = useState(false);
   const [showEn, setShowEn]   = useState(true);
@@ -55,6 +55,9 @@ export default function IntroView() {
               ))}
             </div>
             <div className="invented-note mono">{I.architecture.consonants.inventedNote}</div>
+            <div className="xlinks">
+              <button className="chip" onClick={() => go('alphabet')}>Meet all 30 →</button>
+            </div>
           </div>
 
           <div className="intro-card">
@@ -71,6 +74,9 @@ export default function IntroView() {
                   <div className="intro-mark-pos mono">{m.pos}</div>
                 </div>
               ))}
+            </div>
+            <div className="xlinks">
+              <button className="chip" onClick={() => go('vowels')}>Try the vowel combiner →</button>
             </div>
           </div>
         </div>
@@ -91,6 +97,10 @@ export default function IntroView() {
         </div>
         <div className="intro-prose">
           <p>{I.architecture.spelling.outro}</p>
+        </div>
+        <div className="xlinks">
+          <button className="chip" onClick={() => go('builder')}>Assemble a seven-part syllable →</button>
+          <button className="chip" onClick={() => go('stacks')}>Browse the stacks →</button>
         </div>
       </section>
 
@@ -180,6 +190,10 @@ export default function IntroView() {
               ))}
             </div>
           ))}
+        </div>
+        <div className="xlinks">
+          <button className="chip" onClick={() => go('read')}>Start reading first words →</button>
+          <button className="chip" onClick={() => go('proverbs')}>Read proverbs &amp; prayers →</button>
         </div>
       </section>
     </div>

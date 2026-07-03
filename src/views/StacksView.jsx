@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 
-export default function StacksView() {
+export default function StacksView({ go }) {
   const [kind, setKind] = useState('sub');
   const [idx, setIdx] = useState(0);
   const set = kind === 'sub' ? D.subscripts : D.superscripts;
-  const item = set[idx];
+  // Clamp: the two sets differ in length, so a stale idx must never index
+  // past the end of the newly selected set.
+  const item = set[Math.min(idx, set.length - 1)];
 
-  useEffect(() => setIdx(0), [kind]);
+  const pickKind = (k) => { setKind(k); setIdx(0); };
 
   return (
     <div className="view stacks">
@@ -18,8 +20,8 @@ export default function StacksView() {
           <div className="ti-sub">མགོ་ཅན་བཞི་ · ར་ལ་ས་</div>
         </div>
         <div className="filter-row">
-          <button className={'chip' + (kind === 'sub' ? ' on' : '')} onClick={() => setKind('sub')}>Subscripts ↓</button>
-          <button className={'chip' + (kind === 'sup' ? ' on' : '')} onClick={() => setKind('sup')}>Superscripts ↑</button>
+          <button className={'chip' + (kind === 'sub' ? ' on' : '')} onClick={() => pickKind('sub')}>Subscripts ↓</button>
+          <button className={'chip' + (kind === 'sup' ? ' on' : '')} onClick={() => pickKind('sup')}>Superscripts ↑</button>
         </div>
       </header>
 
@@ -46,6 +48,9 @@ export default function StacksView() {
               <div className="hero-name">{item.name}</div>
             </div>
             <p className="stack-desc">{item.desc}</p>
+            <div className="xlinks">
+              <button className="chip" onClick={() => go('builder')}>See a full stack assembled →</button>
+            </div>
           </div>
         </div>
 

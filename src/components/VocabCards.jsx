@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { shuffle } from '../utils.js';
 
 // Collapsible vocabulary deck — tap-to-reveal flashcards plus a meaning quiz —
 // over any list of { g, r, m } words. Shared by AlphabetView (single-letter
@@ -23,9 +24,9 @@ export default function VocabCards({ words, title, lead, defaultOpen = true }) {
 
   const options = useMemo(() => {
     const pool = words.filter(x => x.r !== quiz.r);
-    const distractors = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
-    return [...distractors, quiz].sort(() => Math.random() - 0.5);
-  }, [qIdx]);
+    const distractors = shuffle(pool).slice(0, 3);
+    return shuffle([...distractors, quiz]);
+  }, [qIdx, words, quiz]);
 
   const pick = (opt, k) => {
     if (picked !== null) return;

@@ -687,6 +687,9 @@ body {
   text-align: center;
   cursor: pointer;
   transition: all .15s;
+  /* rendered as a <button> for keyboard access — undo UA button styles */
+  font: inherit;
+  color: inherit;
 }
 .word-card:hover { background: var(--paper); border-color: var(--ink-mute); transform: translateY(-1px); }
 .word-ti {
@@ -2139,6 +2142,22 @@ body {
   .intro-marks { grid-template-columns: repeat(2, 1fr); }
   .sum-scroll { padding: 24px 20px; }
 }
+
+/* ────────────────── Cross-section links ──────────────────
+   Small chip rows that jump between sections (Alphabet ↔ Trace ↔ Vowels,
+   Intro → practice views, …). They reuse the .chip look. */
+.xlinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.xlinks.center { justify-content: center; }
+.xlinks .chip { font-family: var(--serif); font-size: 12.5px; letter-spacing: .02em; text-transform: none; }
+
+/* ────────────────── Error boundary ────────────────── */
+.view-crash { text-align: center; padding: 80px 24px; }
+.view-crash .lead { margin: 12px auto 24px; max-width: 480px; }
 
 /* ────────────────── Press feedback ──────────────────
    Every tappable surface gives slightly under the finger. Declared last so

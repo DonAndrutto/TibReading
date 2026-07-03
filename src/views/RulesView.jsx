@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import { shuffle } from '../utils.js';
 
-export default function RulesView() {
+export default function RulesView({ go }) {
   const R = D.rules;
   const [mode, setMode]     = useState('browse');
   const [filter, setFilter] = useState('all');
@@ -12,12 +13,13 @@ export default function RulesView() {
   const tags = ['all', ...Array.from(new Set(R.map(r => r.tag)))];
   const visible = R.filter(r => filter === 'all' || r.tag === filter);
 
-  useEffect(() => { setSel(0); }, [filter]);
-
-  const rule = visible[sel] || R[0];
+  // Clamp instead of falling back to R[0]: a narrower filter must never
+  // flash a rule from outside the selected category.
+  const rule = visible[Math.min(sel, visible.length - 1)];
 
   const toggle = (key) => setRevealed(r => ({ ...r, [key]: !r[key] }));
   const reset = () => { setRevealed({}); setRevealAll(false); };
+  const pickFilter = (t) => { setFilter(t); setSel(0); reset(); };
 
   // ── Quiz over every spelling→sound example across all rules ──
   const allExamples = useMemo(
@@ -36,8 +38,8 @@ export default function RulesView() {
     const pool = [...new Map(
       allExamples.filter(e => e.reads !== correct.reads).map(e => [e.reads, e])
     ).values()];
-    const distractors = pool.sort(() => Math.random() - 0.5).slice(0, 3);
-    return [...distractors, correct].sort(() => Math.random() - 0.5);
+    const distractors = shuffle(pool).slice(0, 3);
+    return shuffle([...distractors, correct]);
   }, [qIdx, allExamples]);
 
   const pick = (opt, k) => {
@@ -80,7 +82,7 @@ export default function RulesView() {
             <span className="filter-label mono">Filter by category</span>
             <div className="filter-row">
               {tags.map(t => (
-                <button key={t} className={'chip' + (filter === t ? ' on' : '')} onClick={() => setFilter(t)}>
+                <button key={t} className={'chip' + (filter === t ? ' on' : '')} onClick={() => pickFilter(t)}>
                   {t === 'all' ? 'All' : t.replace('-', ' ')}
                 </button>
               ))}
@@ -110,6 +112,7 @@ export default function RulesView() {
                 <div className="rd-actions">
                   <button className="chip" onClick={() => setRevealAll(true)}>Reveal all</button>
                   <button className="chip" onClick={reset}>Hide all</button>
+                  <button className="chip" onClick={() => go('proverbs')}>See the rules at work →</button>
                 </div>
               </div>
 

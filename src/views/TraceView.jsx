@@ -4,8 +4,8 @@ import { TIBETAN_DATA as D } from '../data.js';
 const toneLabel = (t) =>
   t === 'high asp.' ? 'High · aspirated' : t === 'high' ? 'High' : 'Low';
 
-export default function TraceView() {
-  const [idx, setIdx] = useState(0);
+export default function TraceView({ go, initial }) {
+  const [idx, setIdx] = useState(initial?.letter ?? 0);
   const [showGuide, setShowGuide] = useState(true);
   const [stroke, setStroke] = useState(14);
   const canvasRef = useRef(null);
@@ -27,12 +27,22 @@ export default function TraceView() {
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
+      // Assigning width/height wipes the bitmap, so snapshot the drawing
+      // first and paint it back — a window resize must not erase the work.
+      let snap = null;
+      if (canvas.width > 0 && canvas.height > 0) {
+        snap = document.createElement('canvas');
+        snap.width = canvas.width;
+        snap.height = canvas.height;
+        snap.getContext('2d').drawImage(canvas, 0, 0);
+      }
       canvas.width  = rect.width  * dpr;
       canvas.height = rect.height * dpr;
       const ctx = canvas.getContext('2d');
       ctx.scale(dpr, dpr);
       ctx.lineCap  = 'round';
       ctx.lineJoin = 'round';
+      if (snap) ctx.drawImage(snap, 0, 0, snap.width, snap.height, 0, 0, rect.width, rect.height);
     };
     resize();
     window.addEventListener('resize', resize);
@@ -48,14 +58,17 @@ export default function TraceView() {
     return { x: t.clientX - rect.left, y: t.clientY - rect.top };
   };
 
+  // React registers touch events as passive, so preventDefault would be
+  // ignored (with a console error); the canvas relies on CSS touch-action:
+  // none instead. Mouse events stay preventable to stop text selection.
   const start = (e) => {
-    e.preventDefault();
+    if (!e.touches) e.preventDefault();
     drawingRef.current = true;
     lastRef.current = getPos(e);
   };
   const move = (e) => {
     if (!drawingRef.current) return;
-    e.preventDefault();
+    if (!e.touches) e.preventDefault();
     const ctx = canvasRef.current.getContext('2d');
     const p = getPos(e);
     ctx.strokeStyle = '#2A1A0F';
@@ -112,6 +125,7 @@ export default function TraceView() {
                 <span className="mono small">{stroke}px</span>
               </label>
               <button className="btn" onClick={clear}>Clear paper</button>
+              <button className="btn" onClick={() => go('alphabet', { letter: idx })}>About <span className="ti">{c.g}</span> →</button>
               <button className="btn primary" onClick={() => setIdx((idx + 1) % 30)}>Next letter →</button>
             </div>
           </div>

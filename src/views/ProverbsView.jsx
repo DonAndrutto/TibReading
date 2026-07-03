@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 
 export default function ProverbsView() {
@@ -9,9 +9,11 @@ export default function ProverbsView() {
   const [showAll, setShowAll] = useState(false);
 
   const p = P[pIdx];
-  const cur = p.lines[active.line]?.syl[active.syl];
+  const cur = p.lines[active.line]?.syl?.[active.syl];
 
-  useEffect(() => { setActive({ line: 0, syl: 0 }); setShowAll(false); }, [pIdx]);
+  // Reset in the click handler (not an effect) so the new proverb never
+  // paints one frame with the previous proverb's syllable still active.
+  const pickProverb = (i) => { setPIdx(i); setActive({ line: 0, syl: 0 }); setShowAll(false); };
 
   return (
     <div className="view proverbs">
@@ -38,7 +40,7 @@ export default function ProverbsView() {
         {P.map((q, i) => (
           <button key={q.id}
             className={'pr-tab' + (i === pIdx ? ' on' : '')}
-            onClick={() => setPIdx(i)}>
+            onClick={() => pickProverb(i)}>
             <div className="pr-tab-kind mono">{q.kind}</div>
             <div className="pr-tab-title">{q.title}</div>
           </button>

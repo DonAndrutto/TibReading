@@ -1,10 +1,24 @@
-import { useState } from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import { createReader } from '../reader.js';
 
 export default function IntroView({ go }) {
   const I = D.intro;
+  // Which content exists is the only thing React decides here. Text size and
+  // language are presentation, so they live in the reader controller and
+  // never reach this component — see reader.js.
   const [sumOpen, setSumOpen] = useState(false);
-  const [showEn, setShowEn]   = useState(true);
+
+  const bodyRef = useRef(null);
+  const toolbarRef = useRef(null);
+  const readerRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (!sumOpen || !bodyRef.current) { readerRef.current = null; return; }
+    const reader = createReader(bodyRef.current, toolbarRef.current);
+    reader.init();
+    readerRef.current = reader;
+  }, [sumOpen]);
 
   const verses = I.sumchupa.verses;
 
@@ -135,7 +149,15 @@ export default function IntroView({ go }) {
         </div>
 
         {sumOpen && (
-          <div className="sum-scroll">
+          <div
+            className="sum-scroll first-paint"
+            onAnimationEnd={(e) => {
+              // One-shot: drop the class the moment the unroll finishes so no
+              // later change can replay it. Guarded to this element — a
+              // descendant's animation must not disarm the entrance.
+              if (e.target === e.currentTarget) e.currentTarget.classList.remove('first-paint');
+            }}
+          >
             <div className="sum-head">
               <div className="sum-head-ti ti">{I.sumchupa.titleTib}</div>
               <div className="sum-head-en">
@@ -144,29 +166,49 @@ export default function IntroView({ go }) {
               <div className="sum-head-author mono">{I.sumchupa.author}</div>
             </div>
 
-            <div className="sum-toolbar filter-row">
-              <button className={'chip' + (showEn ? ' on' : '')} onClick={() => setShowEn(s => !s)}>
-                {showEn ? 'Translation shown' : 'Tibetan only'}
-              </button>
+            {/* Controls sit outside .sum-body on purpose: they are chrome,
+                and scaling them along with the text would be a bug. */}
+            <div className="sum-toolbar" ref={toolbarRef}>
+              <div className="reader-zoom" role="group" aria-label="Text size">
+                <button className="rz-btn" data-zoom="out" aria-label="Smaller text"
+                  onClick={() => readerRef.current && readerRef.current.zoomOut()}>A−</button>
+                <button className="rz-readout mono" data-zoom-readout="" aria-label="Reset text size"
+                  onClick={() => readerRef.current && readerRef.current.zoomReset()}>100%</button>
+                <button className="rz-btn" data-zoom="in" aria-label="Larger text"
+                  onClick={() => readerRef.current && readerRef.current.zoomIn()}>A+</button>
+              </div>
+              <div className="lang-switch" role="group" aria-label="Language">
+                <button className="chip lang-chip" data-lang="both"
+                  onClick={() => readerRef.current && readerRef.current.setLang('both')}>Both</button>
+                <button className="chip lang-chip" data-lang="ti"
+                  onClick={() => readerRef.current && readerRef.current.setLang('ti')}>
+                  <span className="ti">བོད་ཡིག</span> only
+                </button>
+                <button className="chip lang-chip" data-lang="en"
+                  onClick={() => readerRef.current && readerRef.current.setLang('en')}>English only</button>
+              </div>
             </div>
 
-            {verses.map((v, vi) => {
-              const num = vi === 0 || vi === verses.length - 1 ? null : vi;
-              return (
-                <div key={vi} className="sum-verse">
-                  <div className="sum-verse-label mono">
-                    {num !== null && <span className="sum-verse-num">{String(num).padStart(2, '0')} · </span>}
-                    {v.label}
-                  </div>
-                  <div className="sum-verse-ti ti">{v.tib}</div>
-                  {showEn && (
+            {/* Both languages are always rendered. Switching hides one through
+                the cascade, which is why it costs no reconciliation and no DOM
+                mutation at all. */}
+            <div className="sum-body" ref={bodyRef}>
+              {verses.map((v, vi) => {
+                const num = vi === 0 || vi === verses.length - 1 ? null : vi;
+                return (
+                  <div key={vi} className="sum-verse">
+                    <div className="sum-verse-label mono">
+                      {num !== null && <span className="sum-verse-num">{String(num).padStart(2, '0')} · </span>}
+                      {v.label}
+                    </div>
+                    <div className="sum-verse-ti ti">{v.tib}</div>
                     <div className="sum-verse-en">
                       {v.en.map((line, li) => <div key={li} className="sum-line">{line}</div>)}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </section>

@@ -1,0 +1,13 @@
+/* Baseline-only overrides. The naive condition must not accidentally get the
+   optimisation under test. */
+/* The naive baseline never gets the optimisation under test. The pretext
+   condition opts in through data-intrinsic-sizes, which reader.js sets. */
+.sum-body.naive .sum-verse {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
+/* Bench pages skip the entrance animation entirely — it is not what is being
+   measured and would add noise to the first frames. */
+.sum-scroll.first-paint { animation: none; }
+/* Single column, no sidebar: the reader is the whole page here. */
+.app { grid-template-columns: 1fr; }

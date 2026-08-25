@@ -1,2 +1,10 @@
 node_modules/
 dist/
+
+# Benchmark artefacts — regenerate with bench/fetch-fonts.mjs and bench/run.mjs
+bench/dist
+bench/fonts
+bench/results.json
+bench/results.txt
+bench/results.err
+scripts/.probe.js

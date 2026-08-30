@@ -9,12 +9,20 @@ TibReading is an interactive Tibetan language reading and writing app built with
 ## Commands
 
 ```bash
-npm run dev       # start dev server (Vite, hot-reload)
-npm run build     # production build
-npm run preview   # serve the production build locally
+npm run dev            # start dev server (Vite, hot-reload)
+npm run build          # production build
+npm run preview        # serve the production build locally
+
+npm run check:reader   # build + drive the app in Chromium: every view renders,
+                       # and the reader's line stays put through zoom/language
+npm run check:text     # build + measure every label against its box with
+                       # pretext; fails if content outgrows its space
+npm run bench          # build + benchmark the reader against a naive baseline
 ```
 
-**There is no test runner, linter, or type-checker.** The only way to verify a change is to run `npm run dev` and exercise the affected view in the browser. Always do this before pushing. For content-only edits to `src/data.js`, the Vite build itself (run by CI) will catch syntax errors, so a quick `npm run build` is sufficient instead of a full dev-server check.
+**There is no unit-test runner, linter, or type-checker,** but `check:reader` and `check:text` are real automated checks and both must pass before pushing. Anything they do not cover still needs `npm run dev` and a look in the browser. For content-only edits to `src/data.js`, run `npm run check:text` — it is what catches a proverb title that has grown past its card.
+
+The checks drive a real Chromium via Playwright and serve the built `dist/`, so run `npm run build` first if invoking the scripts directly. `node bench/fetch-fonts.mjs` vendors the Google Fonts locally once, so measurements use the real Noto Serif Tibetan instead of a fallback.
 
 ## Architecture
 
@@ -28,6 +36,11 @@ src/
   App.jsx          # root — holds nav state + go(), ErrorBoundary, renders <Sidebar> + the active view
   main.jsx         # ReactDOM.createRoot entry point
   utils.js         # tiny shared helpers (Fisher–Yates shuffle used by all quiz option builders)
+  textMeasure.js   # text measurement over @chenglou/pretext — line counts and heights
+                   # without touching the DOM. prepare() once per string at a 100px
+                   # reference size, then every zoom level is one multiply
+  reader.js        # imperative controller for the Sum cu pa reader: zoom, language,
+                   # and the scroll anchoring that keeps the reader's line still
   styles.css       # all styles (single flat file, organized by view with comments)
   components/
     Sidebar.jsx    # nav with hardcoded item list, receives tab + setTab props
@@ -38,7 +51,8 @@ src/
   views/
     IntroView      # history of the script (Thonmi Sambhota, script architecture,
                    # foundational texts, pedagogy); the Sum cu pa card expands into the
-                   # full root text with rhymed English translation (default landing tab)
+                   # full root text with rhymed English translation, with reader
+                   # controls for text size and language (default landing tab)
     AlphabetView   # 30-consonant grid with detail panel; keyboard arrow navigation;
                    # ends with a <VocabCards> single-letter vocabulary section
     VowelsView     # interactive consonant + vowel combiner; ends with a <VocabCards>
@@ -66,6 +80,46 @@ src/
 - **builderWord.parts**: 7 positions describing the anatomy of a syllable — each part has `{ id, label, tib, rom, glyph, add, color, silent, sound, role, family }`
 - **intro**: prose sections for the Intro view (`genesis`, `architecture`, `texts`, `pedagogy`) plus **intro.sumchupa** — the Sum cu pa root text: `{ titleTib, titleEn, author, verses: [{ label, tib, en: [lines] }] }`; first verse is the homage, last the colophon, body verses are numbered at render time
 
+## The Reader (Sum cu pa root text)
+
+The expanded root text in `IntroView` is the one place with enough text for
+interaction cost to matter, and it follows a convention worth keeping:
+
+**Bucket UI state by what it actually is.**
+
+| kind | channel | where |
+|---|---|---|
+| scale / size | one CSS custom property (`--reader-scale`) | `.sum-body` |
+| visibility | one attribute (`data-lang`) | `.sum-body` |
+| what content exists | React state, re-render | `IntroView` |
+
+`.sum-body` is the smallest element enclosing everything the controls affect —
+the toolbar sits outside it so the controls never scale with the text. Both
+channels are written imperatively by `createReader()`, so zoom and language
+never enter the render path: a click mutates one attribute and nothing is
+reconciled, created, moved or destroyed. `bench/identity.mjs` asserts that.
+
+Consequences to preserve when editing:
+
+- **No inline `style=` on reader text.** Everything scales through `em` against
+  `--reader-scale`; an inline font-size would override the cascade and put the
+  size back in the render path.
+- **Both languages always render.** Hiding is `display: none` from `data-lang`,
+  not a conditional in JSX.
+- **Entrance animations are one-shot.** `.sum-scroll.first-paint` drops its
+  class on `animationend` so no later change can replay the unroll.
+- **Anchor before you mutate, converge after.** `reader.js` predicts the height
+  change with pretext (no DOM reads), corrects the scroll in the same tick, then
+  converges on the anchor's live position until it holds still across two
+  frames. Reads never happen inside `requestAnimationFrame` — rAF runs before
+  the frame's layout, so a `getBoundingClientRect()` there forces a reflow of
+  what was just mutated.
+- **`prepare()` is never on the interaction path.** It is the expensive half of
+  pretext (~340ms throttled across this document) and is warmed at idle in
+  chunks by `prewarm()`. `layout()` — the part a click pays for — is arithmetic.
+- `overflow-anchor: none` on `.sum-body` is load-bearing: the browser's own
+  scroll anchoring otherwise fights the convergence loop.
+
 ## Styling Conventions
 
 All CSS lives in `src/styles.css` as a single file with block comments marking sections per view. CSS custom properties in `:root` define the full palette:
@@ -81,6 +135,34 @@ Class `.ti` or `font-family: var(--ti)` must be applied anywhere Tibetan Unicode
 Tone colors are used consistently: `--tone-high` (dark ink) for high-tone consonants, `--tone-asp` (maroon) for aspirated, `--tone-low` (teal) for low-tone.
 
 The app shell is a CSS grid: `280px sidebar | 1fr main`. There is no responsive/mobile breakpoint currently implemented.
+
+## Benchmarks and checks (`bench/`, `scripts/`)
+
+Not shipped — `bench/dist`, `bench/fonts` and `scripts/.probe.js` are gitignored
+and rebuilt on demand.
+
+- `bench/reader.jsx` — one page, two modes (`?mode=naive` / `?mode=fast`),
+  same verses, same CSS, same React. The only differences are the ones under
+  test, so the A/B is controlled. `?cv=off` isolates `content-visibility`.
+- `bench/run.mjs` — fresh browser context and page per run, 6x CPU throttle,
+  median of 15. Cost comes from Chrome's own cumulative CPU counters
+  (`Performance.getMetrics`), not a wall clock. The settle window is a fixed
+  number of frames for every condition so the harness's own rect reads cannot
+  land in one condition's layout counters and not the other's.
+- `bench/identity.mjs` — stamps every node before the interaction and checks
+  identity, order and mutation count after, splitting on-path work (before the
+  first paint) from deferred idle work.
+- `bench/accuracy.mjs` — pretext's per-verse height vs what the browser
+  actually lays out, at three zoom levels.
+- `bench/smoke.mjs` (`npm run check:reader`) — every view renders; the
+  reader's line stays within 2px through every control.
+- `scripts/check-text.mjs` (`npm run check:text`) — measures every label
+  against its real box across 9 views x 2 widths. Budgets are baselined to
+  today's rendering, so it guards against content growing past its space.
+  `--audit` cross-checks pretext against the browser (0 disagreements over 394
+  elements).
+- Baseline for a before/after: `git worktree add ../main-baseline main`, build
+  there, and point `BENCH_BASELINE` at it.
 
 ## Deployment
 

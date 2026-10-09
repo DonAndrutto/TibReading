@@ -43,7 +43,7 @@ Content follow-ups: the book’s omission of ནྲ from ratak could not be esta
 
 ## Offline, phones and accessibility
 
-`npm run build` fetches fonts if needed, inlines application JS/CSS, copies self-hosted fonts and emits a relative manifest, icon and service worker. The app makes no external runtime requests. `dist/index.html` is still the single-file application; `sw.js`, `manifest.webmanifest`, `icon.svg`, fonts and their OFL notices are deployment companions. Deploy the entire `dist/` directory. The existing Pages workflow is unchanged.
+`npm run build` fetches fonts if needed, inlines application JS/CSS, copies self-hosted fonts and emits a relative manifest, icon and service worker. The app makes no external runtime requests. `dist/index.html` is still the single-file application; `sw.js`, `manifest.webmanifest`, `icon.svg`, raster icons, fonts and their OFL notices are deployment companions. Deploy the entire `dist/` directory. The existing Pages workflow is unchanged.
 
 The worker precaches HTML, metadata and fonts. Its cache name includes the Pages scope and a SHA-256 digest of built content; activation removes only older TibReading caches for that scope. The first successful online load prepares offline use (status appears in the sidebar/header). HTTP(S) hosting is required for the service worker; opening the HTML locally still runs the app. Font refresh: `node bench/fetch-fonts.mjs --refresh`.
 
@@ -52,3 +52,16 @@ At ≤720px, Learn / Practice / Read / More replaces the sidebar. More opens a k
 `check:reader` additionally verifies all exercise formats, lookup/Builder links, export/import/reset, keyboard tracing, offline fonts/progress after reload at `/TibReading/`, relative hosting, `file://` opening, every mobile view at 390px, and language tags. `check:text` covers all 11 views at desktop widths. `node bench/screenshots.mjs after` regenerates the desktop and mobile review images in `docs/screenshots/`.
 
 Intentionally outside this course: audio/speech, accounts, backend services, analytics, general Sanskrit stacks, archaic post-suffix da, and unverified extensions to the book’s ratak list.
+
+
+## App icon, startup and installation
+
+A font-independent book mark is shared by the favicon, loading screen and install invitation. Committed PNGs provide 192px/512px home-screen icons, a maskable Android icon and a 180px Apple touch icon. Edit `public/icon.svg`, then run `npm run icons` (requires Playwright Chromium) to regenerate PNGs. Every icon is included in the content-hashed offline cache.
+
+The initial HTML shows the icon and three pulsing dots until React mounts, without an artificial delay. Dark mode and reduced motion apply before JavaScript runs; disabled JavaScript gets a readable fallback.
+
+A browser `beforeinstallprompt` offer enables the native install button. iPhone/iPad visitors get Share → Add to Home Screen instructions. Settings always provides installation help when no native offer is available. “Not now” snoozes the inline invitation for seven days, while Settings remains available. Standalone launches and `appinstalled` suppress future invitations; a fresh browser offer clears a stale installed marker after uninstalling. Preferences stay in localStorage separately from course progress. Browsers do not expose a universal installed-app check, so an existing installation cannot always be detected from a separate browser tab/profile (especially on iOS).
+
+`npm run check:install` verifies native offer/accept/cancel/error paths with simulated browser events, dismissal persistence, standalone suppression, iOS instructions, blocked storage, icon dimensions, offline assets and loading/reduced-motion/no-JavaScript behavior. It also runs as part of `check:reader` in CI. These checks do not automate the operating system’s installation dialog. `SCREENSHOTS=1 node bench/install.mjs` captures desktop/mobile install and loading previews after a build.
+
+Installation API reference: [MDN’s install prompt guide](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Trigger_install_prompt).

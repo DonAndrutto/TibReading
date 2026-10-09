@@ -2,10 +2,10 @@ export default function Sidebar({ tab, setTab }) {
   const items = [
     { id: 'intro',    label: 'Intro',     sub: 'history of the script', ti: 'ཨ'   },
     { id: 'alphabet', label: 'Alphabet',  sub: '30 consonants',         ti: 'ཀ'   },
-    { id: 'vowels',   label: 'Vowels',    sub: '4 marks · combiner',    ti: 'ི'   },
+    { id: 'vowels',   label: 'Vowels',    sub: '4 marks · combiner',    ti: 'ཨི'   },
     { id: 'stacks',   label: 'Stacks',    sub: 'sub- & superscripts',   ti: 'རྒྱ' },
     { id: 'builder',  label: 'Builder',   sub: 'anatomy of a syllable', ti: 'སྒྲ' },
-    { id: 'rules',    label: 'Rules',     sub: 'spelling ⇢ sound',      ti: 'ྨ'   },
+    { id: 'rules',    label: 'Rules',     sub: 'spelling ⇢ sound',      ti: 'སྨ'   },
     { id: 'trace',    label: 'Trace',     sub: 'write on the line',     ti: 'ཞ'   },
     { id: 'read',     label: 'Read',      sub: 'first words',           ti: 'ཆུ'  },
     { id: 'proverbs', label: 'Proverbs',  sub: 'sayings & prayers',     ti: '༄'   },

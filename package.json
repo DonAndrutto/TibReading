@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "check:text": "vite build && esbuild scripts/probe-entry.js --bundle --format=iife --outfile=scripts/.probe.js --log-level=warning && node scripts/check-text.mjs",
     "bench": "vite build && vite build --config bench/vite.bench.config.js && node bench/run.mjs",
-    "check:reader": "vite build && node bench/smoke.mjs"
+    "check:reader": "vite build && node bench/smoke.mjs",
+    "check:romanization": "node bench/check-romanization.mjs"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.8",

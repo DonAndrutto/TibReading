@@ -9,6 +9,10 @@ TibReading is an interactive Tibetan language reading and writing app built with
 ## Commands
 
 ```bash
+npm ci                 # install dependencies
+node bench/fetch-fonts.mjs # fetch fonts for deterministic checks
+npx playwright install chromium # browser used by checks
+npm run check:romanization # detect inconsistent readings
 npm run dev            # start dev server (Vite, hot-reload)
 npm run build          # production build
 npm run preview        # serve the production build locally
@@ -134,7 +138,7 @@ Class `.ti` or `font-family: var(--ti)` must be applied anywhere Tibetan Unicode
 
 Tone colors are used consistently: `--tone-high` (dark ink) for high-tone consonants, `--tone-asp` (maroon) for aspirated, `--tone-low` (teal) for low-tone.
 
-The app shell is a CSS grid: `280px sidebar | 1fr main`. There is no responsive/mobile breakpoint currently implemented.
+The app shell is a CSS grid: `280px sidebar | 1fr main`. At ≤720px the shell becomes one column and the sidebar stacks above the content; ≤1100px also simplifies multi-column views.
 
 ## Benchmarks and checks (`bench/`, `scripts/`)
 

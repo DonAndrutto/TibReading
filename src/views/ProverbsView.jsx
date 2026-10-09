@@ -64,7 +64,7 @@ export default function ProverbsView() {
                       {si === line.syl.length - 1 && <span className="pr-sep she">།</span>}
                     </span>
                     {mode === 'annotated' && (
-                      <span className="pr-syl-r mono">{reveal ? s.r : ''}</span>
+                      <span className="pr-syl-r mono">{reveal ? (s.contextReading || s.r) : ''}</span>
                     )}
                   </button>
                 );
@@ -87,7 +87,7 @@ export default function ProverbsView() {
           <div className="pr-detail-body">
             <div className="dl">
               <dt>Reads as</dt>
-              <dd className="mono pr-detail-r">{cur.r}</dd>
+              <dd className="mono pr-detail-r">{cur.contextReading || cur.r}</dd>
               <dt>Meaning</dt>
               <dd>{cur.g || '—'}</dd>
               {cur.note && (

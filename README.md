@@ -56,7 +56,7 @@ Intentionally outside this course: audio/speech, accounts, backend services, ana
 
 ## App icon, startup and installation
 
-A font-independent book mark is shared by the favicon, loading screen and install invitation. Committed PNGs provide 192px/512px home-screen icons, a maskable Android icon and a 180px Apple touch icon. Edit `public/icon.svg`, then run `npm run icons` (requires Playwright Chromium) to regenerate PNGs. Every icon is included in the content-hashed offline cache.
+A font-independent Tibetan ཨ and book mark is shared by the favicon, loading screen and install invitation. Committed PNGs provide 192px/512px home-screen icons, a maskable Android icon and a 180px Apple touch icon. Edit `public/icon.svg`, then run `npm run icons` (requires Playwright Chromium) to regenerate PNGs. Installers receive opaque square PNGs; the operating system applies its own corner mask. The foreground stays inside the central 80% circular safe zone. Built manifest and PNG filenames include content hashes so an older worker or browser cannot reuse stale installation artwork. The app identity and `/TibReading/` scope remain stable. Every icon is included in the content-hashed offline cache.
 
 The initial HTML shows the icon and three pulsing dots until React mounts, without an artificial delay. Dark mode and reduced motion apply before JavaScript runs; disabled JavaScript gets a readable fallback.
 
@@ -65,3 +65,5 @@ A browser `beforeinstallprompt` offer enables the native install button. iPhone/
 `npm run check:install` verifies native offer/accept/cancel/error paths with simulated browser events, dismissal persistence, standalone suppression, iOS instructions, blocked storage, icon dimensions, offline assets and loading/reduced-motion/no-JavaScript behavior. It also runs as part of `check:reader` in CI. These checks do not automate the operating system’s installation dialog. `SCREENSHOTS=1 node bench/install.mjs` captures desktop/mobile install and loading previews after a build.
 
 Installation API reference: [MDN’s install prompt guide](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Trigger_install_prompt).
+
+If an existing home-screen shortcut retains old artwork, refreshing the page cannot reliably update the operating system’s saved icon. Once the new version is deployed, export your progress from Settings before removing and re-adding the shortcut, then import it if needed. The versioned manifest and icon URLs apply to fresh installations without requiring users to clear their browser’s storage.

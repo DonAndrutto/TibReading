@@ -34,15 +34,31 @@ export function offlinePlugin() {
       const path = join(out,'index.html');
       let html = readFileSync(path,'utf8').replace('</head>',`<style>${css}</style><link rel="manifest" href="./manifest.webmanifest"></head>`);
       writeFileSync(path,html);
+      // Fresh filenames bypass browser/OS caches left over from earlier installs.
+      const iconFiles = ['icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png'];
+      const iconHash = createHash('sha256');
+      iconFiles.forEach(name=>iconHash.update(readFileSync(join(out,name))));
+      const iconVersion = iconHash.digest('hex').slice(0,12);
+      mkdirSync(join(out,'icons'),{recursive:true});
+      const iconURL = name => './icons/' + name.replace('.png','-' + iconVersion + '.png');
+      iconFiles.forEach(name=>copyFileSync(join(out,name),join(out,iconURL(name).slice(2))));
+      html = html.replace('href="./apple-touch-icon.png"',`href="${iconURL('apple-touch-icon.png')}"`);
+      writeFileSync(path,html);
+      // PNG-only install icons work across WebAPK, Safari and desktop installers.
+      // The SVG remains the favicon and the inline invitation's artwork.
       const icons = [
-        {src:'./icon.svg',sizes:'any',type:'image/svg+xml',purpose:'any'},
-        {src:'./icon-192.png',sizes:'192x192',type:'image/png',purpose:'any'},
-        {src:'./icon-512.png',sizes:'512x512',type:'image/png',purpose:'any'},
-        {src:'./icon-maskable-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'},
+        {src:iconURL('icon-192.png'),sizes:'192x192',type:'image/png',purpose:'any'},
+        {src:iconURL('icon-512.png'),sizes:'512x512',type:'image/png',purpose:'any'},
+        {src:iconURL('icon-maskable-512.png'),sizes:'512x512',type:'image/png',purpose:'maskable'},
       ];
       const manifest = {name:'Tibetan Manual — Reading & Writing',short_name:'TibReading',id:'./',start_url:'./',scope:'./',display:'standalone',background_color:'#F4ECD8',theme_color:'#7A1F1F',icons};
-      writeFileSync(join(out,'manifest.webmanifest'),JSON.stringify(manifest,null,2));
-      const assets = ['index.html','manifest.webmanifest',...icons.map(i=>i.src.slice(2)),'apple-touch-icon.png',...names.map(n=>'fonts/'+n)];
+      const manifestJSON = JSON.stringify(manifest,null,2);
+      const manifestName = 'manifest-' + createHash('sha256').update(manifestJSON).digest('hex').slice(0,12) + '.webmanifest';
+      writeFileSync(join(out,'manifest.webmanifest'),manifestJSON);
+      writeFileSync(join(out,manifestName),manifestJSON);
+      html = html.replace('href="./manifest.webmanifest"',`href="./${manifestName}"`);
+      writeFileSync(path,html);
+      const assets = ['index.html','manifest.webmanifest',manifestName,'icon.svg',...iconFiles,...iconFiles.map(n=>iconURL(n).slice(2)),...names.map(n=>'fonts/'+n)];
       const hash = createHash('sha256');
       // Worker behavior is part of the hash too, so cache changes deploy safely.
       const behaviorVersion = '4'; hash.update(behaviorVersion);

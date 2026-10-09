@@ -126,6 +126,8 @@ export const TIBETAN_DATA = {
       ]
     },
     {
+      // TODO: Check Dawa Tshering Vol. 1 for deliberate omission of ནྲ.
+      // Other grammars include nra; retain this book-based list until verified.
       name: "ratak", mark: "ྲ", glyph: "ྲ",
       desc: "Subjoined ra — collapses many consonants into a single retroflex tr / thr / dr family.",
       stacks: [
@@ -1168,3 +1170,435 @@ TIBETAN_DATA.readingPassages = [
   { title: '3 · Short phrases', kind: 'proverb', proverb: 'refuge', line: 0, count: 5 },
   { title: '4 · A proverb line', kind: 'proverb', proverb: 'ocean-of-drops', line: 0 },
 ];
+
+// Expand the course from vocabulary already glossed in the manual sections.
+// References retain one authoritative spelling, reading and gloss per source.
+const practiceRuleIds = ["suf-basic","suf-nl-e","umlaut-u-ds","umlaut-o-ds","umlaut-u-nl","umlaut-o-nl","ie-ds-noop","prefix-silent","db-wa","ba-wa","post-silent","four-letter","raise-nga","raise-na","root-two"];
+const vocabulary = new Map(TIBETAN_DATA.practiceWords.map(w => [w.w,w]));
+for (const entry of [...TIBETAN_DATA.letterWords,...TIBETAN_DATA.vowelWords]) {
+  if (!vocabulary.has(entry.g)) vocabulary.set(entry.g,{ w:entry.g,r:entry.r,m:entry.m });
+}
+for (const rule of TIBETAN_DATA.rules.filter(r => practiceRuleIds.includes(r.id))) {
+  for (const e of rule.examples) {
+    if (!e.gloss || e.spell === 'འཁོར་') continue; // Existing gloss “attract” needs source review.
+    const w = e.spell.replace(/[་།\s]+$/gu,'');
+    if (!vocabulary.has(w)) vocabulary.set(w,{ w,r:e.reads,m:e.gloss,...(e.canonicalSyllables ? { canonicalSyllables:e.canonicalSyllables } : {}) });
+  }
+}
+// Explicit structure tags, checked against the parser in tests.
+const practiceStructures = {
+  "ཆུ": [
+    "no prefix"
+  ],
+  "མེ": [
+    "no prefix"
+  ],
+  "རི": [
+    "no prefix"
+  ],
+  "ལོ": [
+    "no prefix"
+  ],
+  "བུ": [
+    "no prefix"
+  ],
+  "མི": [
+    "no prefix"
+  ],
+  "ཉི་མ": [
+    "no prefix"
+  ],
+  "ཟླ་བ": [
+    "no prefix",
+    "subscript"
+  ],
+  "ལྷ": [
+    "no prefix",
+    "superscript"
+  ],
+  "རྟ": [
+    "no prefix",
+    "superscript"
+  ],
+  "བླ་མ": [
+    "no prefix",
+    "subscript"
+  ],
+  "བོད": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཁྱི": [
+    "no prefix",
+    "subscript"
+  ],
+  "སྒོ": [
+    "no prefix",
+    "superscript"
+  ],
+  "ལྔ": [
+    "no prefix",
+    "superscript"
+  ],
+  "དགུ": [
+    "prefix"
+  ],
+  "མགོ": [
+    "prefix"
+  ],
+  "བཞི": [
+    "prefix"
+  ],
+  "ཁ": [
+    "no prefix"
+  ],
+  "ང": [
+    "no prefix"
+  ],
+  "ཆ": [
+    "no prefix"
+  ],
+  "ཇ": [
+    "no prefix"
+  ],
+  "ཉ": [
+    "no prefix"
+  ],
+  "ཐ": [
+    "no prefix"
+  ],
+  "ད": [
+    "no prefix"
+  ],
+  "ན": [
+    "no prefix"
+  ],
+  "ཕ": [
+    "no prefix"
+  ],
+  "བ": [
+    "no prefix"
+  ],
+  "མ": [
+    "no prefix"
+  ],
+  "ཚ": [
+    "no prefix"
+  ],
+  "ཝ": [
+    "no prefix"
+  ],
+  "ཟ": [
+    "no prefix"
+  ],
+  "ཡ": [
+    "no prefix"
+  ],
+  "ར": [
+    "no prefix"
+  ],
+  "ལ": [
+    "no prefix"
+  ],
+  "ཤ": [
+    "no prefix"
+  ],
+  "ས": [
+    "no prefix"
+  ],
+  "ཀོ": [
+    "no prefix"
+  ],
+  "ཁེ": [
+    "no prefix"
+  ],
+  "ཁོ": [
+    "no prefix"
+  ],
+  "ངོ": [
+    "no prefix"
+  ],
+  "ཇོ": [
+    "no prefix"
+  ],
+  "ཉི": [
+    "no prefix"
+  ],
+  "ཐོ": [
+    "no prefix"
+  ],
+  "དེ": [
+    "no prefix"
+  ],
+  "དུ": [
+    "no prefix"
+  ],
+  "ནུ": [
+    "no prefix"
+  ],
+  "ཕོ": [
+    "no prefix"
+  ],
+  "མུ": [
+    "no prefix"
+  ],
+  "མོ": [
+    "no prefix"
+  ],
+  "ཚེ": [
+    "no prefix"
+  ],
+  "ཞི": [
+    "no prefix"
+  ],
+  "ཟོ": [
+    "no prefix"
+  ],
+  "རུ": [
+    "no prefix"
+  ],
+  "རེ": [
+    "no prefix"
+  ],
+  "ལི": [
+    "no prefix"
+  ],
+  "ཤི": [
+    "no prefix"
+  ],
+  "སུ": [
+    "no prefix"
+  ],
+  "སོ": [
+    "no prefix"
+  ],
+  "ཡག་པོ": [
+    "no prefix",
+    "suffix"
+  ],
+  "མང་པོ": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཐོབ": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཕམ": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཚར": [
+    "no prefix",
+    "suffix"
+  ],
+  "ལན": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཉན": [
+    "no prefix",
+    "suffix"
+  ],
+  "ལུས": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཆོས": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཡོད": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཀུན": [
+    "no prefix",
+    "suffix"
+  ],
+  "དོན": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཡིད": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཚེས": [
+    "no prefix",
+    "suffix"
+  ],
+  "དགའ": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དབང": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དབུ": [
+    "prefix"
+  ],
+  "དབུས": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དབྱར་ཀ": [
+    "prefix",
+    "subscript",
+    "suffix",
+    "combos",
+    "no prefix"
+  ],
+  "རྩ་བ": [
+    "no prefix",
+    "superscript"
+  ],
+  "ཞི་བ": [
+    "no prefix"
+  ],
+  "ཤ་བ": [
+    "no prefix"
+  ],
+  "ལྟ་བ": [
+    "no prefix",
+    "superscript"
+  ],
+  "བསྒྲུབས": [
+    "prefix",
+    "superscript",
+    "subscript",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "འཇིགས": [
+    "prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "སེམས": [
+    "no prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "ཐབས": [
+    "no prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "བསམས": [
+    "prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "གསུངས": [
+    "prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "མགྱོགས་པོ": [
+    "prefix",
+    "subscript",
+    "suffix",
+    "post-suffix",
+    "combos",
+    "no prefix"
+  ],
+  "འགྲིགས": [
+    "prefix",
+    "subscript",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "དངུལ": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དངོས": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "མངའ": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "མངོན": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "མནའ་མ": [
+    "prefix",
+    "suffix",
+    "combos",
+    "no prefix"
+  ],
+  "གནའ་བོ": [
+    "prefix",
+    "suffix",
+    "combos",
+    "no prefix"
+  ],
+  "གནང": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "གནས": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དང": [
+    "no prefix",
+    "suffix"
+  ],
+  "ངག": [
+    "no prefix",
+    "suffix"
+  ],
+  "བར": [
+    "no prefix",
+    "suffix"
+  ]
+};
+TIBETAN_DATA.practiceWords = [...vocabulary.values()].map(w => ({ ...w,tags:practiceStructures[w.w] }));
+
+// Glossary is derived only from existing glossed data. No translations are
+// inferred from a syllable parse or from an English sentence translation.
+const glossary = {};
+function addGlossary(t, r, gloss, contextReading, canonicalSyllables) {
+  if (typeof t !== 'string' || !/[\u0f40-\u0fbc]/u.test(t)) return;
+  const key = t.trim().replace(/[་།༎\s]+$/gu,'');
+  const entry = glossary[key] || { t:key, r:r || '', glosses:[] };
+  if (r && !entry.r) entry.r = r;
+  if (typeof gloss === 'string' && gloss && gloss !== '—' && !entry.glosses.includes(gloss)) entry.glosses.push(gloss);
+  if (contextReading) entry.contextReading = contextReading;
+  if (canonicalSyllables) entry.canonicalSyllables = canonicalSyllables;
+  glossary[key] = entry;
+}
+function collectGlossary(value) {
+  if (!value || typeof value !== 'object') return;
+  if (value.r || value.reads) {
+    const t = value.spell ?? value.out ?? value.s ?? value.w ?? value.t ?? value.g;
+    const gloss = value.t && value.r ? value.g : value.m ?? value.gloss ?? value.v;
+    addGlossary(t,value.r ?? value.reads,gloss,value.contextReading,value.canonicalSyllables);
+  }
+  for (const v of Object.values(value)) collectGlossary(v);
+}
+collectGlossary(TIBETAN_DATA);
+addGlossary(TIBETAN_DATA.builderWord.parts.map(p => p.add).join(''),TIBETAN_DATA.builderWord.pron,TIBETAN_DATA.builderWord.meaning);
+TIBETAN_DATA.glossary = glossary;

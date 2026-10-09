@@ -51,7 +51,7 @@ export default function App() {
           {tab === 'read'     && <ReadView go={go} initial={payload} />}
           {tab === 'practice' && <PracticeView />}
           {tab === 'settings' && <SettingsView />}
-          {tab === 'proverbs' && <ProverbsView />}
+          {tab === 'proverbs' && <ProverbsView go={go} />}
         </ErrorBoundary>
       </main>
     </div>

@@ -3,7 +3,7 @@ import { schedule, DAY, sessionStreak, selectCards, matchesAnswer } from '../src
 import { migrateProgress, emptyProgress, importProgress, getProgress, saveProgress } from '../src/progress.js';
 import { checkRomanization } from '../bench/check-romanization.mjs';
 import { TIBETAN_DATA as D } from '../src/data.js';
-import { parseSyllable, compose, validateSyllable, emptyParts } from '../src/syllable.js';
+import { parseSyllable, compose, validateSyllable, emptyParts, structureTags } from '../src/syllable.js';
 import { deck, challenges, optionsFor } from '../src/deck.js';
 import { parseRoute } from '../src/routing.js';
 
@@ -98,5 +98,17 @@ describe('deck and routes', () => {
     expect(parseRoute('#/vowels/%E0%BD%B2').payload.vowel).toBe(0);
     expect(parseRoute('#/alphabet/-1').payload.letter).toBe(0);
     expect(parseRoute('#/%bad').tab).toBe('intro');
+  });
+});
+
+describe('vocabulary and glossary', () => {
+  it('contains at least 80 distinct tagged words and accurate tags', () => {
+    expect(new Set(D.practiceWords.map(w=>w.w)).size).toBeGreaterThanOrEqual(80);
+    for (const w of D.practiceWords) { expect(w.tags).toEqual(structureTags(w.w)); expect(w.tags.length).toBeGreaterThan(0); }
+  });
+  it('indexes existing glosses without inventing entries for unknown syllables', () => {
+    expect(D.glossary['ཆུ'].glosses).toContain('water');
+    expect(D.glossary['བསྒྲུབས'].glosses).toContain('to accomplish, fulfill');
+    expect(D.glossary['རྐི']).toBeUndefined();
   });
 });

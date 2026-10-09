@@ -1,5 +1,6 @@
 import { useState, useRef, useLayoutEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import { LookupText } from '../components/Lookup.jsx';
 import { createReader } from '../reader.js';
 
 export default function IntroView({ go }) {
@@ -201,7 +202,7 @@ export default function IntroView({ go }) {
                       {num !== null && <span className="sum-verse-num">{String(num).padStart(2, '0')} · </span>}
                       {v.label}
                     </div>
-                    <div className="sum-verse-ti ti">{v.tib}</div>
+                    <div className="sum-verse-ti ti" lang="bo"><LookupText text={v.tib} go={go} /></div>
                     <div className="sum-verse-en">
                       {v.en.map((line, li) => <div key={li} className="sum-line">{line}</div>)}
                     </div>

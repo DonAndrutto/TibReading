@@ -56,6 +56,19 @@ try {
   await page.getByRole('button',{name:'Reset progress',exact:true}).click();
   await page.getByRole('button',{name:'Keep progress',exact:true}).click();
   assert.ok(await page.evaluate(()=>Object.values(JSON.parse(localStorage.getItem('tibreading.progress')).items).some(c=>c.reviews)));
+  await page.evaluate(()=>location.hash='#/proverbs');
+  await page.locator('.pr-syl').first().click();
+  await page.getByRole('dialog').waitFor();
+  assert.match(await page.getByRole('dialog').innerText(),/water/);
+  await page.getByRole('button',{name:/Open syllable in Builder/}).click();
+  await page.locator('.builder-preview').waitFor();
+  assert.match(await page.locator('.builder-preview').innerText(),/ཆུ/);
+  await page.evaluate(()=>location.hash='#/intro');
+  await page.getByRole('button',{name:/tap to read the root text/i}).click();
+  await page.locator('.lookup-token').first().click();
+  await page.getByRole('dialog').waitFor();
+  await page.keyboard.press('Escape');
+  assert.equal(await page.getByRole('dialog').count(),0);
   assert.deepEqual(errors,[]);
   console.log('check:course — routing, history, session persistence, Builder validation/challenge, reading self-grade and reset cancellation passed');
 } finally { await browser.close(); server.close(); }

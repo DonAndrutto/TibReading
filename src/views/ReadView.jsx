@@ -4,6 +4,7 @@ import ReadingDrills from '../components/ReadingDrills.jsx';
 import { shuffle } from '../utils.js';
 
 export default function ReadView({ go, initial }) {
+  const [structure, setStructure] = useState('all');
   const [mode, setMode] = useState('flash');
   const [i, setI] = useState(initial?.index ?? 0);
   const [revealed, setRevealed] = useState(false);
@@ -111,8 +112,9 @@ export default function ReadView({ go, initial }) {
             </div>
           </div>
 
+          <label>Word structure<select aria-label="Word structure" value={structure} onChange={e => setStructure(e.target.value)}>{["all","no prefix","prefix","superscript","subscript","suffix","combos"].map(t => <option key={t}>{t}</option>)}</select></label>
           <div className="read-list">
-            {D.practiceWords.map((w, k) => (
+            {D.practiceWords.map((w, k) => (structure === "all" || w.tags.includes(structure)) && (
               <button key={k}
                 className={'list-card' + (k === i ? ' on' : '')}
                 onClick={() => { go('read', { index: k }); setRevealed(false); }}>

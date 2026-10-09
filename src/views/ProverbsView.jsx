@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { LookupPopover } from '../components/Lookup.jsx';
 import { TIBETAN_DATA as D } from '../data.js';
 
-export default function ProverbsView() {
+export default function ProverbsView({ go }) {
+  const [lookup,setLookup] = useState(null);
   const P = D.proverbs;
   const [pIdx, setPIdx]   = useState(0);
   const [active, setActive] = useState({ line: 0, syl: 0 });
@@ -17,6 +19,7 @@ export default function ProverbsView() {
 
   return (
     <div className="view proverbs">
+      {lookup && <LookupPopover text={lookup.t} contextReading={lookup.contextReading} go={go} onClose={() => setLookup(null)} />}
       <header className="view-head">
         <div>
           <div className="kicker">§ 1.6 · reading practice</div>
@@ -57,7 +60,7 @@ export default function ProverbsView() {
                 return (
                   <button key={si}
                     className={'pr-syl' + (isActive ? ' on' : '') + (reveal ? ' reveal' : '')}
-                    onClick={() => setActive({ line: li, syl: si })}>
+                    onClick={() => { setActive({ line: li, syl: si }); setLookup(s); }}>
                     <span className="pr-syl-glyph">
                       <span className="pr-syl-ti">{s.t}</span>
                       {si < line.syl.length - 1 && <span className="pr-sep tsek">་</span>}

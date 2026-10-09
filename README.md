@@ -33,3 +33,9 @@ The unified deck deduplicates Tibetan forms across the consonants, vowels, stack
 Builder uses the native syllable patterns in `data.js`, with prefix permissions for whole stacks, explicit triple stacks and second-suffix restrictions. It never joins full-form consonants to imitate a stack. Unsupported/ambiguous forms are reported rather than guessed. Wylie is spelling, while the app’s phonetic romanization is a reading aid; type-in accepts either, ignoring case and whitespace.
 
 Orthographic references: [MSU Basic Tibetan, root letters](https://openbooks.lib.msu.edu/basictibetan/chapter/2-3/), [prefixes](https://openbooks.lib.msu.edu/basictibetan/chapter/3-2/), [post-suffixes](https://openbooks.lib.msu.edu/basictibetan/chapter/2-1/), and [BDRC/OpenPecha’s EWTS tables](https://github.com/OpenPecha/pyewts/blob/master/pyewts/pyewts.py). Native letter-combination facts were checked against these sources; this is not a general Sanskrit/EWTS converter.
+
+## Vocabulary and lookup
+
+The reading course contains 101 distinct practice words, expanded by reusing the app’s existing glossed letter, vowel and rule vocabulary. Each has checked structure tags for filtering. `data.js` derives a glossary from all existing gloss fields, preserving multiple senses. Tapping a proverb syllable or a Sum cu pa syllable opens its reading, existing glosses, parse and Builder link. Unknown meanings are left blank; unsupported spellings are explicitly identified.
+
+Content follow-ups: the book’s omission of ནྲ from ratak could not be established from the available material, so its list is unchanged with a TODO. Broader orthographic sources include it. The pre-existing gloss “to attract” for འཁོར needs source review and is excluded from the new practice-word expansion. This change retains the manual’s simplified phonetic conventions rather than claiming a dialect-independent transcription.

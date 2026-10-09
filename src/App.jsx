@@ -3,6 +3,7 @@ import { useProgress, getStorageError } from './progress.js';
 import { useRoute } from './routing.js';
 import SettingsView from './views/SettingsView.jsx';
 import PracticeView from './views/PracticeView.jsx';
+import InstallPrompt from './components/InstallPrompt.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import IntroView from './views/IntroView.jsx';
 import AlphabetView from './views/AlphabetView.jsx';
@@ -44,6 +45,7 @@ export default function App() {
       <a className="skip-link" href="#main-content" onClick={e => { e.preventDefault(); document.getElementById("main-content").focus(); }}>Skip to content</a>
       <main id="main-content" tabIndex={-1} className="main">
         {getStorageError() && <p role="status" className="course-panel">{getStorageError()}</p>}
+        {tab !== 'settings' && <InstallPrompt />}
         <ErrorBoundary key={hash}>
           {tab === 'intro'    && <IntroView go={go} />}
           {tab === 'alphabet' && <AlphabetView go={go} initial={payload} />}

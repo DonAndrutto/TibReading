@@ -198,3 +198,8 @@ The app is deployed as a **single HTML application with offline/PWA companion fi
 - `tests/course.test.js`: Vitest correctness checks. Run `npm test` alongside all three `check:*` scripts before submission.
 
 New content should include canonical readings, explicit context fields when needed, existing-source glosses and checked structure tags. Unknown glosses stay absent. The ratak omission TODO remains until the actual manual can be checked.
+
+
+## Installation and startup
+
+`src/install.js` captures browser install offers before React mounts and shares install/dismissal state with the inline invitation and Settings (`InstallPrompt.jsx`). Local preferences use `tibreading.install`, separately from course progress. Keep native prompts user-initiated, honor standalone/appinstalled, and retain manual instructions for browsers without the event. The static loading markup in `index.html` disappears when React renders; never add an artificial startup delay. Icon source is `public/icon.svg`; run `npm run icons` to regenerate committed PNGs. `bench/install.mjs` is included in `check:reader` (or run `npm run check:install`).

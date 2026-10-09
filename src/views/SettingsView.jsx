@@ -1,3 +1,4 @@
+import InstallPrompt from '../components/InstallPrompt.jsx';
 import { useState } from 'react';
 import { useProgress, exportProgress, importProgress, resetProgress, getStorageError } from '../progress.js';
 export default function SettingsView() {
@@ -13,6 +14,7 @@ export default function SettingsView() {
   };
   return <div className="view"><div className="kicker">Your course</div><h1>Settings &amp; progress</h1>
     <p className="lead">Progress stays on this device. Export a copy, then import it on another device to continue there.</p>
+    <InstallPrompt settings />
     <section className="course-panel">
       <p>{Object.values(progress.items).filter(x => x.seen).length} items seen · {Object.values(progress.items).filter(x => x.mastered).length} mastered · {progress.streak} day streak</p>
       <p>Last practice: {progress.lastSession ? new Date(progress.lastSession).toLocaleString() : 'No sessions yet'}</p>

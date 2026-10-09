@@ -2405,3 +2405,21 @@ input[type=checkbox] { width: 22px; height: 22px; }
 .trace-cursor.drawing { background: var(--maroon); }
 button:not(.lookup-token), summary { min-width: 44px; }
 html { scroll-padding-bottom: 90px; }
+
+/* Installation is an inline invitation, so it never covers a lesson or mobile tabs. */
+.install-panel { display: flex; align-items: flex-start; gap: 18px; }
+.install-banner { margin: 0 0 28px; padding: 20px; border: 1px solid var(--paper-edge); border-radius: 14px; background: var(--paper-deep); }
+.install-panel > img { flex: 0 0 56px; border-radius: 12px; }
+.install-copy { min-width: 0; flex: 1; }
+.install-panel h2 { margin: 0 0 6px; font: 24px/1.2 var(--serif); }
+.install-panel p { margin: 0 0 14px; font-size: 17px; line-height: 1.5; }
+.install-panel .install-help { margin-top: 16px; }
+.install-panel .install-message { margin: 12px 0 0; }
+.install-message:empty { display: none; }
+@media(max-width: 720px) {
+  .install-banner { padding: 16px; }
+  .install-panel { gap: 12px; }
+  .install-panel > img { width: 44px; height: 44px; flex-basis: 44px; border-radius: 10px; }
+  .install-panel h2 { font-size: 22px; }
+  .install-panel .course-actions { align-items: stretch; }
+}

@@ -34,11 +34,15 @@ export function offlinePlugin() {
       const path = join(out,'index.html');
       let html = readFileSync(path,'utf8').replace('</head>',`<style>${css}</style><link rel="manifest" href="./manifest.webmanifest"></head>`);
       writeFileSync(path,html);
-      const manifest = {name:'Tibetan Manual — Reading & Writing',short_name:'TibReading',id:'./',start_url:'./',scope:'./',display:'standalone',background_color:'#F4ECD8',theme_color:'#7A1F1F',icons:[{src:'./icon.svg',sizes:'any',type:'image/svg+xml',purpose:'any'}]};
-      const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#7A1F1F"/><path d="M40 52q28-12 56 4 28-16 56-4v90q-28-12-56 4-28-16-56-4z" fill="#F4ECD8"/><path d="M96 56v90M55 76h25M55 92h25M112 76h25M112 92h25" fill="none" stroke="#7A1F1F" stroke-width="5"/></svg>';
+      const icons = [
+        {src:'./icon.svg',sizes:'any',type:'image/svg+xml',purpose:'any'},
+        {src:'./icon-192.png',sizes:'192x192',type:'image/png',purpose:'any'},
+        {src:'./icon-512.png',sizes:'512x512',type:'image/png',purpose:'any'},
+        {src:'./icon-maskable-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'},
+      ];
+      const manifest = {name:'Tibetan Manual — Reading & Writing',short_name:'TibReading',id:'./',start_url:'./',scope:'./',display:'standalone',background_color:'#F4ECD8',theme_color:'#7A1F1F',icons};
       writeFileSync(join(out,'manifest.webmanifest'),JSON.stringify(manifest,null,2));
-      writeFileSync(join(out,'icon.svg'),icon);
-      const assets = ['index.html','manifest.webmanifest','icon.svg',...names.map(n=>'fonts/'+n)];
+      const assets = ['index.html','manifest.webmanifest',...icons.map(i=>i.src.slice(2)),'apple-touch-icon.png',...names.map(n=>'fonts/'+n)];
       const hash = createHash('sha256');
       // Worker behavior is part of the hash too, so cache changes deploy safely.
       const behaviorVersion = '4'; hash.update(behaviorVersion);

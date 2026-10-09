@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { crc32 } from '../build/png.mjs';
 import { serve } from './serve.mjs';
 
 const server = await serve({ TibReading: resolve('dist') }, 4190);
@@ -36,7 +37,29 @@ try {
   }
   assert.ok(manifest.icons.every(i => i.type === 'image/png' && /-[a-f0-9]{12}\.png$/.test(i.src)), 'Installers get versioned PNGs');
   assert.ok(manifest.icons.some(i => i.purpose === 'maskable'));
-  assert.ok(html.includes('apple-touch-icon'));
+  const headLinks = [...html.matchAll(/<link\b[^>]*>/g)];
+  assert.equal(headLinks[0][0], '<link rel="apple-touch-icon" href="./apple-touch-icon.png">');
+  assert.match(headLinks[1][0], /^<link rel="apple-touch-icon" sizes="180x180" href="\.\/icons\/apple-touch-icon-[a-f0-9]{12}\.png">$/);
+  const charsetEnd = html.indexOf('<meta charset="utf-8"') + '<meta charset="utf-8" />'.length;
+  assert.ok(charsetEnd < 1024);
+  for (const link of headLinks.slice(0,2)) {
+    const end = Buffer.byteLength(html.slice(0,link.index+link[0].length));
+    assert.ok(end < 1024, 'Apple links must fit in the first 1 KB');
+    assert.ok(link.index < html.indexOf('<style') && link.index < html.indexOf('<script'));
+  }
+  const apple = readFileSync('dist/apple-touch-icon.png');
+  assert.equal(apple.readUInt32BE(16),180); assert.equal(apple.readUInt32BE(20),180);
+  assert.equal(apple[24],8); assert.equal(apple[25],2); assert.equal(apple[28],0);
+  let srgb = 0;
+  for (let offset=8; offset<apple.length;) {
+    const length = apple.readUInt32BE(offset), end=offset+length+12;
+    assert.equal(apple.readUInt32BE(end-4), crc32(apple.subarray(offset+4,end-4)), 'Valid PNG chunk CRC');
+    if (apple.toString('ascii',offset+4,offset+8)==='sRGB') {
+      srgb++; assert.equal(length,1); assert.equal(apple[offset+8],0);
+    }
+    offset=end;
+  }
+  assert.equal(srgb,1,'Explicit sRGB tag');
   const desktop = await open({ viewport: { width: 1280, height: 900 } });
   // An older worker/browser can retain the previous canonical manifest. New
   // HTML must use fresh metadata rather than that stale installation response.
@@ -52,7 +75,9 @@ try {
   assert.deepEqual(JSON.parse(parsed.data).icons, manifest.icons);
   assert.equal(staleManifestRequests, 0);
   assert.deepEqual((await cdp.send('Page.getInstallabilityErrors')).installabilityErrors, []);
-  const appleURL = await desktop.locator('link[rel="apple-touch-icon"]').getAttribute('href');
+  const appleURLs = await desktop.locator('link[rel="apple-touch-icon"]').evaluateAll(links=>links.map(l=>l.getAttribute('href')));
+  assert.equal(appleURLs[0],'./apple-touch-icon.png');
+  const appleURL = appleURLs[1];
   assert.match(appleURL, /apple-touch-icon-[a-f0-9]{12}\.png$/);
   // Decode actual browser images: dimensions in a PNG header alone cannot
   // detect a blank/transparent export or artwork cropped by a launcher mask.
@@ -73,7 +98,7 @@ try {
       }
     }
     return {width:bitmap.width,height:bitmap.height,transparent,foreground,unsafe,type:response.headers.get('content-type')};
-  })), [...manifest.icons, {src:appleURL}]);
+  })), [...manifest.icons, ...appleURLs.map(src=>({src}))]);
   for (const [i,image] of raster.entries()) {
     const size = i<manifest.icons.length ? Number(manifest.icons[i].sizes.split('x')[0]) : 180;
     assert.equal(image.width,size); assert.equal(image.height,size);
@@ -158,13 +183,41 @@ try {
   const offline = await open({ serviceWorkers: 'allow' });
   await offline.waitForFunction(async () => !!(await navigator.serviceWorker.getRegistration())?.active);
   await offline.waitForFunction(() => !!navigator.serviceWorker.controller);
+  const freshIcon = await offline.evaluate(async () => {
+    const key=(await caches.keys()).find(k=>k.startsWith('tibreading:/TibReading/:'));
+    const cache=await caches.open(key), url=new URL('./apple-touch-icon.png',location.href).href;
+    // Poison even the plain filename with an older, valid PNG.
+    const old=await fetch('./icon-512.png'); await cache.put(url,old);
+    const response=await fetch('./apple-touch-icon.png');
+    const bytes=Array.from(new Uint8Array(await response.arrayBuffer()));
+    const stored=Array.from(new Uint8Array(await (await cache.match(url)).arrayBuffer()));
+    return {bytes,stored};
+  });
+  assert.deepEqual(freshIcon.bytes,Array.from(apple),'Network wins over stale cached icon');
+  assert.deepEqual(freshIcon.stored,Array.from(apple),'Successful network icon refreshes cache');
+  // Shut down the origin too: CDP offline emulation can leave worker fetches
+  // online, so a live server would mask failures in the offline fallback.
+  await new Promise(resolve => { server.close(resolve); server.closeAllConnections(); });
   await offline.context().setOffline(true);
   await offline.reload();
   const icons = await offline.evaluate(async () => {
     const manifest = await (await fetch('./manifest.webmanifest')).json();
-    return Promise.all([...manifest.icons.map(i => i.src), document.querySelector('link[rel="apple-touch-icon"]').getAttribute('href'), document.querySelector('link[rel="manifest"]').getAttribute('href')].map(async src => (await fetch(src)).ok));
+    return Promise.all([...manifest.icons.map(i => i.src), ...Array.from(document.querySelectorAll('link[rel="apple-touch-icon"]'),l=>l.getAttribute('href')), document.querySelector('link[rel="manifest"]').getAttribute('href')].map(async src => (await fetch(src)).ok));
   });
   assert.ok(icons.every(Boolean), 'All install icons are available offline');
+  const rejectsBadCache = await offline.evaluate(async () => {
+    const key=(await caches.keys()).find(k=>k.startsWith('tibreading:/TibReading/:'));
+    const cache=await caches.open(key), url=new URL('./apple-touch-icon.png',location.href).href;
+    const good=(await cache.match(url)).clone();
+    let rejected=0;
+    for (const bad of [new Response('failed icon',{status:500,headers:{'Content-Type':'image/png'}}),new Response('<html>not an icon</html>',{headers:{'Content-Type':'text/html'}})]) {
+      await cache.put(url,bad);
+      try { await fetch('./apple-touch-icon.png'); } catch { rejected++; }
+    }
+    await cache.put(url,good);
+    return rejected;
+  });
+  assert.equal(rejectsBadCache,2,'Offline errors/HTML must not be served as icons');
   assert.deepEqual(errors, []);
   console.log('check:install — icons, native offer/accept/cancel/error, reinstall, dismissal, iOS help, installed suppression, blocked storage, loading/reduced motion/no-JS and offline assets passed');
-} finally { await browser.close(); server.close(); }
+} finally { await browser.close(); if (server.listening) server.close(); }

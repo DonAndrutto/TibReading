@@ -33,7 +33,6 @@ export function offlinePlugin() {
       const css = readFileSync(join(fontDir,'fonts.css'),'utf8').replaceAll('__FONTBASE__','./fonts');
       const path = join(out,'index.html');
       let html = readFileSync(path,'utf8').replace('</head>',`<style>${css}</style><link rel="manifest" href="./manifest.webmanifest"></head>`);
-      writeFileSync(path,html);
       // Fresh filenames bypass browser/OS caches left over from earlier installs.
       const iconFiles = ['icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png'];
       const iconHash = createHash('sha256');
@@ -42,8 +41,7 @@ export function offlinePlugin() {
       mkdirSync(join(out,'icons'),{recursive:true});
       const iconURL = name => './icons/' + name.replace('.png','-' + iconVersion + '.png');
       iconFiles.forEach(name=>copyFileSync(join(out,name),join(out,iconURL(name).slice(2))));
-      html = html.replace('href="./apple-touch-icon.png"',`href="${iconURL('apple-touch-icon.png')}"`);
-      writeFileSync(path,html);
+      html = html.replace('sizes="180x180" href="./apple-touch-icon.png"',`sizes="180x180" href="${iconURL('apple-touch-icon.png')}"`);
       // PNG-only install icons work across WebAPK, Safari and desktop installers.
       // The SVG remains the favicon and the inline invitation's artwork.
       const icons = [
@@ -61,13 +59,15 @@ export function offlinePlugin() {
       const assets = ['index.html','manifest.webmanifest',manifestName,'icon.svg',...iconFiles,...iconFiles.map(n=>iconURL(n).slice(2)),...names.map(n=>'fonts/'+n)];
       const hash = createHash('sha256');
       // Worker behavior is part of the hash too, so cache changes deploy safely.
-      const behaviorVersion = '4'; hash.update(behaviorVersion);
+      const behaviorVersion = '5'; hash.update(behaviorVersion);
       assets.forEach(n=>hash.update(n).update(readFileSync(join(out,n))));
       const version = hash.digest('hex').slice(0,16);
       writeFileSync(join(out,'sw.js'),`
 const PREFIX = 'tibreading:' + new URL(self.registration.scope).pathname + ':';
 const CACHE = PREFIX + '${version}';
 const ASSETS = ${JSON.stringify(assets)}.map(p => new URL(p,self.registration.scope).href);
+const ICON_PATHS = new Set(${JSON.stringify(['icon.svg',...iconFiles,...iconFiles.map(n=>iconURL(n).slice(2))])}.map(p => new URL(p,self.registration.scope).pathname));
+const validIcon = response => response?.ok && /^image\\/(png|svg\\+xml)(;|$)/i.test(response.headers.get('content-type') || '');
 self.addEventListener('install', event => event.waitUntil((async () => {
   const cache = await caches.open(CACHE);
   await cache.addAll(ASSETS);
@@ -80,7 +80,22 @@ self.addEventListener('activate', event => event.waitUntil((async () => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || url.origin !== self.location.origin || !url.href.startsWith(self.registration.scope)) return;
-  if (event.request.mode === 'navigate') {
+  if (ICON_PATHS.has(url.pathname)) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      try {
+        // Revalidate even the plain iOS filename; avoid stale HTTP and SW caches.
+        const response = await fetch(event.request, { cache: 'reload' });
+        if (!validIcon(response)) throw new Error('Invalid icon response');
+        await cache.put(url.origin + url.pathname, response.clone());
+        return response;
+      } catch {
+        // Offline use still works, but never return cached errors/HTML as icons.
+        const cached = await cache.match(url.origin + url.pathname);
+        return validIcon(cached) ? cached : Response.error();
+      }
+    })());
+  } else if (event.request.mode === 'navigate') {
     event.respondWith(fetch(event.request).catch(async () => (await caches.open(CACHE)).match(ASSETS[0])));
   } else if (ASSETS.includes(url.href)) {
     event.respondWith((async () => (await (await caches.open(CACHE)).match(event.request)) || fetch(event.request))());

@@ -67,3 +67,6 @@ A browser `beforeinstallprompt` offer enables the native install button. iPhone/
 Installation API reference: [MDN’s install prompt guide](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Trigger_install_prompt).
 
 If an existing home-screen shortcut retains old artwork, refreshing the page cannot reliably update the operating system’s saved icon. Once the new version is deployed, export your progress from Settings before removing and re-adding the shortcut, then import it if needed. The versioned manifest and icon URLs apply to fresh installations without requiring users to clear their browser’s storage.
+
+
+For Safari’s native Add to Home Screen sheet, the plain, unsized `apple-touch-icon.png` link is the first link in the head, followed by the hashed 180px link; both and the charset fit within the first 1 KB. The Apple PNG is opaque 8-bit RGB, non-interlaced and explicitly sRGB-tagged. Worker behavior v5 serves icons network-first, revalidating HTTP caches and falling back only to successful image responses when offline. The data-URI fallback is reserved for a failed test on the affected iPhone. See [the exact iPhone test steps and curl inspection](docs/ios-icon-test.md).

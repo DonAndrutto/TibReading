@@ -1,3 +1,4 @@
+import { gradeCard } from '../progress.js';
 import { useState, useMemo } from 'react';
 import { shuffle } from '../utils.js';
 
@@ -31,6 +32,7 @@ export default function VocabCards({ words, title, lead, defaultOpen = true }) {
   const pick = (opt, k) => {
     if (picked !== null) return;
     setPicked(k);
+    gradeCard('card:' + quiz.g, opt.r === quiz.r ? 'knew' : 'missed');
     if (opt.r === quiz.r) { setScore(s => ({ ...s, right: s.right + 1 })); setStreak(s => s + 1); }
     else                  { setScore(s => ({ ...s, wrong: s.wrong + 1 })); setStreak(0); }
   };
@@ -44,6 +46,7 @@ export default function VocabCards({ words, title, lead, defaultOpen = true }) {
 
   return (
     <section className="letter-words">
+      <p className="sr-only" role="status">{picked !== null ? (options[picked].r === quiz.r ? "Correct. " : "Not quite. ") + quiz.r : ""}</p>
       <button className="lw-head" onClick={() => setOpen(o => !o)} aria-expanded={open}>
         <span className="lw-head-text">
           <span className="lw-kicker mono">vocabulary · {words.length} words</span>
@@ -64,10 +67,10 @@ export default function VocabCards({ words, title, lead, defaultOpen = true }) {
           {mode === 'study' && (
             <>
               <div className="read-stage">
-                <div className={'flashcard' + (flipped ? ' is-revealed' : '')} onClick={() => setFlipped(f => !f)}>
+                <div role="button" tabIndex={0} aria-label="Reveal or hide reading" aria-pressed={flipped} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setFlipped(v => !v); } }} className={'flashcard' + (flipped ? ' is-revealed' : '')} onClick={() => setFlipped(f => !f)}>
                   <div className="card-face card-front">
                     <div className="card-num mono">{String(fi + 1).padStart(2, '0')} / {words.length}</div>
-                    <div className="card-ti">{w.g}<span className="tsek">་</span></div>
+                    <div className="card-ti" lang="bo">{w.g}<span className="tsek" lang="bo">་</span></div>
                     <div className="card-hint mono">tap to reveal</div>
                   </div>
                   <div className="card-face card-back">
@@ -88,7 +91,7 @@ export default function VocabCards({ words, title, lead, defaultOpen = true }) {
                   <button key={x.g}
                     className={'list-card' + (k === fi ? ' on' : '')}
                     onClick={() => { setFi(k); setFlipped(false); }}>
-                    <div className="lc-ti">{x.g}<span className="tsek">་</span></div>
+                    <div className="lc-ti" lang="bo">{x.g}<span className="tsek" lang="bo">་</span></div>
                     <div className="lc-r mono">{x.r}</div>
                     <div className="lc-m">{x.m}</div>
                   </button>
@@ -108,7 +111,7 @@ export default function VocabCards({ words, title, lead, defaultOpen = true }) {
 
               <div className="quiz-prompt">
                 <div className="quiz-kicker mono">what does this word mean?</div>
-                <div key={quiz.g} className="quiz-ti glyph-anim">{quiz.g}<span className="tsek">་</span></div>
+                <div key={quiz.g} className="quiz-ti glyph-anim" lang="bo">{quiz.g}<span className="tsek" lang="bo">་</span></div>
                 <div className="quiz-hint mono">{quiz.r}</div>
               </div>
 

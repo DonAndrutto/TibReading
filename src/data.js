@@ -7,7 +7,7 @@ export const TIBETAN_DATA = {
     { g: "ག", r: "ga",  t: "low",       v: "",                      n: 3  },
     { g: "ང", r: "nga", t: "low",       v: "I",                     n: 4  },
     { g: "ཅ", r: "cha", t: "high",      v: "",                      n: 5  },
-    { g: "ཆ", r: "cha", t: "high asp.", v: "",                      n: 6  },
+    { g: "ཆ", r: "chha", t: "high asp.", v: "",                      n: 6  },
     { g: "ཇ", r: "ja",  t: "low",       v: "tea",                   n: 7  },
     { g: "ཉ", r: "nya", t: "low",       v: "fish",                  n: 8  },
     { g: "ཏ", r: "ta",  t: "high",      v: "",                      n: 9  },
@@ -48,7 +48,7 @@ export const TIBETAN_DATA = {
     { c: "ཀ", v: "ོ", out: "ཀོ", r: "ko" },
     { c: "མ", v: "ི", out: "མི", r: "mi",  gloss: "man / human" },
     { c: "ར", v: "ི", out: "རི", r: "ri",  gloss: "mountain" },
-    { c: "ཆ", v: "ུ", out: "ཆུ", r: "chu", gloss: "water" },
+    { c: "ཆ", v: "ུ", out: "ཆུ", r: "chhu", gloss: "water" },
     { c: "བ", v: "ུ", out: "བུ", r: "bu",  gloss: "son / boy" },
     { c: "མ", v: "ེ", out: "མེ", r: "me",  gloss: "fire" },
     { c: "ལ", v: "ོ", out: "ལོ", r: "lo",  gloss: "year / age" }
@@ -61,7 +61,7 @@ export const TIBETAN_DATA = {
     { g: "ཁེ", r: "khe",  m: "profit, advantage" },
     { g: "ཁོ", r: "kho",  m: "he, him" },
     { g: "ངོ", r: "ngo",  m: "face" },
-    { g: "ཆུ", r: "chu",  m: "water" },
+    { g: "ཆུ", r: "chhu",  m: "water" },
     { g: "ཇོ", r: "jo",   m: "lord, master" },
     { g: "ཉི", r: "nyi",  m: "sun" },
     { g: "ཐོ", r: "tho",  m: "list, register" },
@@ -92,7 +92,7 @@ export const TIBETAN_DATA = {
   letterWords: [
     { g: "ཁ", r: "kha",  m: "mouth, surface, snow" },
     { g: "ང", r: "nga",  m: "I, me" },
-    { g: "ཆ", r: "cha",  m: "part, pair, fraction" },
+    { g: "ཆ", r: "chha",  m: "part, pair, fraction" },
     { g: "ཇ", r: "ja",   m: "tea" },
     { g: "ཉ", r: "nya",  m: "fish" },
     { g: "ཐ", r: "tha",  m: "end, edge" },
@@ -126,6 +126,8 @@ export const TIBETAN_DATA = {
       ]
     },
     {
+      // TODO: Check Dawa Tshering Vol. 1 for deliberate omission of ནྲ.
+      // Other grammars include nra; retain this book-based list until verified.
       name: "ratak", mark: "ྲ", glyph: "ྲ",
       desc: "Subjoined ra — collapses many consonants into a single retroflex tr / thr / dr family.",
       stacks: [
@@ -138,7 +140,7 @@ export const TIBETAN_DATA = {
         { s: "པྲ", r: "tra"  },
         { s: "ཕྲ", r: "thra" },
         { s: "བྲ", r: "dra"  },
-        { s: "མྲ", r: "ma (high)" },
+        { s: "མྲ", r: "ma", tone: "high" },
         { s: "སྲ", r: "sa"   },
         { s: "ཧྲ", r: "hra"  }
       ]
@@ -173,14 +175,14 @@ export const TIBETAN_DATA = {
       stacks: [
         { s: "རྐ", r: "ka" },
         { s: "རྒ", r: "ga" },
-        { s: "རྔ", r: "nga (high)", gloss: "drum" },
+        { s: "རྔ", r: "nga", tone: "high", gloss: "drum" },
         { s: "རྗ", r: "ja" },
-        { s: "རྙ", r: "nya (high)" },
+        { s: "རྙ", r: "nya", tone: "high" },
         { s: "རྟ", r: "ta", gloss: "horse" },
         { s: "རྡ", r: "da" },
-        { s: "རྣ", r: "na (high)" },
+        { s: "རྣ", r: "na", tone: "high" },
         { s: "རྦ", r: "ba" },
-        { s: "རྨ", r: "ma (high)" },
+        { s: "རྨ", r: "ma", tone: "high" },
         { s: "རྩ", r: "tsa", gloss: "grass" },
         { s: "རྫ", r: "dza" }
       ]
@@ -191,7 +193,7 @@ export const TIBETAN_DATA = {
       stacks: [
         { s: "ལྐ", r: "ka" },
         { s: "ལྒ", r: "ga" },
-        { s: "ལྔ", r: "nga (high)", gloss: "five" },
+        { s: "ལྔ", r: "nga", tone: "high", gloss: "five" },
         { s: "ལྕ", r: "cha" },
         { s: "ལྗ", r: "ja" },
         { s: "ལྟ", r: "ta", gloss: "to look" },
@@ -207,28 +209,29 @@ export const TIBETAN_DATA = {
       stacks: [
         { s: "སྐ", r: "ka", gloss: "body (h.)" },
         { s: "སྒ", r: "ga", gloss: "door" },
-        { s: "སྔ", r: "nga (high)" },
-        { s: "སྙ", r: "nya (high)" },
+        { s: "སྔ", r: "nga", tone: "high" },
+        { s: "སྙ", r: "nya", tone: "high" },
         { s: "སྟ", r: "ta" },
         { s: "སྡ", r: "da" },
-        { s: "སྣ", r: "na (high)" },
+        { s: "སྣ", r: "na", tone: "high" },
         { s: "སྤ", r: "pa", gloss: "to move" },
         { s: "སྦ", r: "ba" },
-        { s: "སྨ", r: "ma (high)" },
+        { s: "སྨ", r: "ma", tone: "high" },
         { s: "སྩ", r: "tsa" }
       ]
     }
   ],
 
+  // canonicalSyllables records the isolated reading when a compound changes it (ba → wa).
   practiceWords: [
-    { w: "ཆུ",     r: "chu",     m: "water" },
+    { w: "ཆུ",     r: "chhu",     m: "water" },
     { w: "མེ",     r: "me",      m: "fire" },
     { w: "རི",     r: "ri",      m: "mountain" },
     { w: "ལོ",     r: "lo",      m: "year, age" },
     { w: "བུ",     r: "bu",      m: "son, boy" },
     { w: "མི",     r: "mi",      m: "man, human" },
     { w: "ཉི་མ",   r: "nyi-ma",  m: "sun, day" },
-    { w: "ཟླ་བ",   r: "da-wa",   m: "moon, month" },
+    { w: "ཟླ་བ",   r: "da-wa", canonicalSyllables: ["da", "ba"],   m: "moon, month" },
     { w: "ལྷ",     r: "lha",     m: "god" },
     { w: "རྟ",     r: "ta",      m: "horse" },
     { w: "བླ་མ",   r: "la-ma",   m: "spiritual teacher" },
@@ -261,8 +264,8 @@ export const TIBETAN_DATA = {
       tag: "vowel-shift",
       desc: "After a consonant, suffixes ད and ས add a soft -e sound to the vowel but are themselves not heard.",
       examples: [
-        { spell: "ཆད་",  reads: "che",  gloss: "" },
-        { spell: "ཆས་",  reads: "che",  gloss: "" },
+        { spell: "ཆད་",  reads: "chhe",  gloss: "" },
+        { spell: "ཆས་",  reads: "chhe",  gloss: "" },
         { spell: "ནས་",  reads: "ne",   gloss: "from" },
         { spell: "ལས་",  reads: "le",   gloss: "" },
         { spell: "དད་",  reads: "de",   gloss: "" },
@@ -275,7 +278,7 @@ export const TIBETAN_DATA = {
       tag: "vowel-shift",
       desc: "Like ད/ས they add an -e sound, but ན and ལ themselves are heard.",
       examples: [
-        { spell: "ཆན་",  reads: "chen",  gloss: "" },
+        { spell: "ཆན་",  reads: "chhen",  gloss: "" },
         { spell: "ལན་",  reads: "len",   gloss: "answer" },
         { spell: "གལ་",  reads: "gel",   gloss: "" },
         { spell: "ཉན་",  reads: "nyen",  gloss: "to listen" }
@@ -300,7 +303,7 @@ export const TIBETAN_DATA = {
       desc: "The vowel ོ (naro) before ད/ས becomes the rounded ö. Again, the suffix is silent.",
       examples: [
         { spell: "གོས་", reads: "gö",   gloss: "" },
-        { spell: "ཆོས་", reads: "chö",  gloss: "Dharma" },
+        { spell: "ཆོས་", reads: "chhö",  gloss: "Dharma" },
         { spell: "ཐོས་", reads: "thö",  gloss: "" },
         { spell: "ཡོད་", reads: "yö",   gloss: "to have" }
       ]
@@ -383,10 +386,10 @@ export const TIBETAN_DATA = {
       tag: "special",
       desc: "When the letter བ sits as the second syllable between two tsek dots, it is read as ཝ (wa).",
       examples: [
-        { spell: "རྩ་བ་",   reads: "tsa-wa",   gloss: "root" },
-        { spell: "ཞི་བ་",   reads: "zhi-wa",   gloss: "peace" },
-        { spell: "ཤ་བ་",    reads: "sha-wa",   gloss: "deer" },
-        { spell: "ལྟ་བ་",   reads: "ta-wa",    gloss: "view" }
+        { spell: "རྩ་བ་",   reads: "tsa-wa", canonicalSyllables: ["tsa", "ba"],   gloss: "root" },
+        { spell: "ཞི་བ་",   reads: "zhi-wa", canonicalSyllables: ["zhi", "ba"],   gloss: "peace" },
+        { spell: "ཤ་བ་",    reads: "sha-wa", canonicalSyllables: ["sha", "ba"],   gloss: "deer" },
+        { spell: "ལྟ་བ་",   reads: "ta-wa", canonicalSyllables: ["ta", "ba"],    gloss: "view" }
       ]
     },
     {
@@ -447,7 +450,7 @@ export const TIBETAN_DATA = {
       lines: [
         {
           syl: [
-            { t: "ཆུ",       r: "chu",   g: "water" },
+            { t: "ཆུ",       r: "chhu",   g: "water" },
             { t: "ཐིག",     r: "thig",  g: "drop" },
             { t: "བསགས",    r: "sag",   g: "accumulate", note: "prefix བ silent; post-suffix ས silent" },
             { t: "པའི",     r: "pay",   g: "of (gen.)" },
@@ -468,10 +471,10 @@ export const TIBETAN_DATA = {
           syl: [
             { t: "ཁ",     r: "kha",   g: "mouth" },
             { t: "བཤད",   r: "she",   g: "said",   note: "prefix བ silent · suffix ད softens to -e" },
-            { t: "ཆུ",    r: "chu",   g: "water" },
+            { t: "ཆུ",    r: "chhu",   g: "water" },
             { t: "ཡི",    r: "yi",    g: "of (gen.)" },
             { t: "ལྦུ",   r: "bu",    g: "—",       note: "superscript ལ silent" },
-            { t: "བ",     r: "wa",    g: "bubble",  note: "བ between two dots → 'wa'" }
+            { t: "བ",     r: "ba", contextReading: "wa",    g: "bubble",  note: "བ between two dots → 'wa'" }
           ],
           gloss: "What the mouth says is a bubble of water."
         },
@@ -496,7 +499,7 @@ export const TIBETAN_DATA = {
         {
           syl: [
             { t: "རེ",    r: "re",    g: "hope" },
-            { t: "བ",     r: "wa",    g: "(nominalizer)",  note: "བ between dots → 'wa'" },
+            { t: "བ",     r: "ba", contextReading: "wa",    g: "(nominalizer)",  note: "བ between dots → 'wa'" },
             { t: "བཟང",   r: "zang",  g: "good",  note: "prefix བ silent" },
             { t: "ས",     r: "sa",    g: "side, place" },
             { t: "ནས",    r: "ne",    g: "from",  note: "suffix ས softens to -e, silent" },
@@ -538,7 +541,7 @@ export const TIBETAN_DATA = {
         },
         {
           syl: [
-            { t: "ཕྱི",   r: "chi",   g: "later" },
+            { t: "ཕྱི",   r: "chhi",   g: "later" },
             { t: "མ",     r: "ma",    g: "(particle)" },
             { t: "གར",    r: "gar",   g: "where" },
             { t: "འགྲོ",  r: "dro",   g: "go",   note: "prefix འ silent" },
@@ -561,9 +564,9 @@ export const TIBETAN_DATA = {
           syl: [
             { t: "སངས",   r: "sang",  g: "purified",   note: "post-suffix ས silent" },
             { t: "རྒྱས",  r: "gyé",   g: "expanded",   note: "suffix ས softens to -e, silent" },
-            { t: "ཆོས",   r: "chö",   g: "Dharma",     note: "ོ + ས → umlaut ö" },
+            { t: "ཆོས",   r: "chhö",   g: "Dharma",     note: "ོ + ས → umlaut ö" },
             { t: "དང",    r: "dang",  g: "and" },
-            { t: "མཆོག",  r: "chog",  g: "supreme",    note: "prefix མ silent" },
+            { t: "མཆོག",  r: "chhog",  g: "supreme",    note: "prefix མ silent" },
             { t: "གི",    r: "gi",    g: "of (gen.)" },
             { t: "ཚོགས",  r: "tsog",  g: "assembly",   note: "post-suffix ས silent" },
             { t: "རྣམས",  r: "nam",   g: "(plural)" },
@@ -574,14 +577,14 @@ export const TIBETAN_DATA = {
         {
           syl: [
             { t: "བྱང",   r: "jang",  g: "purified" },
-            { t: "ཆུབ",   r: "chub",  g: "perfected" },
+            { t: "ཆུབ",   r: "chhub",  g: "perfected" },
             { t: "བར",    r: "bar",   g: "until" },
             { t: "དུ",    r: "du",    g: "to" },
             { t: "བདག",   r: "dag",   g: "I",    note: "prefix བ silent" },
             { t: "ནི",    r: "ni",    g: "as for" },
             { t: "སྐྱབས", r: "kyab",  g: "refuge",  note: "post-suffix ས silent" },
             { t: "སུ",    r: "su",    g: "in" },
-            { t: "མཆི",   r: "chi",   g: "go (lit.)",  note: "prefix མ silent" }
+            { t: "མཆི",   r: "chhi",   g: "go (lit.)",  note: "prefix མ silent" }
           ],
           gloss: "Until awakening I go for refuge."
         }
@@ -616,8 +619,8 @@ export const TIBETAN_DATA = {
         wylie: "gsal byed",
         desc: "He identified 30 base consonants required for the Tibetan language. Because Tibetan possessed sounds that did not exist in Sanskrit, he invented six new characters: ca, cha, ja, zha, za, and 'a (the a-chung). The consonants are organized systematically by point of articulation (velar, palatal, dental, labial) and aspiration.",
         invented: [
-          { g: "ཅ", r: "ca"  },
-          { g: "ཆ", r: "cha" },
+          { g: "ཅ", r: "cha"  },
+          { g: "ཆ", r: "chha" },
           { g: "ཇ", r: "ja"  },
           { g: "ཞ", r: "zha" },
           { g: "ཟ", r: "za"  },
@@ -1122,3 +1125,480 @@ export const TIBETAN_DATA = {
     ]
   }
 };
+
+// Orthographic constraints for the native Tibetan syllables taught here.
+// Cross-checked with MSU Basic Tibetan ch. 2–3 and BDRC/OpenPecha pyewts
+// prefix/stack tables (Apache-2.0): https://github.com/OpenPecha/pyewts.
+// Sanskrit, archaic post-suffix da and multiple subscripts are outside this builder.
+TIBETAN_DATA.orthography = {
+  wylie: ['k','kh','g','ng','c','ch','j','ny','t','th','d','n','p','ph','b','m','ts','tsh','dz','w','zh','z',"'",'y','r','l','sh','s','h',''],
+  prefixes: {
+    g: 'c ny t d n ts zh z y sh s'.split(' '),
+    d: 'k g ng p b m ky gy py by my kr gr pr br'.split(' '),
+    b: 'k g c t d ts zh z sh s r l ky gy kr gr rl sl rk rg rng rj rny rt rd rn rts rdz sk sg sng sny st sd sn sts rky rgy sky sgy skr sgr ld lt kl sr zl sw'.split(' '),
+    m: 'kh g ng ch j ny th d n tsh dz khy gy khr gr'.split(' '),
+    "'": 'kh g ch j th d ph b tsh dz khy gy phy by khr gr dr phr br'.split(' '),
+  },
+  tripleStacks: ['རྐྱ','རྒྱ','རྨྱ','སྐྱ','སྒྱ','སྤྱ','སྦྱ','སྨྱ','སྐྲ','སྒྲ','སྤྲ','སྦྲ','སྨྲ'],
+  suffixes: ['ག','ང','ད','ན','བ','མ','འ','ར','ལ','ས'],
+  postSuffixes: { 'ས': ['ག','ང','བ','མ'] },
+  // Ambiguous unmarked three-letter forms require lexical knowledge.
+  rootOverrides: { 'དགས': 'ག', 'དམས': 'མ', 'དངས': 'ད', 'འགས': 'ག', 'འབས': 'བ', 'མངས': 'མ', 'མགས': 'མ', 'བགས': 'བ', 'དབས': 'བ' },
+};
+TIBETAN_DATA.confusables = ['ཀཁག','ཅཆཇ','ཏཐད','ཞཟཤས','དང','པཕབ','ཙཚཛ','ཉནམ','འཨ'];
+TIBETAN_DATA.rules.push(
+  { id: 'root-stack', title: 'Find the root in a stack', tag: 'root', desc: 'A superscript sits above the root. A subscript sits below it. Match the allowed stack before choosing the root.', examples: [
+    { spell: 'རྟ་', reads: 'ta', gloss: 'horse', root: 'ཏ' },
+    { spell: 'ཁྱི་', reads: 'khyi', gloss: 'dog', root: 'ཁ' },
+    { spell: 'བསྒྲུབས་', reads: 'drup', gloss: 'to accomplish', root: 'ག' },
+  ] },
+  { id: 'root-two', title: 'Two plain letters: the first is the root', tag: 'root', desc: 'With two full-form letters and no vowel sign or stack, the first is the root and the second a suffix. Being a possible prefix does not make a letter a prefix here.', examples: [
+    { spell: 'དང་', reads: 'dang', gloss: 'and', root: 'ད' },
+    { spell: 'ངག་', reads: 'ngag', gloss: 'voice', root: 'ང' },
+    { spell: 'བར་', reads: 'bar', gloss: 'until', root: 'བ' },
+  ] },
+  { id: 'root-vowel', title: 'A vowel marks the root group', tag: 'root', desc: 'A vowel belongs to the root group. A preceding legal prefix is silent. A following full letter can be a suffix.', examples: [
+    { spell: 'དགུ་', reads: 'gu', gloss: 'nine', root: 'ག' },
+    { spell: 'མགོ་', reads: 'go', gloss: 'head', root: 'ག' },
+    { spell: 'འཇིགས་', reads: 'jig', gloss: 'fear', root: 'ཇ' },
+  ] }
+);
+// Passages select existing content; no second copy of Tibetan or readings.
+TIBETAN_DATA.readingPassages = [
+  { title: '1 · Single syllables', kind: 'words', words: ['ཆུ','མེ','རི','བུ'] },
+  { title: '2 · Two-syllable words', kind: 'words', words: ['ཉི་མ','ཟླ་བ','བླ་མ'] },
+  { title: '3 · Short phrases', kind: 'proverb', proverb: 'refuge', line: 0, count: 5 },
+  { title: '4 · A proverb line', kind: 'proverb', proverb: 'ocean-of-drops', line: 0 },
+];
+
+// Expand the course from vocabulary already glossed in the manual sections.
+// References retain one authoritative spelling, reading and gloss per source.
+const practiceRuleIds = ["suf-basic","suf-nl-e","umlaut-u-ds","umlaut-o-ds","umlaut-u-nl","umlaut-o-nl","ie-ds-noop","prefix-silent","db-wa","ba-wa","post-silent","four-letter","raise-nga","raise-na","root-two"];
+const vocabulary = new Map(TIBETAN_DATA.practiceWords.map(w => [w.w,w]));
+for (const entry of [...TIBETAN_DATA.letterWords,...TIBETAN_DATA.vowelWords]) {
+  if (!vocabulary.has(entry.g)) vocabulary.set(entry.g,{ w:entry.g,r:entry.r,m:entry.m });
+}
+for (const rule of TIBETAN_DATA.rules.filter(r => practiceRuleIds.includes(r.id))) {
+  for (const e of rule.examples) {
+    if (!e.gloss || e.spell === 'འཁོར་') continue; // Existing gloss “attract” needs source review.
+    const w = e.spell.replace(/[་།\s]+$/gu,'');
+    if (!vocabulary.has(w)) vocabulary.set(w,{ w,r:e.reads,m:e.gloss,...(e.canonicalSyllables ? { canonicalSyllables:e.canonicalSyllables } : {}) });
+  }
+}
+// Explicit structure tags, checked against the parser in tests.
+const practiceStructures = {
+  "ཆུ": [
+    "no prefix"
+  ],
+  "མེ": [
+    "no prefix"
+  ],
+  "རི": [
+    "no prefix"
+  ],
+  "ལོ": [
+    "no prefix"
+  ],
+  "བུ": [
+    "no prefix"
+  ],
+  "མི": [
+    "no prefix"
+  ],
+  "ཉི་མ": [
+    "no prefix"
+  ],
+  "ཟླ་བ": [
+    "no prefix",
+    "subscript"
+  ],
+  "ལྷ": [
+    "no prefix",
+    "superscript"
+  ],
+  "རྟ": [
+    "no prefix",
+    "superscript"
+  ],
+  "བླ་མ": [
+    "no prefix",
+    "subscript"
+  ],
+  "བོད": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཁྱི": [
+    "no prefix",
+    "subscript"
+  ],
+  "སྒོ": [
+    "no prefix",
+    "superscript"
+  ],
+  "ལྔ": [
+    "no prefix",
+    "superscript"
+  ],
+  "དགུ": [
+    "prefix"
+  ],
+  "མགོ": [
+    "prefix"
+  ],
+  "བཞི": [
+    "prefix"
+  ],
+  "ཁ": [
+    "no prefix"
+  ],
+  "ང": [
+    "no prefix"
+  ],
+  "ཆ": [
+    "no prefix"
+  ],
+  "ཇ": [
+    "no prefix"
+  ],
+  "ཉ": [
+    "no prefix"
+  ],
+  "ཐ": [
+    "no prefix"
+  ],
+  "ད": [
+    "no prefix"
+  ],
+  "ན": [
+    "no prefix"
+  ],
+  "ཕ": [
+    "no prefix"
+  ],
+  "བ": [
+    "no prefix"
+  ],
+  "མ": [
+    "no prefix"
+  ],
+  "ཚ": [
+    "no prefix"
+  ],
+  "ཝ": [
+    "no prefix"
+  ],
+  "ཟ": [
+    "no prefix"
+  ],
+  "ཡ": [
+    "no prefix"
+  ],
+  "ར": [
+    "no prefix"
+  ],
+  "ལ": [
+    "no prefix"
+  ],
+  "ཤ": [
+    "no prefix"
+  ],
+  "ས": [
+    "no prefix"
+  ],
+  "ཀོ": [
+    "no prefix"
+  ],
+  "ཁེ": [
+    "no prefix"
+  ],
+  "ཁོ": [
+    "no prefix"
+  ],
+  "ངོ": [
+    "no prefix"
+  ],
+  "ཇོ": [
+    "no prefix"
+  ],
+  "ཉི": [
+    "no prefix"
+  ],
+  "ཐོ": [
+    "no prefix"
+  ],
+  "དེ": [
+    "no prefix"
+  ],
+  "དུ": [
+    "no prefix"
+  ],
+  "ནུ": [
+    "no prefix"
+  ],
+  "ཕོ": [
+    "no prefix"
+  ],
+  "མུ": [
+    "no prefix"
+  ],
+  "མོ": [
+    "no prefix"
+  ],
+  "ཚེ": [
+    "no prefix"
+  ],
+  "ཞི": [
+    "no prefix"
+  ],
+  "ཟོ": [
+    "no prefix"
+  ],
+  "རུ": [
+    "no prefix"
+  ],
+  "རེ": [
+    "no prefix"
+  ],
+  "ལི": [
+    "no prefix"
+  ],
+  "ཤི": [
+    "no prefix"
+  ],
+  "སུ": [
+    "no prefix"
+  ],
+  "སོ": [
+    "no prefix"
+  ],
+  "ཡག་པོ": [
+    "no prefix",
+    "suffix"
+  ],
+  "མང་པོ": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཐོབ": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཕམ": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཚར": [
+    "no prefix",
+    "suffix"
+  ],
+  "ལན": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཉན": [
+    "no prefix",
+    "suffix"
+  ],
+  "ལུས": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཆོས": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཡོད": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཀུན": [
+    "no prefix",
+    "suffix"
+  ],
+  "དོན": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཡིད": [
+    "no prefix",
+    "suffix"
+  ],
+  "ཚེས": [
+    "no prefix",
+    "suffix"
+  ],
+  "དགའ": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དབང": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དབུ": [
+    "prefix"
+  ],
+  "དབུས": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དབྱར་ཀ": [
+    "prefix",
+    "subscript",
+    "suffix",
+    "combos",
+    "no prefix"
+  ],
+  "རྩ་བ": [
+    "no prefix",
+    "superscript"
+  ],
+  "ཞི་བ": [
+    "no prefix"
+  ],
+  "ཤ་བ": [
+    "no prefix"
+  ],
+  "ལྟ་བ": [
+    "no prefix",
+    "superscript"
+  ],
+  "བསྒྲུབས": [
+    "prefix",
+    "superscript",
+    "subscript",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "འཇིགས": [
+    "prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "སེམས": [
+    "no prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "ཐབས": [
+    "no prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "བསམས": [
+    "prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "གསུངས": [
+    "prefix",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "མགྱོགས་པོ": [
+    "prefix",
+    "subscript",
+    "suffix",
+    "post-suffix",
+    "combos",
+    "no prefix"
+  ],
+  "འགྲིགས": [
+    "prefix",
+    "subscript",
+    "suffix",
+    "post-suffix",
+    "combos"
+  ],
+  "དངུལ": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དངོས": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "མངའ": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "མངོན": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "མནའ་མ": [
+    "prefix",
+    "suffix",
+    "combos",
+    "no prefix"
+  ],
+  "གནའ་བོ": [
+    "prefix",
+    "suffix",
+    "combos",
+    "no prefix"
+  ],
+  "གནང": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "གནས": [
+    "prefix",
+    "suffix",
+    "combos"
+  ],
+  "དང": [
+    "no prefix",
+    "suffix"
+  ],
+  "ངག": [
+    "no prefix",
+    "suffix"
+  ],
+  "བར": [
+    "no prefix",
+    "suffix"
+  ]
+};
+TIBETAN_DATA.practiceWords = [...vocabulary.values()].map(w => ({ ...w,tags:practiceStructures[w.w] }));
+
+// Glossary is derived only from existing glossed data. No translations are
+// inferred from a syllable parse or from an English sentence translation.
+const glossary = {};
+function addGlossary(t, r, gloss, contextReading, canonicalSyllables) {
+  if (typeof t !== 'string' || !/[\u0f40-\u0fbc]/u.test(t)) return;
+  const key = t.trim().replace(/[་།༎\s]+$/gu,'');
+  const entry = glossary[key] || { t:key, r:r || '', glosses:[] };
+  if (r && !entry.r) entry.r = r;
+  if (typeof gloss === 'string' && gloss && gloss !== '—' && !entry.glosses.includes(gloss)) entry.glosses.push(gloss);
+  if (contextReading) entry.contextReading = contextReading;
+  if (canonicalSyllables) entry.canonicalSyllables = canonicalSyllables;
+  glossary[key] = entry;
+}
+function collectGlossary(value) {
+  if (!value || typeof value !== 'object') return;
+  if (value.r || value.reads) {
+    const t = [value.spell,value.out,value.s,value.w,value.t,value.g].find(x => typeof x === 'string' && /[\u0f40-\u0fbc]/u.test(x));
+    const gloss = value.t && /[\u0f40-\u0fbc]/u.test(value.t) ? value.g : value.m ?? value.gloss ?? value.v;
+    addGlossary(t,value.r ?? value.reads,gloss,value.contextReading,value.canonicalSyllables);
+  }
+  for (const v of Object.values(value)) collectGlossary(v);
+}
+collectGlossary(TIBETAN_DATA);
+addGlossary(TIBETAN_DATA.builderWord.parts.map(p => p.add).join(''),TIBETAN_DATA.builderWord.pron,TIBETAN_DATA.builderWord.meaning);
+TIBETAN_DATA.glossary = glossary;

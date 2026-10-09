@@ -1,147 +1,38 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import ScriptText from '../components/ScriptText.jsx';
+import { useState } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
-
-export default function BuilderView() {
-  const W = D.builderWord;
-  const N = W.parts.length;
-  const [step, setStep] = useState(N);
-  const [sel, setSel]   = useState(2);
-  const [playing, setPlaying] = useState(false);
-  const timerRef = useRef(null);
-
-  const assembled = useMemo(
-    () => W.parts.slice(0, step).map(p => p.add).join(''),
-    [step]
-  );
-
-  useEffect(() => {
-    if (!playing) { clearTimeout(timerRef.current); return; }
-    if (step >= N) { setPlaying(false); return; }
-    timerRef.current = setTimeout(() => {
-      setSel(step);
-      setStep(s => s + 1);
-    }, 750);
-    return () => clearTimeout(timerRef.current);
-  }, [playing, step]);
-
-  const start = () => {
-    if (step >= N) { setStep(0); setSel(0); }
-    setPlaying(true);
-  };
-  const reset = () => { setPlaying(false); setStep(0); setSel(0); };
-  const showAll = () => { setPlaying(false); setStep(N); };
-
-  const active = W.parts[sel];
-  const soundedSoFar = W.parts.slice(0, step).filter(p => !p.silent);
-
-  return (
-    <div className="view builder">
-      <header className="view-head">
-        <div>
-          <div className="kicker">§ 1.3b · anatomy</div>
-          <h1>Anatomy of a Syllable</h1>
-          <div className="ti-sub ti">བསྒྲུབས་</div>
-        </div>
-        <div className="filter-row">
-          <button className="chip" onClick={reset}>↺ Reset</button>
-          <button className="chip on" onClick={start}>{playing ? '❚❚ Pause' : '▶ Assemble'}</button>
-          <button className="chip" onClick={showAll}>Show all</button>
-        </div>
-      </header>
-
-      <p className="lead">
-        Most Tibetan syllables you'll meet are simple — a root letter and a vowel.
-        But the orthography allows up to seven positions in a single syllable, with most of
-        them <em>silent</em>. <span className="ti">བསྒྲུབས་</span> — "to accomplish, fulfill" —
-        uses every one of them.
-      </p>
-
-      <div className="build-hero">
-        <div className="build-stage">
-          <div className="stage-label">syllable</div>
-          <div className="hero-word">
-            <span className="hero-word-ti">{assembled || '·'}</span>
-            <span className="hero-tsek">{step === N ? '་' : ''}</span>
-          </div>
-          <div className="hero-pron">
-            <span className="pron-label mono">reads as</span>
-            <span className="pron-word ti">{step === N ? 'དྲུབ་' : (soundedSoFar.length ? '…' : '—')}</span>
-            <span className="pron-rom mono">{step === N ? W.pron : '—'}</span>
-          </div>
-          <div className="hero-meaning">{step === N ? `"${W.meaning}"` : 'build the word to reveal its meaning'}</div>
-          <div className="build-progress">
-            {Array.from({ length: N }).map((_, i) => (
-              <span key={i} className={'prog-tick' + (i < step ? ' on' : '') + (i === sel ? ' sel' : '')} />
-            ))}
-            <span className="prog-num mono">{step} / {N}</span>
-          </div>
-        </div>
-
-        <div className="build-track">
-          {W.parts.map((p, i) => {
-            const placed = i < step;
-            const isSel  = i === sel;
-            return (
-              <button key={p.id}
-                className={'track-cell c-' + p.color + (placed ? ' placed' : '') + (isSel ? ' sel' : '') + (p.silent ? ' silent' : '')}
-                onClick={() => { setSel(i); setStep(Math.max(step, i + 1)); setPlaying(false); }}>
-                <div className="track-pos mono">{String(i + 1).padStart(2, '0')}</div>
-                <div className="track-glyph">{p.ghostGlyph || p.glyph}</div>
-                <div className="track-label">{p.label}</div>
-                <div className="track-tib ti">{p.tib}</div>
-                <div className="track-sound mono">
-                  {p.silent
-                    ? <span className="silent-pill">silent</span>
-                    : <span className="sound-pill">{p.sound}</span>}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className={'build-detail c-' + active.color}>
-        <div className="detail-l">
-          <div className="dl-kicker mono">position {sel + 1} of {N}</div>
-          <div className="dl-label">{active.label}</div>
-          <div className="dl-names">
-            <span className="ti">{active.tib}</span>
-            <span className="mono">· {active.rom}</span>
-            {active.gloss && <span className="dl-gloss">{active.gloss}</span>}
-          </div>
-          <div key={sel} className="dl-glyph glyph-anim">{active.ghostGlyph || active.glyph}</div>
-          <div className="dl-family mono">{active.family}</div>
-          <div className={'dl-state ' + (active.silent ? 'is-silent' : 'is-sounded')}>
-            {active.silent ? 'Silent in pronunciation' : `Contributes the sound "${active.sound}"`}
-          </div>
-        </div>
-
-        <div className="detail-r">
-          <p className="role">{active.role}</p>
-
-          <div className="zones">
-            <div className="zones-title mono">how the seven positions read</div>
-            <ol className="zones-list">
-              <li><b>Prefix</b> <span className="ti">བ</span> — silent (head of word)</li>
-              <li><b>Superscript</b> <span className="ti">ས</span> — silent; raises tone</li>
-              <li><b>Root</b> <span className="ti">ག</span> — base sound</li>
-              <li><b>Subscript</b> <span className="ti">ྲ</span> — fuses g + r → <em>dr</em></li>
-              <li><b>Vowel</b> <span className="ti">ུ</span> — replaces inherent ‑a with ‑u</li>
-              <li><b>Suffix</b> <span className="ti">བ</span> — silent body, closes with -p</li>
-              <li><b>Post-suffix</b> <span className="ti">ས</span> — silent tail</li>
-            </ol>
-            <div className="zones-arrow ti">
-              <span className="zone-piece prefix">བ</span>
-              <span className="zone-piece stack">སྒྲུ</span>
-              <span className="zone-piece suffix">བ</span>
-              <span className="zone-piece post">ས</span>
-            </div>
-            <div className="zones-arrow-labels mono">
-              <span>prefix</span><span>stack + vowel</span><span>suffix</span><span>post</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+import { challenges } from '../deck.js';
+import { slots, slotLabels, emptyParts, compose, validateSyllable, parseSyllable, toWylie, unjoin } from '../syllable.js';
+import { gradeCard } from '../progress.js';
+const choices = {
+  prefix: ['', 'ག','ད','བ','མ','འ'], super: ['', ...D.superscripts.map(g => g.mark)], root: D.consonants.map(c => c.g),
+  sub: ['', ...D.subscripts.map(g => unjoin(g.mark))], vowel: ['', ...D.vowels.map(v => v.mark)], suffix: ['', ...D.orthography.suffixes], post: ['', ...Object.keys(D.orthography.postSuffixes)],
+};
+export default function BuilderView({ initial }) {
+  const parsed = initial?.syllable ? parseSyllable(initial.syllable) : null;
+  const [parts,setParts] = useState(parsed?.parts || parseSyllable(D.builderWord.parts.map(p => p.add).join('')).parts || emptyParts());
+  const [slot,setSlot] = useState('root');
+  const [mode,setMode] = useState('explore');
+  const [challenge,setChallenge] = useState(0);
+  const [feedback,setFeedback] = useState('');
+  const [graded,setGraded] = useState(false);
+  const [hint,setHint] = useState(false);
+  const target = challenges[challenge];
+  const validation = validateSyllable(parts);
+  const update = (key, value) => { if (!choices[key]?.includes(value)) return; setParts(p => ({ ...p,[key]:value })); setFeedback(''); };
+  const begin = i => { setChallenge(i); setParts(emptyParts()); setFeedback(''); setGraded(false); setHint(false); };
+  return <div className="view builder"><div className="kicker">Build the spelling</div><h1>Syllable Builder</h1><p className="lead">Choose a slot, then tap a letter. You can also use the labelled selectors or drag a component to its slot.</p>
+    <div className="course-actions"><button className={'btn' + (mode === 'explore' ? ' primary' : '')} onClick={() => { setMode('explore'); setFeedback(''); }}>Explore</button><button className={'btn' + (mode === 'challenge' ? ' primary' : '')} onClick={() => { setMode('challenge'); begin(0); }}>Challenge</button><button className="btn" onClick={() => { setParts(emptyParts()); setFeedback(''); }}>Clear slots</button></div>
+    {parsed && !parsed.valid && <p role="status">{parsed.reason} You can explore a supported syllable below.</p>}
+    {mode === 'challenge' && <section className="course-panel"><div className="kicker">Challenge {challenge+1} / {challenges.length}</div><h2>Build <span className="mono">{target.wylie}</span></h2><p>{target.m} · reading: {target.r}</p><button className="btn" onClick={() => setHint(true)}>Show target</button>{hint && <p lang="bo" className="ti challenge-target">{target.t}་</p>}</section>}
+    <div className="builder-preview" aria-live="polite"><div className="exercise-glyph ti" lang="bo">{validation.valid ? compose(parts) + '་' : '—'}</div><p>{validation.valid ? `Wylie: ${toWylie(parts)}` : 'Choose a valid combination to form the syllable.'}</p></div>
+    <div className="builder-slots">{slots.map(s => <div className={'builder-slot' + (slot === s ? ' on' : '')} key={s} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); update(s,e.dataTransfer.getData('text/plain')); }}>
+      <button className="slot-button" aria-pressed={slot === s} onClick={() => setSlot(s)}>{slotLabels[s]}<span className="ti" lang="bo">{parts[s] ? (s === 'vowel' ? 'ཨ' + parts[s] : parts[s]) : '—'}</span></button>
+      <label className="sr-only" htmlFor={'slot-'+s}>{slotLabels[s]}</label><select id={'slot-'+s} value={parts[s]} onChange={e => update(s,e.target.value)}><option value="">{s === 'root' ? 'Choose root' : 'None'}</option>{choices[s].filter(Boolean).map(g => <option lang="bo" key={g} value={g}>{s === 'vowel' ? 'ཨ'+g : g}</option>)}</select>
+    </div>)}</div>
+    <section className="course-panel"><h2>Choose {slotLabels[slot].toLowerCase()}</h2><div className="component-palette">{choices[slot].map(g => <button className="btn" key={g} draggable={!!g} onDragStart={e => e.dataTransfer.setData('text/plain',g)} onClick={() => update(slot,g)}>{g ? <span className="ti" lang="bo">{slot === 'vowel' ? 'ཨ'+g : g}</span> : 'None'}</button>)}</div></section>
+    <div className="validation-message" aria-live="polite">{validation.valid ? <p>Valid native syllable structure. A valid spelling pattern does not necessarily form a word.</p> : <ul>{validation.errors.map(e => <li key={e}>{e}</li>)}</ul>}</div>
+    {mode === 'challenge' && <div className="course-actions"><button className="btn primary" disabled={graded} onClick={() => { const correct = validation.valid && compose(parts) === target.t; setFeedback(correct ? 'Correct — you built the target.' : 'Not yet. Compare your slots with the Wylie spelling and try the next challenge.'); gradeCard(target.id,correct && !hint ? 'knew' : 'missed'); setGraded(true); }}>Check challenge</button><button className="btn" onClick={() => begin((challenge+1)%challenges.length)}>Next challenge</button></div>}
+    <p role="status">{feedback}</p><details><summary>How the seven positions work</summary>{D.builderWord.parts.map(p => <p key={p.id}><strong>{p.label}.</strong> <ScriptText>{p.role}</ScriptText></p>)}</details>
+  </div>;
 }

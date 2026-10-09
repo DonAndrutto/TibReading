@@ -8,7 +8,10 @@
     "preview": "vite preview",
     "check:text": "vite build && esbuild scripts/probe-entry.js --bundle --format=iife --outfile=scripts/.probe.js --log-level=warning && node scripts/check-text.mjs",
     "bench": "vite build && vite build --config bench/vite.bench.config.js && node bench/run.mjs",
-    "check:reader": "vite build && node bench/smoke.mjs"
+    "check:reader": "vite build && node bench/smoke.mjs && node bench/course.mjs && node bench/offline-mobile.mjs && node bench/audit-lang.mjs",
+    "check:romanization": "node bench/check-romanization.mjs",
+    "test": "vitest run",
+    "check:course": "vite build && node bench/course.mjs"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.8",
@@ -20,6 +23,7 @@
     "esbuild": "^0.21.5",
     "playwright": "^1.56.1",
     "vite": "^5.4.19",
-    "vite-plugin-singlefile": "^2.0.0"
+    "vite-plugin-singlefile": "^2.0.0",
+    "vitest": "^4.1.11"
   }
 }

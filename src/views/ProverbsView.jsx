@@ -1,7 +1,10 @@
+import ScriptText from '../components/ScriptText.jsx';
 import { useState } from 'react';
+import { LookupPopover } from '../components/Lookup.jsx';
 import { TIBETAN_DATA as D } from '../data.js';
 
-export default function ProverbsView() {
+export default function ProverbsView({ go }) {
+  const [lookup,setLookup] = useState(null);
   const P = D.proverbs;
   const [pIdx, setPIdx]   = useState(0);
   const [active, setActive] = useState({ line: 0, syl: 0 });
@@ -17,6 +20,7 @@ export default function ProverbsView() {
 
   return (
     <div className="view proverbs">
+      {lookup && <LookupPopover text={lookup.t} contextReading={lookup.contextReading} go={go} onClose={() => setLookup(null)} />}
       <header className="view-head">
         <div>
           <div className="kicker">§ 1.6 · reading practice</div>
@@ -57,14 +61,14 @@ export default function ProverbsView() {
                 return (
                   <button key={si}
                     className={'pr-syl' + (isActive ? ' on' : '') + (reveal ? ' reveal' : '')}
-                    onClick={() => setActive({ line: li, syl: si })}>
+                    onClick={() => { setActive({ line: li, syl: si }); setLookup(s); }}>
                     <span className="pr-syl-glyph">
-                      <span className="pr-syl-ti">{s.t}</span>
-                      {si < line.syl.length - 1 && <span className="pr-sep tsek">་</span>}
-                      {si === line.syl.length - 1 && <span className="pr-sep she">།</span>}
+                      <span className="pr-syl-ti" lang="bo">{s.t}</span>
+                      {si < line.syl.length - 1 && <span className="pr-sep tsek" lang="bo">་</span>}
+                      {si === line.syl.length - 1 && <span className="pr-sep she" lang="bo">།</span>}
                     </span>
                     {mode === 'annotated' && (
-                      <span className="pr-syl-r mono">{reveal ? s.r : ''}</span>
+                      <span className="pr-syl-r mono">{reveal ? (s.contextReading || s.r) : ''}</span>
                     )}
                   </button>
                 );
@@ -82,18 +86,18 @@ export default function ProverbsView() {
         <aside className="pr-detail">
           <div className="pr-detail-head">
             <div className="pr-detail-kicker mono">syllable {active.syl + 1} · line {active.line + 1}</div>
-            <div key={active.line + '-' + active.syl} className="pr-detail-ti glyph-anim">{cur.t}<span className="tsek">་</span></div>
+            <div key={active.line + '-' + active.syl} className="pr-detail-ti glyph-anim" lang="bo">{cur.t}<span className="tsek" lang="bo">་</span></div>
           </div>
           <div className="pr-detail-body">
             <div className="dl">
               <dt>Reads as</dt>
-              <dd className="mono pr-detail-r">{cur.r}</dd>
+              <dd className="mono pr-detail-r">{cur.contextReading || cur.r}</dd>
               <dt>Meaning</dt>
               <dd>{cur.g || '—'}</dd>
               {cur.note && (
                 <>
                   <dt>Rule applied</dt>
-                  <dd className="pr-detail-note">{cur.note}</dd>
+                  <dd className="pr-detail-note"><ScriptText>{cur.note}</ScriptText></dd>
                 </>
               )}
             </div>

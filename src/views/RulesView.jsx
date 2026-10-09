@@ -1,3 +1,5 @@
+import ScriptText from '../components/ScriptText.jsx';
+import { gradeCard } from '../progress.js';
 import { useState, useMemo } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 import { shuffle } from '../utils.js';
@@ -45,6 +47,7 @@ export default function RulesView({ go }) {
   const pick = (opt, k) => {
     if (picked !== null) return;
     setPicked(k);
+    gradeCard('card:' + quiz.spell.replace(/[་།]+$/g,''), opt.reads === quiz.reads ? 'knew' : 'missed');
     if (opt.reads === quiz.reads) { setScore(s => ({ ...s, right: s.right + 1 })); setStreak(s => s + 1); }
     else                         { setScore(s => ({ ...s, wrong: s.wrong + 1 })); setStreak(0); }
   };
@@ -58,6 +61,7 @@ export default function RulesView({ go }) {
 
   return (
     <div className="view rules">
+      <p className="sr-only" role="status">{picked !== null ? (options[picked].reads === quiz.reads ? "Correct. " : "Not quite. ") + quiz.reads : ""}</p>
       <header className="view-head">
         <div>
           <div className="kicker">§ 1.5 · pronunciation</div>
@@ -97,7 +101,7 @@ export default function RulesView({ go }) {
                   onClick={() => { setSel(i); reset(); }}>
                   <div className="rule-num mono">{String(i + 1).padStart(2, '0')}</div>
                   <div className="rule-meta">
-                    <div className="rule-title">{r.title}</div>
+                    <div className="rule-title"><ScriptText>{r.title}</ScriptText></div>
                     <div className="rule-tag mono">{r.tag.replace('-', ' ')}</div>
                   </div>
                 </button>
@@ -107,8 +111,8 @@ export default function RulesView({ go }) {
             <section className="rules-detail">
               <div className="rd-head">
                 <div className="rd-tag mono">{rule.tag.replace('-', ' ')}</div>
-                <h2 className="rd-title">{rule.title}</h2>
-                <p className="rd-desc">{rule.desc}</p>
+                <h2 className="rd-title"><ScriptText>{rule.title}</ScriptText></h2>
+                <p className="rd-desc"><ScriptText>{rule.desc}</ScriptText></p>
                 <div className="rd-actions">
                   <button className="chip" onClick={() => setRevealAll(true)}>Reveal all</button>
                   <button className="chip" onClick={reset}>Hide all</button>
@@ -125,7 +129,7 @@ export default function RulesView({ go }) {
                       className={'rd-card' + (open ? ' open' : '')}
                       onClick={() => toggle(key)}>
                       <div className="rd-spell">
-                        <span className="rd-spell-ti">{ex.spell}</span>
+                        <span className="rd-spell-ti" lang="bo">{ex.spell}</span>
                       </div>
                       <div className="rd-arrow mono">→</div>
                       <div className="rd-reads">
@@ -153,7 +157,7 @@ export default function RulesView({ go }) {
 
           <div className="quiz-prompt">
             <div className="quiz-kicker mono">how is this read aloud?</div>
-            <div key={qIdx} className="quiz-ti glyph-anim">{quiz.spell}</div>
+            <div key={qIdx} className="quiz-ti glyph-anim" lang="bo">{quiz.spell}</div>
             <div className="quiz-hint mono">{quiz.ruleTag.replace('-', ' ')}</div>
           </div>
 

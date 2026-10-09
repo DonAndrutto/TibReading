@@ -1,4 +1,8 @@
-import { useState, useEffect, Component } from 'react';
+import { useEffect, Component } from 'react';
+import { useProgress, getStorageError } from './progress.js';
+import { useRoute } from './routing.js';
+import SettingsView from './views/SettingsView.jsx';
+import PracticeView from './views/PracticeView.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import IntroView from './views/IntroView.jsx';
 import AlphabetView from './views/AlphabetView.jsx';
@@ -31,26 +35,27 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  // tab selects the view; payload carries a cross-section jump target
-  // (e.g. { letter: 12 } to open Trace on a specific consonant).
-  const [nav, setNav] = useState({ tab: 'intro', payload: null });
-  const { tab, payload } = nav;
-  const go = (t, p = null) => setNav({ tab: t, payload: p });
+  const { tab, payload, hash, go } = useRoute();
+  useProgress();
   useEffect(() => { window.scrollTo(0, 0); }, [tab]);
   return (
     <div className="app" data-screen-label={'00 ' + tab}>
       <Sidebar tab={tab} setTab={go} />
-      <main className="main">
-        <ErrorBoundary key={tab}>
+      <a className="skip-link" href="#main-content" onClick={e => { e.preventDefault(); document.getElementById("main-content").focus(); }}>Skip to content</a>
+      <main id="main-content" tabIndex={-1} className="main">
+        {getStorageError() && <p role="status" className="course-panel">{getStorageError()}</p>}
+        <ErrorBoundary key={hash}>
           {tab === 'intro'    && <IntroView go={go} />}
           {tab === 'alphabet' && <AlphabetView go={go} initial={payload} />}
           {tab === 'vowels'   && <VowelsView go={go} initial={payload} />}
           {tab === 'stacks'   && <StacksView go={go} />}
-          {tab === 'builder'  && <BuilderView />}
+          {tab === 'builder'  && <BuilderView initial={payload} />}
           {tab === 'rules'    && <RulesView go={go} />}
           {tab === 'trace'    && <TraceView go={go} initial={payload} />}
-          {tab === 'read'     && <ReadView />}
-          {tab === 'proverbs' && <ProverbsView />}
+          {tab === 'read'     && <ReadView go={go} initial={payload} />}
+          {tab === 'practice' && <PracticeView />}
+          {tab === 'settings' && <SettingsView />}
+          {tab === 'proverbs' && <ProverbsView go={go} />}
         </ErrorBoundary>
       </main>
     </div>

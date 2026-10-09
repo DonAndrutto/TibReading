@@ -1,5 +1,7 @@
+import ScriptText from '../components/ScriptText.jsx';
 import { useState, useRef, useLayoutEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import { LookupText } from '../components/Lookup.jsx';
 import { createReader } from '../reader.js';
 
 export default function IntroView({ go }) {
@@ -56,14 +58,14 @@ export default function IntroView({ go }) {
         <div className="intro-arch-grid">
           <div className="intro-card">
             <div className="intro-card-kicker mono">
-              {I.architecture.consonants.wylie} · <span className="ti">{I.architecture.consonants.tib}</span>
+              {I.architecture.consonants.wylie} · <span className="ti" lang="bo">{I.architecture.consonants.tib}</span>
             </div>
             <h3>{I.architecture.consonants.title}</h3>
             <p>{I.architecture.consonants.desc}</p>
             <div className="invented-row">
               {I.architecture.consonants.invented.map(x => (
                 <div key={x.g} className="invented-pill">
-                  <span className="ti">{x.g}</span>
+                  <span className="ti" lang="bo">{x.g}</span>
                   <span className="mono">{x.r}</span>
                 </div>
               ))}
@@ -76,14 +78,14 @@ export default function IntroView({ go }) {
 
           <div className="intro-card">
             <div className="intro-card-kicker mono">
-              {I.architecture.vowels.wylie} · <span className="ti">{I.architecture.vowels.tib}</span>
+              {I.architecture.vowels.wylie} · <span className="ti" lang="bo">{I.architecture.vowels.tib}</span>
             </div>
             <h3>{I.architecture.vowels.title}</h3>
             <p>{I.architecture.vowels.desc}</p>
             <div className="intro-marks">
               {I.architecture.vowels.marks.map(m => (
                 <div key={m.name} className="intro-mark">
-                  <div className="intro-mark-ti ti">◌{m.mark}</div>
+                  <div className="intro-mark-ti ti" lang="bo">◌{m.mark}</div>
                   <div className="intro-mark-name">{m.name} <span className="mono">( {m.sound} )</span></div>
                   <div className="intro-mark-pos mono">{m.pos}</div>
                 </div>
@@ -103,7 +105,7 @@ export default function IntroView({ go }) {
           {I.architecture.spelling.positions.map(p => (
             <div key={p.id} className={'intro-pos c-' + p.id}>
               <div className="intro-pos-name">{p.name}</div>
-              <div className="intro-pos-ti ti">{p.tib}</div>
+              <div className="intro-pos-ti ti" lang="bo">{p.tib}</div>
               <div className="intro-pos-wylie mono">{p.wylie}</div>
               <div className="intro-pos-desc">{p.desc}</div>
             </div>
@@ -120,7 +122,7 @@ export default function IntroView({ go }) {
 
       {/* ── Foundational texts ── */}
       <section className="intro-section">
-        <div className="intro-sec-kicker mono">{I.texts.kicker}</div>
+        <div className="intro-sec-kicker mono"><ScriptText>{I.texts.kicker}</ScriptText></div>
         <h2 className="intro-sec-title">{I.texts.title}</h2>
         <div className="intro-sec-sub">{I.texts.subtitle}</div>
         <div className="intro-prose">
@@ -131,7 +133,7 @@ export default function IntroView({ go }) {
           <button className={'sum-card' + (sumOpen ? ' open' : '')}
             onClick={() => setSumOpen(o => !o)} aria-expanded={sumOpen}>
             <div className="intro-card-kicker mono">treatise i · {I.texts.sumchupaCard.wylie}</div>
-            <div className="intro-card-ti ti">{I.texts.sumchupaCard.tib}</div>
+            <div className="intro-card-ti ti" lang="bo">{I.texts.sumchupaCard.tib}</div>
             <h3>{I.texts.sumchupaCard.en}</h3>
             <p>{I.texts.sumchupaCard.desc}</p>
             <div className="sum-card-foot">
@@ -142,7 +144,7 @@ export default function IntroView({ go }) {
 
           <div className="intro-card">
             <div className="intro-card-kicker mono">treatise ii · {I.texts.tagjugCard.wylie}</div>
-            <div className="intro-card-ti ti">{I.texts.tagjugCard.tib}</div>
+            <div className="intro-card-ti ti" lang="bo">{I.texts.tagjugCard.tib}</div>
             <h3>{I.texts.tagjugCard.en}</h3>
             <p>{I.texts.tagjugCard.desc}</p>
           </div>
@@ -159,7 +161,7 @@ export default function IntroView({ go }) {
             }}
           >
             <div className="sum-head">
-              <div className="sum-head-ti ti">{I.sumchupa.titleTib}</div>
+              <div className="sum-head-ti ti" lang="bo">{I.sumchupa.titleTib}</div>
               <div className="sum-head-en">
                 {I.sumchupa.titleEn.map((l, i) => <div key={i}>{l}</div>)}
               </div>
@@ -182,7 +184,7 @@ export default function IntroView({ go }) {
                   onClick={() => readerRef.current && readerRef.current.setLang('both')}>Both</button>
                 <button className="chip lang-chip" data-lang="ti"
                   onClick={() => readerRef.current && readerRef.current.setLang('ti')}>
-                  <span className="ti">བོད་ཡིག</span> only
+                  <span className="ti" lang="bo">བོད་ཡིག</span> only
                 </button>
                 <button className="chip lang-chip" data-lang="en"
                   onClick={() => readerRef.current && readerRef.current.setLang('en')}>English only</button>
@@ -201,7 +203,7 @@ export default function IntroView({ go }) {
                       {num !== null && <span className="sum-verse-num">{String(num).padStart(2, '0')} · </span>}
                       {v.label}
                     </div>
-                    <div className="sum-verse-ti ti">{v.tib}</div>
+                    <div className="sum-verse-ti ti" lang="bo"><LookupText text={v.tib} go={go} /></div>
                     <div className="sum-verse-en">
                       {v.en.map((line, li) => <div key={li} className="sum-line">{line}</div>)}
                     </div>

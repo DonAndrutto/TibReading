@@ -1,15 +1,21 @@
+import ScriptText from '../components/ScriptText.jsx';
+import { gradeCard } from '../progress.js';
+import { markSeen } from '../progress.js';
 import { useState, useMemo, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import ReadingDrills from '../components/ReadingDrills.jsx';
 import { shuffle } from '../utils.js';
 
-export default function ReadView() {
+export default function ReadView({ go, initial }) {
+  const [structure, setStructure] = useState('all');
   const [mode, setMode] = useState('flash');
-  const [i, setI] = useState(0);
+  const [i, setI] = useState(initial?.index ?? 0);
   const [revealed, setRevealed] = useState(false);
+  useEffect(() => { markSeen('card:' + D.practiceWords[i].w); }, [i]);
   const word = D.practiceWords[i];
 
-  const next = () => { setRevealed(false); setI(x => (x + 1) % D.practiceWords.length); };
-  const prev = () => { setRevealed(false); setI(x => (x + D.practiceWords.length - 1) % D.practiceWords.length); };
+  const next = () => { setRevealed(false); go('read', { index: (i + 1) % D.practiceWords.length }); };
+  const prev = () => { setRevealed(false); go('read', { index: (i + D.practiceWords.length - 1) % D.practiceWords.length }); };
 
   // Flashcards work from the keyboard too: ← → to move, space/enter to flip.
   // Skip enter/space when a button has focus so it doesn't double-fire.
@@ -28,7 +34,7 @@ export default function ReadView() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [mode]);
+  }, [mode, i]);
 
   const [qIdx, setQIdx] = useState(0);
   const [score, setScore] = useState({ right: 0, wrong: 0 });
@@ -46,6 +52,7 @@ export default function ReadView() {
   const pickOption = (opt, k) => {
     if (picked !== null) return;
     setPicked(k);
+    gradeCard('card:' + quizWord.w, opt.r === quizWord.r ? 'knew' : 'missed');
     if (opt.r === quizWord.r) {
       setScore(s => ({ ...s, right: s.right + 1 }));
       setStreak(s => s + 1);
@@ -67,6 +74,7 @@ export default function ReadView() {
 
   return (
     <div className="view read">
+      <p className="sr-only" role="status">{picked !== null ? (options[picked].r === quizWord.r ? "Correct. " : "Not quite. ") + quizWord.r : ""}</p>
       <header className="view-head">
         <div>
           <div className="kicker">§ 1.5 · reading</div>
@@ -81,22 +89,23 @@ export default function ReadView() {
 
       <p className="lead">
         Sound the word out from its letters before flipping the card. Words are
-        separated by an inter-syllabic dot <span className="ti">་</span> (<span className="mono">tsek</span>);
-        sentences end with a vertical bar <span className="ti">།</span> (<span className="mono">shé</span>).
+        separated by an inter-syllabic dot <span className="ti" lang="bo">་</span> (<span className="mono">tsek</span>);
+        sentences end with a vertical bar <span className="ti" lang="bo">།</span> (<span className="mono">shé</span>).
       </p>
 
+      <ReadingDrills />
       {mode === 'flash' && (
         <>
           <div className="read-stage">
-            <div className={'flashcard' + (revealed ? ' is-revealed' : '')} onClick={() => setRevealed(r => !r)}>
+            <div role="button" tabIndex={0} aria-label="Reveal or hide reading" aria-pressed={revealed} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setRevealed(v => !v); } }} className={'flashcard' + (revealed ? ' is-revealed' : '')} onClick={() => setRevealed(r => !r)}>
               <div className="card-face card-front">
                 <div className="card-num mono">{String(i + 1).padStart(2, '0')} / {D.practiceWords.length}</div>
-                <div className="card-ti">{word.w}<span className="tsek">་</span></div>
+                <div className="card-ti" lang="bo">{word.w}<span className="tsek" lang="bo">་</span></div>
                 <div className="card-hint mono">tap or press space to reveal · ← → to move</div>
               </div>
               <div className="card-face card-back">
                 <div className="card-r mono">{word.r}</div>
-                <div className="card-m">{word.m}</div>
+                <div className="card-m"><ScriptText>{word.m}</ScriptText></div>
               </div>
             </div>
 
@@ -109,14 +118,15 @@ export default function ReadView() {
             </div>
           </div>
 
+          <label>Word structure<select aria-label="Word structure" value={structure} onChange={e => setStructure(e.target.value)}>{["all","no prefix","prefix","superscript","subscript","suffix","combos"].map(t => <option key={t}>{t}</option>)}</select></label>
           <div className="read-list">
-            {D.practiceWords.map((w, k) => (
+            {D.practiceWords.map((w, k) => (structure === "all" || w.tags.includes(structure)) && (
               <button key={k}
                 className={'list-card' + (k === i ? ' on' : '')}
-                onClick={() => { setI(k); setRevealed(false); }}>
-                <div className="lc-ti">{w.w}<span className="tsek">་</span></div>
+                onClick={() => { go('read', { index: k }); setRevealed(false); }}>
+                <div className="lc-ti" lang="bo">{w.w}<span className="tsek" lang="bo">་</span></div>
                 <div className="lc-r mono">{w.r}</div>
-                <div className="lc-m">{w.m}</div>
+                <div className="lc-m"><ScriptText>{w.m}</ScriptText></div>
               </button>
             ))}
           </div>
@@ -143,7 +153,7 @@ export default function ReadView() {
 
           <div className="quiz-prompt">
             <div className="quiz-kicker mono">read this word</div>
-            <div key={quizWord.w} className="quiz-ti glyph-anim">{quizWord.w}<span className="tsek">་</span></div>
+            <div key={quizWord.w} className="quiz-ti glyph-anim" lang="bo">{quizWord.w}<span className="tsek" lang="bo">་</span></div>
             <div className="quiz-hint mono">pick the matching romanization &amp; meaning</div>
           </div>
 
@@ -160,7 +170,7 @@ export default function ReadView() {
                   onClick={() => pickOption(opt, k)}
                   disabled={picked !== null}>
                   <div className="qo-r mono">{opt.r}</div>
-                  <div className="qo-m">{opt.m}</div>
+                  <div className="qo-m"><ScriptText>{opt.m}</ScriptText></div>
                   {picked !== null && isCorrect && <div className="qo-tag mono">✓ correct</div>}
                   {isPicked && !isCorrect && <div className="qo-tag mono">your pick</div>}
                 </button>

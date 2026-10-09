@@ -18,7 +18,7 @@ const repo = resolve(here, '..');
 const PORT = 4182;
 const MAX_DRIFT_PX = 2;
 
-const TABS = ['Intro', 'Alphabet', 'Vowels', 'Stacks', 'Builder', 'Rules', 'Trace', 'Read', 'Proverbs'];
+const TABS = ['Intro', 'Alphabet', 'Vowels', 'Stacks', 'Builder', 'Rules', 'Trace', 'Read', 'Proverbs', 'Practice', 'Settings'];
 
 // toLang is which languages are showing AFTER the click. The element we track
 // has to survive the change — measuring a display:none element would report

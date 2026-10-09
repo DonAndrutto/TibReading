@@ -53,8 +53,10 @@ const VIEWS = [
   { tab: 'builder' },
   { tab: 'rules',    reveal: async (p) => { await p.getByRole('button', { name: /^Quiz/i }).click().catch(() => {}); } },
   { tab: 'trace' },
-  { tab: 'read',     reveal: async (p) => { await p.getByRole('button', { name: /Quiz me/i }).click().catch(() => {}); } },
+  { tab: 'read',     reveal: async (p) => { await p.getByRole('button', { name: /^Quiz$/i }).click().catch(() => {}); } },
   { tab: 'proverbs' },
+  { tab: 'practice' },
+  { tab: 'settings' },
 ];
 
 // Only a true text leaf can be measured as one string. A flex or grid

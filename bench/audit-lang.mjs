@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';
+import {chromium} from 'playwright';import {serve} from './serve.mjs';
+const server=await serve({app:new URL('../dist',import.meta.url).pathname},4190), browser=await chromium.launch();
+try { const page=await browser.newPage(); for (const tab of ['intro','alphabet','vowels','stacks','builder','rules','trace','read','proverbs']) {await page.goto('http://127.0.0.1:4190/app/#/'+tab);const missing=await page.evaluate(()=>{const w=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT),out=[];let n;while(n=w.nextNode())if(/[\u0f00-\u0fff]/.test(n.textContent)&&n.parentElement.closest('[lang]')?.lang!=='bo')out.push([n.parentElement.className,n.textContent.slice(0,100)]);return out;});assert.deepEqual(missing,[],tab+" Tibetan language annotations");}console.log("check:language — Tibetan text is language-tagged in all views");}finally{await browser.close();server.close();}

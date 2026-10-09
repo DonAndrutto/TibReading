@@ -40,6 +40,35 @@ try {
   assert.match(await page.locator('.course-panel').innerText(),/5 correct of 5/);
   const progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('tibreading.progress')));
   assert.equal(Object.values(progress.items).filter(c=>c.reviews>0).length,5);
+  // Exercise each remaining input path with a fresh queue, using real controls.
+  for (const format of ['produce','type','order','root']) {
+    await page.getByRole('button',{name:'Back to practice',exact:true}).click();
+    await page.getByLabel('Exercise',{exact:true}).selectOption(format);
+    await page.getByRole('button',{name:'Start session',exact:true}).click();
+    if (format === 'produce') {
+      const roman=await page.locator('.exercise-roman').innerText();
+      const correct=await page.locator('.answer-option').evaluateAll((nodes,readings)=>nodes.find(n=>readings[n.textContent.trim()]===readings.target)?.textContent.trim(),Object.fromEntries([...deck.map(c=>[c.t,c.r]),['target',roman]]));
+      assert.ok(correct); await page.locator('.answer-option').filter({hasText:correct}).click();
+    } else if (format === 'type') {
+      const tib=(await page.locator('.exercise-glyph').innerText()).replace(/་$/,'');
+      const card=deck.find(c=>c.t===tib);
+      await page.getByLabel('Reading or Wylie',{exact:true}).fill('  '+(card.wylie||card.r).toUpperCase()+'  ');
+      await page.getByRole('button',{name:'Check answer',exact:true}).click();
+    } else if (format === 'order') {
+      const wylie=await page.locator('.exercise-roman').innerText();
+      const card=deck.find(c=>c.wylie===wylie), parts=parseSyllable(card.t).parts;
+      for(const [slot,value] of Object.entries(parts)) if(value) {
+        const labels={prefix:'Prefix',super:'Superscript',root:'Root',sub:'Subscript',vowel:'Vowel',suffix:'Suffix',post:'Second suffix'};
+        await page.locator('.exercise button').filter({hasText:new RegExp('· '+labels[slot]+'$')}).click();
+      }
+      await page.getByRole('button',{name:'Check order',exact:true}).click();
+    } else {
+      const tib=(await page.locator('.exercise-glyph').innerText()).replace(/་$/,'');
+      await page.locator('.answer-option').filter({hasText:parseSyllable(tib).root}).click();
+    }
+    await page.getByText('Correct.',{exact:true}).waitFor();
+    await page.getByRole('button',{name:'Finish session',exact:true}).click();
+  }
   await page.evaluate(()=>location.hash='#/builder');
   await page.getByRole('button',{name:'Challenge',exact:true}).click();
   const target=parseSyllable('བསྒྲུབས');
@@ -56,6 +85,22 @@ try {
   await page.getByRole('button',{name:'Reset progress',exact:true}).click();
   await page.getByRole('button',{name:'Keep progress',exact:true}).click();
   assert.ok(await page.evaluate(()=>Object.values(JSON.parse(localStorage.getItem('tibreading.progress')).items).some(c=>c.reviews)));
+  const backup=await page.evaluate(()=>localStorage.getItem('tibreading.progress'));
+  const downloadEvent=page.waitForEvent('download');
+  await page.getByRole('button',{name:'Export progress JSON',exact:true}).click();
+  const download=await downloadEvent;assert.equal(download.suggestedFilename(),'tibreading-progress.json');
+  await page.getByRole('button',{name:'Reset progress',exact:true}).click();
+  await page.getByRole('button',{name:'Yes, erase progress',exact:true}).click();
+  assert.equal(await page.evaluate(()=>Object.keys(JSON.parse(localStorage.getItem('tibreading.progress')).items).length),0);
+  await page.locator('input[type=file]').setInputFiles({name:'progress.json',mimeType:'application/json',buffer:Buffer.from(backup)});
+  await page.getByRole('button',{name:'Replace with imported progress',exact:true}).click();
+  await page.getByText('Progress imported.',{exact:true}).waitFor();
+  assert.ok(await page.evaluate(()=>Object.values(JSON.parse(localStorage.getItem('tibreading.progress')).items).some(c=>c.reviews)));
+  await page.evaluate(()=>location.hash='#/trace');
+  const canvas=page.locator('canvas');await canvas.focus();
+  const before=await canvas.evaluate(c=>c.toDataURL());
+  await page.keyboard.press('Space');await page.keyboard.press('ArrowRight');
+  assert.notEqual(await canvas.evaluate(c=>c.toDataURL()),before);
   await page.evaluate(()=>location.hash='#/proverbs');
   await page.locator('.pr-syl').first().click();
   await page.getByRole('dialog').waitFor();

@@ -1,4 +1,5 @@
 import { useEffect, Component } from 'react';
+import { useProgress, getStorageError } from './progress.js';
 import { useRoute } from './routing.js';
 import SettingsView from './views/SettingsView.jsx';
 import PracticeView from './views/PracticeView.jsx';
@@ -35,11 +36,14 @@ class ErrorBoundary extends Component {
 
 export default function App() {
   const { tab, payload, hash, go } = useRoute();
+  useProgress();
   useEffect(() => { window.scrollTo(0, 0); }, [tab]);
   return (
     <div className="app" data-screen-label={'00 ' + tab}>
       <Sidebar tab={tab} setTab={go} />
-      <main className="main">
+      <a className="skip-link" href="#main-content" onClick={e => { e.preventDefault(); document.getElementById("main-content").focus(); }}>Skip to content</a>
+      <main id="main-content" tabIndex={-1} className="main">
+        {getStorageError() && <p role="status" className="course-panel">{getStorageError()}</p>}
         <ErrorBoundary key={hash}>
           {tab === 'intro'    && <IntroView go={go} />}
           {tab === 'alphabet' && <AlphabetView go={go} initial={payload} />}

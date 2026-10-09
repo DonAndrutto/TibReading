@@ -12,6 +12,19 @@ export default function TraceView({ go, initial }) {
   const drawingRef = useRef(false);
   const lastRef = useRef({ x: 0, y: 0 });
 
+  const [cursor,setCursor] = useState({ x:50,y:50,down:false,visible:false });
+  const keyboardDraw = e => {
+    if (e.key === ' ') { e.preventDefault(); setCursor(p => ({...p,down:!p.down,visible:true})); return; }
+    if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) return;
+    e.preventDefault();
+    const canvas = canvasRef.current, rect = canvas.getBoundingClientRect();
+    const step = e.shiftKey ? 4 : 1;
+    const next = { ...cursor,visible:true,x:Math.min(98,Math.max(2,cursor.x+(e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0))),y:Math.min(98,Math.max(2,cursor.y+(e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0))) };
+    if (cursor.down) {
+      const ctx=canvas.getContext('2d');ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue('--ink');ctx.lineWidth=stroke;ctx.beginPath();ctx.moveTo(cursor.x*rect.width/100,cursor.y*rect.height/100);ctx.lineTo(next.x*rect.width/100,next.y*rect.height/100);ctx.stroke();
+    }
+    setCursor(next);
+  };
   const c = D.consonants[idx];
 
   const clear = () => {
@@ -71,7 +84,7 @@ export default function TraceView({ go, initial }) {
     if (!e.touches) e.preventDefault();
     const ctx = canvasRef.current.getContext('2d');
     const p = getPos(e);
-    ctx.strokeStyle = '#2A1A0F';
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--ink');
     ctx.lineWidth = stroke;
     ctx.beginPath();
     ctx.moveTo(lastRef.current.x, lastRef.current.y);
@@ -102,13 +115,16 @@ export default function TraceView({ go, initial }) {
           <div className="trace-frame">
             <div className="trace-line trace-line-head" />
             <div className="trace-line trace-line-base" />
-            {showGuide && <div className="trace-ghost">{c.g}</div>}
-            <canvas ref={canvasRef}
+            {showGuide && <div className="trace-ghost" lang="bo">{c.g}</div>}
+            <canvas ref={canvasRef} tabIndex={0} aria-label="Tracing canvas. Arrow keys move; Space toggles drawing; Shift moves faster." onKeyDown={keyboardDraw} onFocus={() => setCursor(p=>({...p,visible:true}))} onBlur={() => setCursor(p=>({...p,visible:false,down:false}))}
               className="trace-canvas"
               onMouseDown={start} onMouseMove={move} onMouseUp={end} onMouseLeave={end}
               onTouchStart={start} onTouchMove={move} onTouchEnd={end} />
+            {cursor.visible && <span className={"trace-cursor"+(cursor.down?" drawing":"")} style={{left:cursor.x+"%",top:cursor.y+"%"}} aria-hidden="true" />}
           </div>
 
+          <p className="course-note">Keyboard: focus the canvas, use arrows to move, Space to lift or lower the pen, Shift for larger steps.</p>
+          <span className="sr-only" role="status">{cursor.down ? "Pen down" : "Pen up"}</span>
           {/* Controls sit directly beneath the drawable screen */}
           <div className="trace-toolbar">
             <div className="trace-label mono">No. {String(c.n).padStart(2, '0')} · {c.r} · {toneLabel(c.t)}</div>
@@ -125,8 +141,8 @@ export default function TraceView({ go, initial }) {
                 <span className="mono small">{stroke}px</span>
               </label>
               <button className="btn" onClick={clear}>Clear paper</button>
-              <button className="btn" onClick={() => go('alphabet', { letter: idx })}>About <span className="ti">{c.g}</span> →</button>
-              <button className="btn primary" onClick={() => setIdx((idx + 1) % 30)}>Next letter →</button>
+              <button className="btn" onClick={() => go('alphabet', { letter: idx })}>About <span className="ti" lang="bo">{c.g}</span> →</button>
+              <button className="btn primary" onClick={() => go('trace',{letter:(idx+1)%30})}>Next letter →</button>
             </div>
           </div>
         </div>
@@ -138,8 +154,8 @@ export default function TraceView({ go, initial }) {
               {D.consonants.map((cn, i) => (
                 <button key={i}
                   className={'letter-pill' + (i === idx ? ' on' : '')}
-                  onClick={() => setIdx(i)}>
-                  <span className="lp-ti">{cn.g}</span>
+                  onClick={() => go('trace',{letter:i})}>
+                  <span className="lp-ti" lang="bo">{cn.g}</span>
                   <span className="lp-r mono">{cn.r}</span>
                 </button>
               ))}

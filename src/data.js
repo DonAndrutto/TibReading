@@ -1593,8 +1593,8 @@ function addGlossary(t, r, gloss, contextReading, canonicalSyllables) {
 function collectGlossary(value) {
   if (!value || typeof value !== 'object') return;
   if (value.r || value.reads) {
-    const t = value.spell ?? value.out ?? value.s ?? value.w ?? value.t ?? value.g;
-    const gloss = value.t && value.r ? value.g : value.m ?? value.gloss ?? value.v;
+    const t = [value.spell,value.out,value.s,value.w,value.t,value.g].find(x => typeof x === 'string' && /[\u0f40-\u0fbc]/u.test(x));
+    const gloss = value.t && /[\u0f40-\u0fbc]/u.test(value.t) ? value.g : value.m ?? value.gloss ?? value.v;
     addGlossary(t,value.r ?? value.reads,gloss,value.contextReading,value.canonicalSyllables);
   }
   for (const v of Object.values(value)) collectGlossary(v);

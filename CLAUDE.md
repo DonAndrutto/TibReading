@@ -47,7 +47,7 @@ src/
                    # and the scroll anchoring that keeps the reader's line still
   styles.css       # all styles (single flat file, organized by view with comments)
   components/
-    Sidebar.jsx    # nav with hardcoded item list, receives tab + setTab props
+    Sidebar.jsx    # desktop nav / mobile bottom tabs + native More dialog
     PaperTest.jsx  # animated SVG widget showing aspirated vs. unaspirated airflow
     VocabCards.jsx # reusable expandable vocabulary deck (tap-to-reveal + quiz) over any
                    # { g, r, m } word list; takes words/title/lead props. Used by both
@@ -66,11 +66,11 @@ src/
     RulesView      # spelling-to-sound rules: Browse (category filter + tap-to-reveal
                    # examples) and Quiz (read-aloud multiple choice) modes
     TraceView      # canvas drawing pad for letter tracing with ghost-guide toggle
-    ReadView       # flashcard + multiple-choice quiz over practiceWords
-    ProverbsView   # syllable-by-syllable annotated proverbs/prayers
+    ReadView       # progressive self-graded passages plus flashcards/quiz over practiceWords
+    ProverbsView   # annotated proverbs/prayers with glossary lookup
 ```
 
-**`src/data.js` is the only data layer.** All views import `TIBETAN_DATA` (aliased as `D`) from it — no API calls, no external state, no context. Adding new content (a consonant note, a rule, a proverb) means editing this file.
+**`src/data.js` is the only data layer.** All views import `TIBETAN_DATA` (aliased as `D`) from it — no backend API calls; progress is in the localStorage store. Adding new content (a consonant note, a rule, a proverb) means editing this file.
 
 ## Data Shapes (key fields)
 
@@ -138,7 +138,7 @@ Class `.ti` or `font-family: var(--ti)` must be applied anywhere Tibetan Unicode
 
 Tone colors are used consistently: `--tone-high` (dark ink) for high-tone consonants, `--tone-asp` (maroon) for aspirated, `--tone-low` (teal) for low-tone.
 
-The app shell is a CSS grid: `280px sidebar | 1fr main`. At ≤720px the shell becomes one column and the sidebar stacks above the content; ≤1100px also simplifies multi-column views.
+The app shell is a CSS grid: `280px sidebar | 1fr main`. At ≤720px the sidebar is replaced by Learn / Practice / Read / More bottom tabs and a native modal menu; ≤1100px also simplifies multi-column views.
 
 ## Benchmarks and checks (`bench/`, `scripts/`)
 
@@ -161,7 +161,7 @@ and rebuilt on demand.
 - `bench/smoke.mjs` (`npm run check:reader`) — every view renders; the
   reader's line stays within 2px through every control.
 - `scripts/check-text.mjs` (`npm run check:text`) — measures every label
-  against its real box across 9 views x 2 widths. Budgets are baselined to
+  against its real box across 11 views x 2 widths. Budgets are baselined to
   today's rendering, so it guards against content growing past its space.
   `--audit` cross-checks pretext against the browser (0 disagreements over 394
   elements).
@@ -170,9 +170,9 @@ and rebuilt on demand.
 
 ## Deployment
 
-The app is deployed as a **single self-contained HTML file** to GitHub Pages at `https://donandrutto.github.io/TibReading/`.
+The app is deployed as a **single HTML application with offline/PWA companion files** to GitHub Pages at `https://donandrutto.github.io/TibReading/`.
 
-- `vite-plugin-singlefile` inlines all compiled JS and CSS into `dist/index.html` at build time (~226 kB / 66 kB gzip). Google Fonts load from CDN and are not inlined.
+- `vite-plugin-singlefile` inlines all compiled JS and CSS into `dist/index.html` at build time; self-hosted fonts replace CDN requests. The build adds a manifest, icon and a scope-specific, content-hashed service worker, while application JS/CSS remain inline.
 - `.github/workflows/deploy.yml` runs `npm ci && npm run build` and deploys `dist/` to GitHub Pages on every push to `main`, and can also be triggered manually from the Actions tab (Actions → Deploy to GitHub Pages → Run workflow).
 - `dist/` is gitignored — CI builds it fresh on each deploy.
 - After any push to `main`, the live site updates within ~1 minute.
@@ -185,3 +185,16 @@ The app is deployed as a **single self-contained HTML file** to GitHub Pages at 
 - **TraceView** — canvas drawing uses `devicePixelRatio` scaling for crisp HiDPI rendering; touch and mouse events share the same handlers.
 - **ReadView** quiz — `options` is derived with `useMemo` keyed on `qIdx`; distractors are picked randomly from words with a different romanization than the correct answer.
 - **ProverbsView** — `active` state is `{ line, syl }` indices; navigation wraps across line boundaries.
+
+
+## Course modules
+
+- `routing.js`: hash parsing, safe payloads, history and last-view restoration.
+- `progress.js`: schema v2, v1 migration, storage failure handling, import/export/reset and shared grading writes.
+- `srs.js`: five-box Leitner scheduling and local-calendar streaks (see README for exact intervals).
+- `syllable.js`: native seven-slot validation, Unicode composition, root finding and Wylie spelling.
+- `deck.js`: deduplicated cards, confusable distractors and vocabulary-derived challenges.
+- `build/offline.mjs`: self-hosted fonts in dev/build; final HTML, manifest and hashed worker generation. Preserve relative URLs for `/TibReading/`.
+- `tests/course.test.js`: Vitest correctness checks. Run `npm test` alongside all three `check:*` scripts before submission.
+
+New content should include canonical readings, explicit context fields when needed, existing-source glosses and checked structure tags. Unknown glosses stay absent. The ratak omission TODO remains until the actual manual can be checked.

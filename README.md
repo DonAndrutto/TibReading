@@ -11,6 +11,7 @@ npx playwright install chromium
 npm run dev
 # Before submitting changes:
 npm run build
+npm test
 npm run check:romanization
 npm run check:text
 npm run check:reader
@@ -39,3 +40,15 @@ Orthographic references: [MSU Basic Tibetan, root letters](https://openbooks.lib
 The reading course contains 101 distinct practice words, expanded by reusing the app’s existing glossed letter, vowel and rule vocabulary. Each has checked structure tags for filtering. `data.js` derives a glossary from all existing gloss fields, preserving multiple senses. Tapping a proverb syllable or a Sum cu pa syllable opens its reading, existing glosses, parse and Builder link. Unknown meanings are left blank; unsupported spellings are explicitly identified.
 
 Content follow-ups: the book’s omission of ནྲ from ratak could not be established from the available material, so its list is unchanged with a TODO. Broader orthographic sources include it. The pre-existing gloss “to attract” for འཁོར needs source review and is excluded from the new practice-word expansion. This change retains the manual’s simplified phonetic conventions rather than claiming a dialect-independent transcription.
+
+## Offline, phones and accessibility
+
+`npm run build` fetches fonts if needed, inlines application JS/CSS, copies self-hosted fonts and emits a relative manifest, icon and service worker. The app makes no external runtime requests. `dist/index.html` is still the single-file application; `sw.js`, `manifest.webmanifest`, `icon.svg`, fonts and their OFL notices are deployment companions. Deploy the entire `dist/` directory. The existing Pages workflow is unchanged.
+
+The worker precaches HTML, metadata and fonts. Its cache name includes the Pages scope and a SHA-256 digest of built content; activation removes only older TibReading caches for that scope. The first successful online load prepares offline use (status appears in the sidebar/header). HTTP(S) hosting is required for the service worker; opening the HTML locally still runs the app. Font refresh: `node bench/fetch-fonts.mjs --refresh`.
+
+At ≤720px, Learn / Practice / Read / More replaces the sidebar. More opens a keyboard-accessible modal menu. Controls have 44px minimum tap targets, focus indicators and feedback announcements. Tibetan text carries `lang="bo"`; mixed prose preserves language boundaries. Builder works through buttons/selects as well as drag/drop. Tracing supports arrow keys and Space for pen up/down. Dark colors and reduced motion follow system preferences.
+
+`check:reader` additionally verifies all exercise formats, lookup/Builder links, export/import/reset, keyboard tracing, offline fonts/progress after reload at `/TibReading/`, relative hosting, `file://` opening, every mobile view at 390px, and language tags. `check:text` covers all 11 views at desktop widths. `node bench/screenshots.mjs after` regenerates the desktop and mobile review images in `docs/screenshots/`.
+
+Intentionally outside this course: audio/speech, accounts, backend services, analytics, general Sanskrit stacks, archaic post-suffix da, and unverified extensions to the book’s ratak list.

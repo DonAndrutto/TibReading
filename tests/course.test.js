@@ -59,8 +59,8 @@ describe('romanization', () => {
   it('validates all actual data', () => expect(checkRomanization(D)).toEqual([]));
   it('finds duplicate consonants and nested mismatches including tsheg normalization', () => {
     expect(checkRomanization({consonants:[{g:'ཀ',r:'ka'},{g:'ཁ',r:'ka'}]}).join()).toContain('Base collision');
-    expect(checkRomanization({a:{g:'ཀ',r:'ka'},nested:[{spell:'ཀ་',reads:'ga'}]})).toHaveLength(1);
-    expect(checkRomanization({a:{g:'ཀ',r:'ka'},nested:[{w:'ཀ་མ',r:'ga-ma'}]})).toHaveLength(1);
+    expect(checkRomanization({a:{g:'ཀ',r:'ka',t:'high'},nested:[{spell:'ཀ་',reads:'ga'}]})).toHaveLength(1);
+    expect(checkRomanization({a:{g:'ཀ',r:'ka',t:'high'},nested:[{w:'ཀ་མ',r:'ga-ma'}]})).toHaveLength(1);
   });
   it('keeps Wylie and explicit contextual pronunciation separate', () => {
     expect(checkRomanization({a:{g:'ཆ',r:'chha',wylie:'cha'},b:{t:'བ',r:'ba',contextReading:'wa'}})).toEqual([]);

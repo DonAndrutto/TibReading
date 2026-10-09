@@ -1,3 +1,4 @@
+import ScriptText from '../components/ScriptText.jsx';
 import { useMemo, useRef, useState } from 'react';
 import { deck, challenges, optionsFor } from '../deck.js';
 import { useProgress, gradeCard } from '../progress.js';
@@ -21,7 +22,7 @@ function Exercise({ card, format, onGrade }) {
   return <section className="course-panel exercise">
     <div className="kicker">{format === 'root' ? 'Find the root letter' : format === 'order' ? 'Order the syllable parts' : format === 'produce' ? 'Pick the Tibetan spelling' : format === 'type' ? 'Type the reading or Wylie' : 'Pick the reading'}</div>
     <div className={format === 'produce' || format === 'order' ? 'exercise-roman' : 'exercise-glyph ti'} lang={format === 'produce' || format === 'order' ? 'en' : 'bo'}>{format === 'produce' ? card.r : format === 'order' ? card.wylie : card.t + '་'}</div>
-    {format === 'produce' && <p>{card.m} {card.wylie && <span className="mono">· Wylie: {card.wylie}</span>}</p>}
+    {format === 'produce' && <p><ScriptText>{card.m}</ScriptText> {card.wylie && <span className="mono">· Wylie: {card.wylie}</span>}</p>}
     {['recognise','produce'].includes(format) && <div className="answer-grid">{options.map(c => <button className="btn answer-option" key={c.id} disabled={result !== null} onClick={() => check(c.id === card.id)}>{format === 'produce' ? <span className="ti" lang="bo">{c.t}</span> : c.r}</button>)}</div>}
     {format === 'type' && <form className="course-actions" onSubmit={e => { e.preventDefault(); check(matchesAnswer(card, answer)); }}><label>Reading or Wylie<input autoFocus autoComplete="off" autoCapitalize="off" spellCheck="false" value={answer} disabled={result !== null} onChange={e => setAnswer(e.target.value)} /></label><button className="btn primary" disabled={result !== null || !answer.trim()}>Check answer</button></form>}
     {format === 'order' && <>
@@ -31,7 +32,7 @@ function Exercise({ card, format, onGrade }) {
       <div className="course-actions"><button className="btn" disabled={result !== null || !ordered.length} onClick={() => setOrdered(a => a.slice(0,-1))}>Undo last part</button><button className="btn primary" disabled={result !== null || ordered.length !== parts.length} onClick={() => check(ordered.join() === parts.join())}>Check order</button></div>
     </>}
     {format === 'root' && <><p>Choose the root from the letters in this syllable. Subjoined letters are shown in their full form below.</p><div className="answer-grid">{[...new Set(parts.filter(s => s !== 'vowel').map(s => parse.parts[s]))].map(g => <button className="btn answer-option ti" lang="bo" key={g} disabled={result !== null} onClick={() => check(g === parse.root)}>{g}</button>)}</div></>}
-    <div className="answer-feedback" aria-live="polite" aria-atomic="true">{result !== null && <><strong>{result ? 'Correct.' : 'Not quite.'}</strong> <span lang="bo" className="ti">{card.t}</span> — {card.r}{card.wylie && ` · Wylie: ${card.wylie}`}<p>{card.m}</p>{['root','order'].includes(format) && <p>Root: <span lang="bo" className="ti">{parse.root}</span>. {parse.explanation}</p>}</>}</div>
+    <div className="answer-feedback" aria-live="polite" aria-atomic="true">{result !== null && <><strong>{result ? 'Correct.' : 'Not quite.'}</strong> <span lang="bo" className="ti">{card.t}</span> — {card.r}{card.wylie && ` · Wylie: ${card.wylie}`}<p><ScriptText>{card.m}</ScriptText></p>{['root','order'].includes(format) && <p>Root: <span lang="bo" className="ti">{parse.root}</span>. {parse.explanation}</p>}</>}</div>
   </section>;
 }
 export default function PracticeView() {
@@ -47,7 +48,10 @@ export default function PracticeView() {
   };
   const done = session && index >= session.length;
   const card = session?.[index];
-  const exerciseFormat = format === 'mixed' ? ['recognise','produce','type',...(card && parseSyllable(card.t).valid && Object.values(parseSyllable(card.t).parts).filter(Boolean).length > 1 ? ['order','root'] : [])][index % (card && parseSyllable(card.t).valid && Object.values(parseSyllable(card.t).parts).filter(Boolean).length > 1 ? 5 : 3)] : format;
+  const parsed = card ? parseSyllable(card.t) : null;
+  const formats = ['recognise','produce','type'];
+  if (parsed?.valid && Object.values(parsed.parts).filter(Boolean).length > 1) formats.push('order','root');
+  const exerciseFormat = format === 'mixed' ? formats[index % formats.length] : format;
   return <div className="view practice"><div className="kicker">A little, every day</div><h1>Practice</h1><p className="lead">Read, recall, build. Short sessions turn familiar shapes into letters you know.</p>
     {!session && <>
       <div className="practice-stats">{[['due','Due today'],['new','New'],['weak','Review weak']].map(([id,label]) => <button className={'stat-card' + (mode === id ? ' on' : '')} key={id} aria-pressed={mode === id} onClick={() => setMode(id)}><strong>{counts[id]}</strong><span>{label}</span></button>)}</div>

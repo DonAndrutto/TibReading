@@ -12,6 +12,7 @@ export function migrateProgress(input) {
   if (!plain(input)) throw new Error('Progress must be a JSON object.');
   let data = input;
   if (data.version === 1) {
+    if ((data.seen && !Array.isArray(data.seen)) || (data.mastered && !Array.isArray(data.mastered))) throw new Error("Invalid legacy progress arrays.");
     const items = {};
     for (const id of data.seen || []) if (safeId(id)) items[id] = { seen: true, mastered: false, box: 1, due: 0, reviews: 0, lapses: 0 };
     for (const id of data.mastered || []) if (safeId(id)) items[id] = { ...items[id], seen: true, mastered: true, box: 5, due: 0, reviews: 1, lapses: 0 };
@@ -32,11 +33,12 @@ export function migrateProgress(input) {
 }
 
 let storageError = '';
+let preserveUnreadableStorage = false;
 function read() {
   try {
     const raw = globalThis.localStorage?.getItem(PROGRESS_KEY);
     return raw ? migrateProgress(JSON.parse(raw)) : emptyProgress();
-  } catch { storageError = 'Saved progress could not be read. Export this session before closing the app.'; return emptyProgress(); }
+  } catch { preserveUnreadableStorage = true; storageError = 'Saved progress could not be read and has been preserved. This session is temporary; use Settings to export, import or reset.'; return emptyProgress(); }
 }
 let current = read();
 const listeners = new Set();
@@ -46,7 +48,7 @@ export const subscribe = listener => { listeners.add(listener); return () => lis
 export const useProgress = () => useSyncExternalStore(subscribe, getProgress, getProgress);
 export function saveProgress(next) {
   current = migrateProgress(next);
-  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(current)); storageError = ''; }
+  try { if (!preserveUnreadableStorage) { localStorage.setItem(PROGRESS_KEY, JSON.stringify(current)); storageError = ''; } }
   catch { storageError = 'Progress is only saved for this session. Export it before closing the app.'; }
   listeners.forEach(fn => fn());
 }
@@ -58,9 +60,10 @@ export function rememberView(hash) { if (current.lastView !== hash) saveProgress
 export function importProgress(text) {
   if (text.length > 5000000) throw new Error('Progress file is too large.');
   const next = migrateProgress(JSON.parse(text));
+  preserveUnreadableStorage = false;
   saveProgress(next);
 }
-export const resetProgress = () => saveProgress(emptyProgress());
+export const resetProgress = () => { preserveUnreadableStorage = false; saveProgress(emptyProgress()); };
 export const exportProgress = () => JSON.stringify(current, null, 2);
 if (typeof window !== 'undefined') window.addEventListener('storage', e => {
   if (e.key === PROGRESS_KEY) { current = read(); listeners.forEach(fn => fn()); }

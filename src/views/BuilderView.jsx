@@ -1,3 +1,4 @@
+import ScriptText from '../components/ScriptText.jsx';
 import { useState } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 import { challenges } from '../deck.js';
@@ -9,7 +10,7 @@ const choices = {
 };
 export default function BuilderView({ initial }) {
   const parsed = initial?.syllable ? parseSyllable(initial.syllable) : null;
-  const [parts,setParts] = useState(parsed?.parts || emptyParts());
+  const [parts,setParts] = useState(parsed?.parts || parseSyllable(D.builderWord.parts.map(p => p.add).join('')).parts || emptyParts());
   const [slot,setSlot] = useState('root');
   const [mode,setMode] = useState('explore');
   const [challenge,setChallenge] = useState(0);
@@ -27,11 +28,11 @@ export default function BuilderView({ initial }) {
     <div className="builder-preview" aria-live="polite"><div className="exercise-glyph ti" lang="bo">{validation.valid ? compose(parts) + '་' : '—'}</div><p>{validation.valid ? `Wylie: ${toWylie(parts)}` : 'Choose a valid combination to form the syllable.'}</p></div>
     <div className="builder-slots">{slots.map(s => <div className={'builder-slot' + (slot === s ? ' on' : '')} key={s} onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); update(s,e.dataTransfer.getData('text/plain')); }}>
       <button className="slot-button" aria-pressed={slot === s} onClick={() => setSlot(s)}>{slotLabels[s]}<span className="ti" lang="bo">{parts[s] ? (s === 'vowel' ? 'ཨ' + parts[s] : parts[s]) : '—'}</span></button>
-      <label className="sr-only" htmlFor={'slot-'+s}>{slotLabels[s]}</label><select id={'slot-'+s} value={parts[s]} onChange={e => update(s,e.target.value)}><option value="" disabled={s !== 'root'}>{s === 'root' ? 'Choose root' : 'None'}</option>{choices[s].filter(Boolean).map(g => <option key={g} value={g}>{s === 'vowel' ? 'ཨ'+g : g}</option>)}</select>
+      <label className="sr-only" htmlFor={'slot-'+s}>{slotLabels[s]}</label><select id={'slot-'+s} value={parts[s]} onChange={e => update(s,e.target.value)}><option value="">{s === 'root' ? 'Choose root' : 'None'}</option>{choices[s].filter(Boolean).map(g => <option lang="bo" key={g} value={g}>{s === 'vowel' ? 'ཨ'+g : g}</option>)}</select>
     </div>)}</div>
     <section className="course-panel"><h2>Choose {slotLabels[slot].toLowerCase()}</h2><div className="component-palette">{choices[slot].map(g => <button className="btn" key={g} draggable={!!g} onDragStart={e => e.dataTransfer.setData('text/plain',g)} onClick={() => update(slot,g)}>{g ? <span className="ti" lang="bo">{slot === 'vowel' ? 'ཨ'+g : g}</span> : 'None'}</button>)}</div></section>
     <div className="validation-message" aria-live="polite">{validation.valid ? <p>Valid native syllable structure. A valid spelling pattern does not necessarily form a word.</p> : <ul>{validation.errors.map(e => <li key={e}>{e}</li>)}</ul>}</div>
     {mode === 'challenge' && <div className="course-actions"><button className="btn primary" disabled={graded} onClick={() => { const correct = validation.valid && compose(parts) === target.t; setFeedback(correct ? 'Correct — you built the target.' : 'Not yet. Compare your slots with the Wylie spelling and try the next challenge.'); gradeCard(target.id,correct && !hint ? 'knew' : 'missed'); setGraded(true); }}>Check challenge</button><button className="btn" onClick={() => begin((challenge+1)%challenges.length)}>Next challenge</button></div>}
-    <p role="status">{feedback}</p><details><summary>How the seven positions work</summary>{D.builderWord.parts.map(p => <p key={p.id}><strong>{p.label}.</strong> {p.role}</p>)}</details>
+    <p role="status">{feedback}</p><details><summary>How the seven positions work</summary>{D.builderWord.parts.map(p => <p key={p.id}><strong>{p.label}.</strong> <ScriptText>{p.role}</ScriptText></p>)}</details>
   </div>;
 }

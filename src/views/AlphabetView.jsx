@@ -1,3 +1,4 @@
+import { markSeen } from '../progress.js';
 import { useState, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 import PaperTest from '../components/PaperTest.jsx';
@@ -15,6 +16,7 @@ const toneLabel = (t) =>
 export default function AlphabetView({ go, initial }) {
   const sel = initial?.letter ?? 0;
   const setSel = value => go('alphabet', { letter: typeof value === 'function' ? value(sel) : value });
+  useEffect(() => { markSeen('card:' + D.consonants[sel].g); }, [sel]);
   const [highlight, setHighlight] = useState('all');
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function AlphabetView({ go, initial }) {
         <div>
           <div className="kicker">§ 1.1</div>
           <h1>The 30 Consonants</h1>
-          <div className="ti-sub">གསལ་བྱེད་སུམ་ཅུ།</div>
+          <div className="ti-sub" lang="bo">གསལ་བྱེད་སུམ་ཅུ།</div>
         </div>
         <div className="filter-row">
           {[['all', 'All'], ['high', 'High'], ['asp', 'Aspirated'], ['low', 'Low']].map(([k, l]) => (
@@ -78,7 +80,7 @@ export default function AlphabetView({ go, initial }) {
                     className={'cell t-' + cn.t.replace(/[ .]/g, '') + (isSel ? ' is-sel' : '') + (dim ? ' is-dim' : '')}
                     onClick={() => setSel(D.consonants.indexOf(cn))}>
                     <span className="cell-num">{String(cn.n).padStart(2, '0')}</span>
-                    <span className="cell-ti">{cn.g}</span>
+                    <span className="cell-ti" lang="bo">{cn.g}</span>
                     <span className="cell-r">{cn.r}</span>
                     <span className="cell-dot" style={{ background: toneColor(cn.t) }} />
                   </button>
@@ -91,7 +93,7 @@ export default function AlphabetView({ go, initial }) {
         <aside className="detail">
           <div className="detail-num">No. {String(c.n).padStart(2, '0')} / 30</div>
           <div className="detail-glyph-wrap">
-            <div key={c.g} className="detail-glyph glyph-anim">{c.g}</div>
+            <div key={c.g} className="detail-glyph glyph-anim" lang="bo">{c.g}</div>
             <PaperTest aspirated={c.t === 'high asp.'} />
           </div>
           <div className="dl">
@@ -101,16 +103,16 @@ export default function AlphabetView({ go, initial }) {
             <dd><span className="dot" style={{ background: toneColor(c.t) }} /> {toneLabel(c.t)}</dd>
             <dt>Column</dt>
             <dd>{((c.n - 1) % 4) + 1} of 4 {c.n > 28 ? '(final row)' : ''}</dd>
-            {c.v && (<><dt>Word it makes</dt><dd className="gloss"><span className="ti">{c.g}་</span> — {c.v}</dd></>)}
+            {c.v && (<><dt>Word it makes</dt><dd className="gloss"><span className="ti" lang="bo">{c.g}་</span> — {c.v}</dd></>)}
           </div>
 
           <div className="detail-form">
             <div className="form-line">
-              <span className="form-big">{c.g}<span className="tsek">་</span></span>
+              <span className="form-big" lang="bo">{c.g}<span className="tsek" lang="bo">་</span></span>
               <span className="form-small">+ vowel = syllable</span>
             </div>
             <div className="form-line">
-              <span className="form-big">{c.g}ི་ {c.g}ུ་ {c.g}ེ་ {c.g}ོ་</span>
+              <span className="form-big" lang="bo">{c.g}ི་ {c.g}ུ་ {c.g}ེ་ {c.g}ོ་</span>
             </div>
             <div className="form-line mono small">
               {c.r.replace(/a$/, 'i')}  ·  {c.r.replace(/a$/, 'u')}  ·  {c.r.replace(/a$/, 'e')}  ·  {c.r.replace(/a$/, 'o')}
@@ -124,8 +126,8 @@ export default function AlphabetView({ go, initial }) {
           <div className="detail-kbd mono">use ← → ↑ ↓ to navigate</div>
 
           <div className="xlinks">
-            <button className="chip" onClick={() => go('trace', { letter: sel })}>✎ Trace <span className="ti">{c.g}</span></button>
-            <button className="chip" onClick={() => go('vowels', { letter: sel })}>Add a vowel to <span className="ti">{c.g}</span> →</button>
+            <button className="chip" onClick={() => go('trace', { letter: sel })}>✎ Trace <span className="ti" lang="bo">{c.g}</span></button>
+            <button className="chip" onClick={() => go('vowels', { letter: sel })}>Add a vowel to <span className="ti" lang="bo">{c.g}</span> →</button>
           </div>
         </aside>
       </div>

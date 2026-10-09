@@ -16,7 +16,7 @@ export function checkRomanization(data) {
   function visit(value, path) {
     if (!value || typeof value !== 'object') return;
     if (!Array.isArray(value)) {
-      const tib = value.spell ?? value.out ?? value.s ?? value.w ?? value.t ?? value.g;
+      const tib = [value.spell, value.out, value.s, value.w, value.t, value.g].find(x => typeof x === 'string' && /[\u0f40-\u0fbc]/u.test(x));
       const roman = value.reads ?? value.r;
       if (typeof tib === 'string' && /[\u0f40-\u0fbc]/u.test(tib) && typeof roman === 'string') {
         const key = normalizeTibetan(tib), r = normalizeReading(roman);

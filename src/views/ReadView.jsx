@@ -2,14 +2,14 @@ import { useState, useMemo, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
 import { shuffle } from '../utils.js';
 
-export default function ReadView() {
+export default function ReadView({ go, initial }) {
   const [mode, setMode] = useState('flash');
-  const [i, setI] = useState(0);
+  const [i, setI] = useState(initial?.index ?? 0);
   const [revealed, setRevealed] = useState(false);
   const word = D.practiceWords[i];
 
-  const next = () => { setRevealed(false); setI(x => (x + 1) % D.practiceWords.length); };
-  const prev = () => { setRevealed(false); setI(x => (x + D.practiceWords.length - 1) % D.practiceWords.length); };
+  const next = () => { setRevealed(false); go('read', { index: (i + 1) % D.practiceWords.length }); };
+  const prev = () => { setRevealed(false); go('read', { index: (i + D.practiceWords.length - 1) % D.practiceWords.length }); };
 
   // Flashcards work from the keyboard too: ← → to move, space/enter to flip.
   // Skip enter/space when a button has focus so it doesn't double-fire.
@@ -28,7 +28,7 @@ export default function ReadView() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [mode]);
+  }, [mode, i]);
 
   const [qIdx, setQIdx] = useState(0);
   const [score, setScore] = useState({ right: 0, wrong: 0 });
@@ -113,7 +113,7 @@ export default function ReadView() {
             {D.practiceWords.map((w, k) => (
               <button key={k}
                 className={'list-card' + (k === i ? ' on' : '')}
-                onClick={() => { setI(k); setRevealed(false); }}>
+                onClick={() => { go('read', { index: k }); setRevealed(false); }}>
                 <div className="lc-ti">{w.w}<span className="tsek">་</span></div>
                 <div className="lc-r mono">{w.r}</div>
                 <div className="lc-m">{w.m}</div>

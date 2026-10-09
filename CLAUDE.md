@@ -30,7 +30,7 @@ The checks drive a real Chromium via Playwright and serve the built `dist/`, so 
 
 ## Architecture
 
-The app is a pure client-side React SPA. There is no router — navigation is a single `nav` state (`{ tab, payload }`) in `App.jsx`, changed via `go(tab, payload)`. The `Sidebar` calls `go` with no payload; views receive `go` to render cross-section links (e.g. Alphabet → "Trace this letter"), and Alphabet/Vowels/Trace accept an `initial` payload (`{ letter: index }`) to open on a specific consonant. Each tab value maps to one view component rendered conditionally, wrapped in an `ErrorBoundary` keyed by tab so a view crash never takes down the sidebar.
+The app is a pure client-side React SPA. `src/routing.js` implements hash navigation through `go(tab, payload)`, with history, deep links and last-view restoration. `src/progress.js` owns a versioned localStorage store and the Settings import/export/reset workflow. The `Sidebar` calls `go` with no payload; views receive `go` to render cross-section links (e.g. Alphabet → "Trace this letter"), and Alphabet/Vowels/Trace accept an `initial` payload (`{ letter: index }`) to open on a specific consonant. Each tab value maps to one view component rendered conditionally, wrapped in an `ErrorBoundary` keyed by tab so a view crash never takes down the sidebar.
 
 ```
 src/

@@ -4,7 +4,7 @@ import VocabCards from '../components/VocabCards.jsx';
 
 export default function VowelsView({ go, initial }) {
   const [cIdx, setCIdx] = useState(initial?.letter ?? 0);
-  const [vIdx, setVIdx] = useState(-1);
+  const [vIdx, setVIdx] = useState(initial?.vowel ?? -1);
   const c = D.consonants[cIdx];
   const v = vIdx === -1 ? null : D.vowels[vIdx];
   const out = v ? c.g + v.mark : c.g;
@@ -43,7 +43,7 @@ export default function VowelsView({ go, initial }) {
               {D.consonants.map((cn, i) => (
                 <button key={i}
                   className={'pick' + (i === cIdx ? ' on' : '')}
-                  onClick={() => setCIdx(i)}>
+                  onClick={() => go('vowels', { letter: i, vowel: vIdx })}>
                   <span className="pick-ti">{cn.g}</span>
                   <span className="pick-r mono">{cn.r}</span>
                 </button>
@@ -54,12 +54,12 @@ export default function VowelsView({ go, initial }) {
           <div className="picker-section">
             <div className="picker-title">Vowel</div>
             <div className="pick-grid pick-vow">
-              <button className={'pick big' + (vIdx === -1 ? ' on' : '')} onClick={() => setVIdx(-1)}>
+              <button className={'pick big' + (vIdx === -1 ? ' on' : '')} onClick={() => go('vowels', { letter: cIdx, vowel: -1 })}>
                 <span className="pick-ti pick-inherent">a</span>
                 <span className="pick-r mono">inherent</span>
               </button>
               {D.vowels.map((vv, i) => (
-                <button key={i} className={'pick big' + (vIdx === i ? ' on' : '')} onClick={() => setVIdx(i)}>
+                <button key={i} className={'pick big' + (vIdx === i ? ' on' : '')} onClick={() => go('vowels', { letter: cIdx, vowel: i })}>
                   <span className="pick-ti vow-ti">◌{vv.mark}</span>
                   <span className="pick-r mono">{vv.sound}</span>
                   <span className="pick-name">{vv.nameR}</span>

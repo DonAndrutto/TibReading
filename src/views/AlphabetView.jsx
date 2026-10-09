@@ -13,7 +13,8 @@ const toneLabel = (t) =>
   t === 'high asp.' ? 'High · aspirated' : t === 'high' ? 'High' : 'Low';
 
 export default function AlphabetView({ go, initial }) {
-  const [sel, setSel] = useState(initial?.letter ?? 0);
+  const sel = initial?.letter ?? 0;
+  const setSel = value => go('alphabet', { letter: typeof value === 'function' ? value(sel) : value });
   const [highlight, setHighlight] = useState('all');
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function AlphabetView({ go, initial }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [sel]);
 
   const visible = (c) => {
     if (highlight === 'all')  return true;
@@ -131,7 +132,7 @@ export default function AlphabetView({ go, initial }) {
 
       <VocabCards
         words={D.letterWords}
-        title="Words that are a single letter"
+        title="Single-letter words"
         lead={
           <>
             A handful of consonants are complete words on their own — just the bare

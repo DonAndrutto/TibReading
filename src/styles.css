@@ -2284,3 +2284,9 @@ body {
 .track-cell:active,
 .quiz-opt:active:not(:disabled) { transform: translateY(0) scale(.985); box-shadow: none; }
 .nav-item:active { transform: translateX(3px) scale(.985); }
+
+/* Course controls and progress */
+.course-panel { border: 1px solid var(--paper-edge); background: var(--paper-deep); padding: 24px; border-radius: 12px; margin: 20px 0; }
+.course-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.course-actions input[type=file] { display: block; max-width: 220px; }
+.sidebar { overflow-y: auto; }

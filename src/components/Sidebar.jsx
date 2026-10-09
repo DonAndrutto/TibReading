@@ -9,6 +9,7 @@ export default function Sidebar({ tab, setTab }) {
     { id: 'trace',    label: 'Trace',     sub: 'write on the line',     ti: 'ཞ'   },
     { id: 'read',     label: 'Read',      sub: 'first words',           ti: 'ཆུ'  },
     { id: 'proverbs', label: 'Proverbs',  sub: 'sayings & prayers',     ti: '༄'   },
+    { id: 'settings', label: 'Settings', sub: 'your progress', ti: 'ཡ' },
   ];
 
   return (

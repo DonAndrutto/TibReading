@@ -1123,3 +1123,48 @@ export const TIBETAN_DATA = {
     ]
   }
 };
+
+// Orthographic constraints for the native Tibetan syllables taught here.
+// Cross-checked with MSU Basic Tibetan ch. 2–3 and BDRC/OpenPecha pyewts
+// prefix/stack tables (Apache-2.0): https://github.com/OpenPecha/pyewts.
+// Sanskrit, archaic post-suffix da and multiple subscripts are outside this builder.
+TIBETAN_DATA.orthography = {
+  wylie: ['k','kh','g','ng','c','ch','j','ny','t','th','d','n','p','ph','b','m','ts','tsh','dz','w','zh','z',"'",'y','r','l','sh','s','h',''],
+  prefixes: {
+    g: 'c ny t d n ts zh z y sh s'.split(' '),
+    d: 'k g ng p b m ky gy py by my kr gr pr br'.split(' '),
+    b: 'k g c t d ts zh z sh s r l ky gy kr gr rl sl rk rg rng rj rny rt rd rn rts rdz sk sg sng sny st sd sn sts rky rgy sky sgy skr sgr ld lt kl sr zl sw'.split(' '),
+    m: 'kh g ng ch j ny th d n tsh dz khy gy khr gr'.split(' '),
+    "'": 'kh g ch j th d ph b tsh dz khy gy phy by khr gr dr phr br'.split(' '),
+  },
+  tripleStacks: ['རྐྱ','རྒྱ','རྨྱ','སྐྱ','སྒྱ','སྤྱ','སྦྱ','སྨྱ','སྐྲ','སྒྲ','སྤྲ','སྦྲ','སྨྲ'],
+  suffixes: ['ག','ང','ད','ན','བ','མ','འ','ར','ལ','ས'],
+  postSuffixes: { 'ས': ['ག','ང','བ','མ'] },
+  // Ambiguous unmarked three-letter forms require lexical knowledge.
+  rootOverrides: { 'དགས': 'ག', 'དམས': 'མ', 'དངས': 'ད', 'འགས': 'ག', 'འབས': 'བ', 'མངས': 'མ', 'མགས': 'མ', 'བགས': 'བ', 'དབས': 'བ' },
+};
+TIBETAN_DATA.confusables = ['ཀཁག','ཅཆཇ','ཏཐད','ཞཟཤས','དང','པཕབ','ཙཚཛ','ཉནམ','འཨ'];
+TIBETAN_DATA.rules.push(
+  { id: 'root-stack', title: 'Find the root in a stack', tag: 'root', desc: 'A superscript sits above the root. A subscript sits below it. Match the allowed stack before choosing the root.', examples: [
+    { spell: 'རྟ་', reads: 'ta', gloss: 'horse', root: 'ཏ' },
+    { spell: 'ཁྱི་', reads: 'khyi', gloss: 'dog', root: 'ཁ' },
+    { spell: 'བསྒྲུབས་', reads: 'drup', gloss: 'to accomplish', root: 'ག' },
+  ] },
+  { id: 'root-two', title: 'Two plain letters: the first is the root', tag: 'root', desc: 'With two full-form letters and no vowel sign or stack, the first is the root and the second a suffix. Being a possible prefix does not make a letter a prefix here.', examples: [
+    { spell: 'དང་', reads: 'dang', gloss: 'and', root: 'ད' },
+    { spell: 'ངག་', reads: 'ngag', gloss: 'voice', root: 'ང' },
+    { spell: 'བར་', reads: 'bar', gloss: 'until', root: 'བ' },
+  ] },
+  { id: 'root-vowel', title: 'A vowel marks the root group', tag: 'root', desc: 'A vowel belongs to the root group. A preceding legal prefix is silent. A following full letter can be a suffix.', examples: [
+    { spell: 'དགུ་', reads: 'gu', gloss: 'nine', root: 'ག' },
+    { spell: 'མགོ་', reads: 'go', gloss: 'head', root: 'ག' },
+    { spell: 'འཇིགས་', reads: 'jig', gloss: 'fear', root: 'ཇ' },
+  ] }
+);
+// Passages select existing content; no second copy of Tibetan or readings.
+TIBETAN_DATA.readingPassages = [
+  { title: '1 · Single syllables', kind: 'words', words: ['ཆུ','མེ','རི','བུ'] },
+  { title: '2 · Two-syllable words', kind: 'words', words: ['ཉི་མ','ཟླ་བ','བླ་མ'] },
+  { title: '3 · Short phrases', kind: 'proverb', proverb: 'refuge', line: 0, count: 5 },
+  { title: '4 · A proverb line', kind: 'proverb', proverb: 'ocean-of-drops', line: 0 },
+];

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { TIBETAN_DATA as D } from '../data.js';
+import ReadingDrills from '../components/ReadingDrills.jsx';
 import { shuffle } from '../utils.js';
 
 export default function ReadView({ go, initial }) {
@@ -85,6 +86,7 @@ export default function ReadView({ go, initial }) {
         sentences end with a vertical bar <span className="ti">།</span> (<span className="mono">shé</span>).
       </p>
 
+      <ReadingDrills />
       {mode === 'flash' && (
         <>
           <div className="read-stage">

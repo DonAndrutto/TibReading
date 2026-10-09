@@ -4,6 +4,7 @@ export default function Sidebar({ tab, setTab }) {
     { id: 'alphabet', label: 'Alphabet',  sub: '30 consonants',         ti: 'ཀ'   },
     { id: 'vowels',   label: 'Vowels',    sub: '4 marks · combiner',    ti: 'ཨི'   },
     { id: 'stacks',   label: 'Stacks',    sub: 'sub- & superscripts',   ti: 'རྒྱ' },
+    { id: 'practice', label: 'Practice', sub: 'daily review', ti: 'ཀྱ' },
     { id: 'builder',  label: 'Builder',   sub: 'anatomy of a syllable', ti: 'སྒྲ' },
     { id: 'rules',    label: 'Rules',     sub: 'spelling ⇢ sound',      ti: 'སྨ'   },
     { id: 'trace',    label: 'Trace',     sub: 'write on the line',     ti: 'ཞ'   },

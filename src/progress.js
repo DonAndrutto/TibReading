@@ -1,3 +1,4 @@
+import { schedule, sessionStreak } from './srs.js';
 import { useSyncExternalStore } from 'react';
 
 export const PROGRESS_KEY = 'tibreading.progress';
@@ -64,3 +65,8 @@ export const exportProgress = () => JSON.stringify(current, null, 2);
 if (typeof window !== 'undefined') window.addEventListener('storage', e => {
   if (e.key === PROGRESS_KEY) { current = read(); listeners.forEach(fn => fn()); }
 });
+
+// The store is the only write path, so all exercises share the same schedule.
+export function gradeCard(id, grade, now = Date.now()) {
+  saveProgress({ ...current, items: { ...current.items, [id]: schedule(current.items[id], grade, now) }, streak: sessionStreak(current, now), lastSession: now });
+}

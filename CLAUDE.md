@@ -24,7 +24,7 @@ npm run check:text     # build + measure every label against its box with
 npm run bench          # build + benchmark the reader against a naive baseline
 ```
 
-**There is no unit-test runner, linter, or type-checker,** but `check:reader` and `check:text` are real automated checks and both must pass before pushing. Anything they do not cover still needs `npm run dev` and a look in the browser. For content-only edits to `src/data.js`, run `npm run check:text` — it is what catches a proverb title that has grown past its card.
+**Vitest is the unit-test runner** (`npm test`); there is no linter or type-checker. `check:reader`, `check:text`, and `check:romanization` must also pass before pushing. Anything they do not cover still needs `npm run dev` and a look in the browser. For content-only edits to `src/data.js`, run `npm run check:text` — it is what catches a proverb title that has grown past its card.
 
 The checks drive a real Chromium via Playwright and serve the built `dist/`, so run `npm run build` first if invoking the scripts directly. `node bench/fetch-fonts.mjs` vendors the Google Fonts locally once, so measurements use the real Noto Serif Tibetan instead of a fallback.
 
@@ -62,7 +62,7 @@ src/
     VowelsView     # interactive consonant + vowel combiner; ends with a <VocabCards>
                    # consonant-plus-vowel vocabulary section
     StacksView     # sub/superscript stacks browser (tabbed: subscripts / superscripts)
-    BuilderView    # step-by-step syllable assembler (animated) for བསྒྲུབས་
+    BuilderView    # seven-slot native syllable validator and vocabulary challenges
     RulesView      # spelling-to-sound rules: Browse (category filter + tap-to-reveal
                    # examples) and Quiz (read-aloud multiple choice) modes
     TraceView      # canvas drawing pad for letter tracing with ghost-guide toggle
@@ -180,7 +180,8 @@ The app is deployed as a **single self-contained HTML file** to GitHub Pages at 
 ## Key Interactions
 
 - **AlphabetView** — arrow keys navigate the consonant grid (registered on `window` via `useEffect`; guard checks `e.target.tagName` to avoid firing in inputs).
-- **BuilderView** — animated assembly uses `setTimeout` via `useRef` to step through `W.parts`; `step` controls how many parts are shown, `sel` controls which detail panel is displayed independently.
+- **BuilderView** — accessible slot selectors and tap/drag palette; `syllable.js` validates against `data.js` and explains invalid combinations. `deck.js` derives challenges from vocabulary.
+- **PracticeView** — five exercise formats sharing a five-box Leitner schedule in `srs.js`; progress writes are centralized in `progress.js`.
 - **TraceView** — canvas drawing uses `devicePixelRatio` scaling for crisp HiDPI rendering; touch and mouse events share the same handlers.
 - **ReadView** quiz — `options` is derived with `useMemo` keyed on `qIdx`; distractors are picked randomly from words with a different romanization than the correct answer.
 - **ProverbsView** — `active` state is `{ line, syl }` indices; navigation wraps across line boundaries.

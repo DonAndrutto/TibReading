@@ -1,6 +1,7 @@
 import { useEffect, Component } from 'react';
 import { useRoute } from './routing.js';
 import SettingsView from './views/SettingsView.jsx';
+import PracticeView from './views/PracticeView.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import IntroView from './views/IntroView.jsx';
 import AlphabetView from './views/AlphabetView.jsx';
@@ -48,6 +49,7 @@ export default function App() {
           {tab === 'rules'    && <RulesView go={go} />}
           {tab === 'trace'    && <TraceView go={go} initial={payload} />}
           {tab === 'read'     && <ReadView go={go} initial={payload} />}
+          {tab === 'practice' && <PracticeView />}
           {tab === 'settings' && <SettingsView />}
           {tab === 'proverbs' && <ProverbsView />}
         </ErrorBoundary>

@@ -34,9 +34,54 @@ try {
     const [w,h] = icon.sizes.split('x').map(Number);
     assert.equal(bytes.readUInt32BE(16), w); assert.equal(bytes.readUInt32BE(20), h);
   }
+  assert.ok(manifest.icons.every(i => i.type === 'image/png' && /-[a-f0-9]{12}\.png$/.test(i.src)), 'Installers get versioned PNGs');
   assert.ok(manifest.icons.some(i => i.purpose === 'maskable'));
   assert.ok(html.includes('apple-touch-icon'));
   const desktop = await open({ viewport: { width: 1280, height: 900 } });
+  // An older worker/browser can retain the previous canonical manifest. New
+  // HTML must use fresh metadata rather than that stale installation response.
+  let staleManifestRequests = 0;
+  await desktop.route('**/manifest.webmanifest', route => {
+    staleManifestRequests++;
+    return route.fulfill({ contentType:'application/manifest+json', body:'{"name":"Old cached app","icons":[]}' });
+  });
+  const cdp = await desktop.context().newCDPSession(desktop);
+  const parsed = await cdp.send('Page.getAppManifest');
+  assert.deepEqual(parsed.errors, []);
+  assert.match(parsed.url, /manifest-[a-f0-9]{12}\.webmanifest$/);
+  assert.deepEqual(JSON.parse(parsed.data).icons, manifest.icons);
+  assert.equal(staleManifestRequests, 0);
+  assert.deepEqual((await cdp.send('Page.getInstallabilityErrors')).installabilityErrors, []);
+  const appleURL = await desktop.locator('link[rel="apple-touch-icon"]').getAttribute('href');
+  assert.match(appleURL, /apple-touch-icon-[a-f0-9]{12}\.png$/);
+  // Decode actual browser images: dimensions in a PNG header alone cannot
+  // detect a blank/transparent export or artwork cropped by a launcher mask.
+  const raster = await desktop.evaluate(async icons => Promise.all(icons.map(async icon => {
+    const response = await fetch(icon.src);
+    const bitmap = await createImageBitmap(await response.blob());
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width; canvas.height = bitmap.height;
+    const ctx = canvas.getContext('2d'); ctx.drawImage(bitmap,0,0);
+    const pixels = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let transparent = 0, foreground = 0, unsafe = 0;
+    for (let i=0; i<pixels.length; i+=4) {
+      if (pixels[i+3] !== 255) transparent++;
+      if (pixels[i]>150 && pixels[i+1]>120) {
+        foreground++;
+        const x=(i/4)%canvas.width+.5, y=Math.floor(i/4/canvas.width)+.5;
+        if (Math.hypot(x-canvas.width/2,y-canvas.height/2)>canvas.width*.4) unsafe++;
+      }
+    }
+    return {width:bitmap.width,height:bitmap.height,transparent,foreground,unsafe,type:response.headers.get('content-type')};
+  })), [...manifest.icons, {src:appleURL}]);
+  for (const [i,image] of raster.entries()) {
+    const size = i<manifest.icons.length ? Number(manifest.icons[i].sizes.split('x')[0]) : 180;
+    assert.equal(image.width,size); assert.equal(image.height,size);
+    assert.equal(image.transparent,0,'Home-screen PNGs must be opaque');
+    assert.ok(image.foreground > size*size*.05,'Icon has visible artwork');
+    assert.equal(image.type,'image/png');
+    if (manifest.icons[i]?.purpose === 'maskable') assert.equal(image.unsafe,0,'Artwork stays in the circular safe zone');
+  }
   assert.equal(await desktop.locator('.boot-screen').count(), 0);
   assert.equal(await desktop.locator('.install-banner').count(), 0, 'No unusable install button without a browser offer');
   assert.ok(await offer(desktop));
@@ -117,7 +162,7 @@ try {
   await offline.reload();
   const icons = await offline.evaluate(async () => {
     const manifest = await (await fetch('./manifest.webmanifest')).json();
-    return Promise.all([...manifest.icons.map(i => i.src), './apple-touch-icon.png'].map(async src => (await fetch(src)).ok));
+    return Promise.all([...manifest.icons.map(i => i.src), document.querySelector('link[rel="apple-touch-icon"]').getAttribute('href'), document.querySelector('link[rel="manifest"]').getAttribute('href')].map(async src => (await fetch(src)).ok));
   });
   assert.ok(icons.every(Boolean), 'All install icons are available offline');
   assert.deepEqual(errors, []);

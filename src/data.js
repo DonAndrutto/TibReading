@@ -22,8 +22,8 @@ export const TIBETAN_DATA = {
     { g: "ཚ", r: "tsha",t: "high asp.", v: "salt",                  n: 18 },
     { g: "ཛ", r: "dza", t: "low",       v: "",                      n: 19 },
     { g: "ཝ", r: "wa",  t: "low",       v: "",                      n: 20 },
-    { g: "ཞ", r: "sha", t: "low",       v: "",                      n: 21 },
-    { g: "ཟ", r: "sa",  t: "low",       v: "to eat",                n: 22 },
+    { g: "ཞ", r: "zha", t: "low",       v: "",                      n: 21 },
+    { g: "ཟ", r: "za",  t: "low",       v: "to eat",                n: 22 },
     { g: "འ", r: "'a",  t: "low",       v: "",                      n: 23 },
     { g: "ཡ", r: "ya",  t: "low",       v: "",                      n: 24 },
     { g: "ར", r: "ra",  t: "low",       v: "goat",                  n: 25 },
@@ -36,7 +36,7 @@ export const TIBETAN_DATA = {
 
   vowels: [
     { mark: "ི", name: "གི་གུ་",    nameR: "gigu",     pos: "above", sound: "i", hint: "small hook drawn on top of the consonant" },
-    { mark: "ུ", name: "ཞབས་ཀྱུ་", nameR: "shabkyu",  pos: "below", sound: "u", hint: "tail tucked under the consonant" },
+    { mark: "ུ", name: "ཞབས་ཀྱུ་", nameR: "zhabkyu",  pos: "below", sound: "u", hint: "tail tucked under the consonant" },
     { mark: "ེ", name: "འགྲེང་བུ་", nameR: "drengbu", pos: "above", sound: "e", hint: "horizontal stroke above" },
     { mark: "ོ", name: "ན་རོ་",     nameR: "naro",    pos: "above", sound: "o", hint: "small flame on top" }
   ],
@@ -238,7 +238,7 @@ export const TIBETAN_DATA = {
     { w: "ལྔ",     r: "nga",     m: "five (high tone)" },
     { w: "དགུ",    r: "gu",      m: "nine (prefix ད silent)" },
     { w: "མགོ",    r: "go",      m: "head (prefix མ silent)" },
-    { w: "བཞི",    r: "shi",     m: "four (prefix བ silent)" }
+    { w: "བཞི",    r: "zhi",     m: "four (prefix བ silent)" }
   ],
 
   rules: [
@@ -360,7 +360,7 @@ export const TIBETAN_DATA = {
       examples: [
         { spell: "དགའ་",   reads: "ga",     gloss: "to be happy" },
         { spell: "འཁོར་",  reads: "khor",   gloss: "to attract" },
-        { spell: "བཞི་",   reads: "shi",    gloss: "four" },
+        { spell: "བཞི་",   reads: "zhi",    gloss: "four" },
         { spell: "མགོ་",   reads: "go",     gloss: "head" },
         { spell: "དགུ་",   reads: "gu",     gloss: "nine" }
       ]
@@ -384,7 +384,7 @@ export const TIBETAN_DATA = {
       desc: "When the letter བ sits as the second syllable between two tsek dots, it is read as ཝ (wa).",
       examples: [
         { spell: "རྩ་བ་",   reads: "tsa-wa",   gloss: "root" },
-        { spell: "ཞི་བ་",   reads: "shi-wa",   gloss: "peace" },
+        { spell: "ཞི་བ་",   reads: "zhi-wa",   gloss: "peace" },
         { spell: "ཤ་བ་",    reads: "sha-wa",   gloss: "deer" },
         { spell: "ལྟ་བ་",   reads: "ta-wa",    gloss: "view" }
       ]
